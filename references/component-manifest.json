@@ -1,0 +1,1539 @@
+{
+  "version": "1.0.0",
+  "generatedDate": "2026-08-04",
+  "figmaFileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+  "libraryKey": "lk-ae83192f7b7305d9600785756ca9770312ad96826287c5b416a5e9f38c0b8c858632b716ed0e326c887e942ac3951557de60da44a53fc44693483ad0dd1dcd5f",
+  "systemName": "ZCatalyst Design System",
+  "themeModes": ["Orange-Light", "Orange-Dark", "Blue-Light", "Blue-Dark"],
+  "hardRules": {
+    "noOddNumbers": "All spacing, font sizes, border radius, padding, margins, gaps must be even numbers",
+    "minimumFontSize": 10,
+    "defaultRadius": 6,
+    "noHardcodedHex": "Every color must come from a variable, no exceptions",
+    "noHardcodedFonts": "Every font must reference the font variable",
+    "iconsStrokeOnly": "All icons use strokes, never fills. Bind stroke on VECTOR child, not frame wrapper",
+    "noFixedHeight": "Never hardcode height on components, use auto-layout with counterAxisSizingMode AUTO"
+  },
+  "foundations": {
+    "colors": {
+      "description": "3-tier color token architecture: Primitives (raw hex, no modes) -> Themes (semantic, 4 modes) -> Components. Components NEVER reference Primitives directly.",
+      "primitiveCount": 100,
+      "semanticTokenCount": 53,
+      "collections": {
+        "Primitives": {
+          "modes": 1,
+          "scales": ["neutral (14 stops)", "orange (11)", "blue (10)", "red (10)", "green (10)", "amber (10)", "sky (10)", "pink (10)", "purple (10)", "branding (2)", "absolute (3)"]
+        },
+        "Themes": {
+          "modes": 4,
+          "modeNames": ["Orange-Light", "Orange-Dark", "Blue-Light", "Blue-Dark"],
+          "categories": {
+            "background": { "prefix": "color/bg/", "count": 17, "tokens": ["surface", "raised", "sunken", "medium", "overlay", "inverse", "brand-primary", "brand-secondary", "brand-subtle", "success", "success-subtle", "warning", "warning-subtle", "error", "error-subtle", "info", "info-subtle"] },
+            "text": { "prefix": "color/text/", "count": 13, "tokens": ["primary", "secondary", "tertiary", "placeholder", "disabled", "inverse", "on-brand", "link", "link-hover", "success", "warning", "error", "info"] },
+            "border": { "prefix": "color/border/", "count": 9, "tokens": ["default", "strong", "subtle", "focus", "brand", "error", "success", "warning", "disabled"] },
+            "icon": { "prefix": "color/icon/", "count": 9, "tokens": ["primary", "secondary", "disabled", "inverse", "brand", "error", "success", "warning", "info"] },
+            "interactive": { "prefix": "color/interactive/", "count": 5, "tokens": ["default", "hover", "pressed", "selected", "disabled"] }
+          }
+        }
+      },
+      "wcagMinimum": "AA (text 4.5:1, UI elements 3:1)"
+    },
+    "typography": {
+      "description": "19 text styles across 3 font families. All sizes even, minimum 10px. Font families switchable via variables.",
+      "fontFamilies": [
+        { "name": "Zoho Puvi", "role": "Primary", "usage": "Headings, body, labels, UI text" },
+        { "name": "Inter", "role": "Secondary", "usage": "Alternative body text (user-switchable via variable)" },
+        { "name": "Roboto Mono", "role": "Monospace", "usage": "Code snippets, technical data, keyboard shortcuts" }
+      ],
+      "textStyles": [
+        { "name": "Display/XL", "size": 48, "lineHeight": 56, "weight": "Bold", "font": "Zoho Puvi" },
+        { "name": "Display/LG", "size": 40, "lineHeight": 48, "weight": "Bold", "font": "Zoho Puvi" },
+        { "name": "Display/MD", "size": 32, "lineHeight": 40, "weight": "Bold", "font": "Zoho Puvi" },
+        { "name": "Heading/XL", "size": 28, "lineHeight": 36, "weight": "SemiBold", "font": "Zoho Puvi" },
+        { "name": "Heading/LG", "size": 24, "lineHeight": 32, "weight": "SemiBold", "font": "Zoho Puvi" },
+        { "name": "Heading/MD", "size": 20, "lineHeight": 28, "weight": "SemiBold", "font": "Zoho Puvi" },
+        { "name": "Heading/SM", "size": 16, "lineHeight": 24, "weight": "SemiBold", "font": "Zoho Puvi" },
+        { "name": "Heading/XS", "size": 14, "lineHeight": 20, "weight": "SemiBold", "font": "Zoho Puvi" },
+        { "name": "Body/LG", "size": 16, "lineHeight": 24, "weight": "Regular", "font": "Zoho Puvi" },
+        { "name": "Body/MD", "size": 14, "lineHeight": 20, "weight": "Regular", "font": "Zoho Puvi" },
+        { "name": "Body/SM", "size": 12, "lineHeight": 16, "weight": "Regular", "font": "Zoho Puvi" },
+        { "name": "Label/LG", "size": 14, "lineHeight": 20, "weight": "Medium", "font": "Zoho Puvi" },
+        { "name": "Label/MD", "size": 12, "lineHeight": 16, "weight": "Medium", "font": "Zoho Puvi" },
+        { "name": "Label/SM", "size": 10, "lineHeight": 14, "weight": "Medium", "font": "Zoho Puvi" },
+        { "name": "Caption", "size": 10, "lineHeight": 14, "weight": "Regular", "font": "Zoho Puvi" },
+        { "name": "Overline", "size": 10, "lineHeight": 14, "weight": "SemiBold", "font": "Zoho Puvi", "transform": "UPPERCASE" },
+        { "name": "Code/LG", "size": 14, "lineHeight": 20, "weight": "Regular", "font": "Roboto Mono" },
+        { "name": "Code/MD", "size": 12, "lineHeight": 16, "weight": "Regular", "font": "Roboto Mono" },
+        { "name": "Code/SM", "size": 10, "lineHeight": 14, "weight": "Regular", "font": "Roboto Mono" }
+      ]
+    },
+    "icons": {
+      "description": "425 icon components, all stroke-only with colors bound to variables. Every component must use these icons via instance swap.",
+      "totalCount": 425,
+      "categories": [
+        { "name": "System icons", "count": 383, "description": "UI actions, navigation, status indicators" },
+        { "name": "Product icons (default)", "count": 15, "description": "Zoho product logos, monochrome" },
+        { "name": "Product icons (colored)", "count": 15, "description": "Zoho product logos, brand colors preserved" },
+        { "name": "Other icons", "count": 12, "description": "Miscellaneous/special purpose" }
+      ],
+      "sizes": [
+        { "token": "size/icon/12", "size": 12, "context": "Inline with small text (Caption, Label/SM)" },
+        { "token": "size/icon/14", "size": 14, "context": "Inline with Body/SM, Label/MD, small buttons" },
+        { "token": "size/icon/16", "size": 16, "context": "Default - most UI elements" },
+        { "token": "size/icon/20", "size": 20, "context": "Headings, large buttons" },
+        { "token": "size/icon/24", "size": 24, "context": "Navigation, toolbar, standalone icons" },
+        { "token": "size/icon/32", "size": 32, "context": "Hero sections, empty states" }
+      ],
+      "colorVariables": ["color/icon/primary", "color/icon/secondary", "color/icon/disabled", "color/icon/inverse", "color/icon/brand", "color/icon/error", "color/icon/success", "color/icon/warning", "color/icon/info"],
+      "rules": ["All stroke-only, never fill", "Bind stroke on VECTOR child, not frame wrapper", "Aspect ratio locked on all icon components", "No external icon libraries"]
+    },
+    "spacing": {
+      "description": "Token-driven spacing scale. All values even numbers.",
+      "tokens": ["space/4", "space/8", "space/12", "space/16", "space/24", "space/32", "space/48", "space/64"]
+    },
+    "radius": {
+      "default": 6,
+      "rules": {
+        "buttons": 6,
+        "inputs": 6,
+        "cards": 6,
+        "popovers": 6,
+        "modalsDialogs": 8,
+        "tagsBadgesSmall": "2-4",
+        "avatarsPills": 9999
+      }
+    },
+    "elevation": {
+      "levels": 5,
+      "description": "5 shadow effect styles for elevation hierarchy"
+    }
+  },
+  "componentKeyMap": {
+    "_description": "Quick lookup: UI element → componentKey + import method. type=component_set → importComponentSetByKeyAsync (then .defaultVariant.createInstance). type=component → importComponentByKeyAsync (then .createInstance). status=manual → build with frames, not imported.",
+    "Button": { "figmaName": "Buttons", "componentKey": "1e04478db049373eb096060a60ee7bbbc4da4e9a", "searchQuery": "Buttons", "type": "component_set" },
+    "Gradient Button": { "figmaName": "Gradient Button", "componentKey": "86fe8b75bd17c1bb5f6116cb827aad942a934012", "searchQuery": "Gradient Button", "type": "component_set" },
+    "Toggle Button": { "figmaName": "Toggle button", "componentKey": "35016f9e4ebd41a83c952fa04c3c47a1f36d0ec4", "searchQuery": "Toggle button", "type": "component_set" },
+    "Radio": { "figmaName": "Radio button", "componentKey": "be8763a756a299944aba5cc764d46ad6cec24bdb", "searchQuery": "Radio button", "type": "component_set" },
+    "Checkbox": { "figmaName": "Check Box", "componentKey": "f6f4ae2426b2e9d6c3ee7fc3727e06054b0f5d58", "searchQuery": "Check Box", "type": "component_set" },
+    "Link": { "figmaName": "Link", "componentKey": "15293c62ec6b1e82d6635302c34f128a77aa14f7", "searchQuery": "Link", "type": "component_set" },
+    "Text Input": { "figmaName": "Text Box", "componentKey": "411f52c2e02879cd0cd7a259933325c7cbc04b5c", "searchQuery": "Text Box", "type": "component_set" },
+    "Double Field": { "figmaName": "Double field", "componentKey": "27388328932ea8eaa0f60d1ae15c8c52457aea13", "searchQuery": "Double field", "type": "component_set" },
+    "Select": { "figmaName": "Drop down", "componentKey": "021a6653c106f277f2481ee722ed93d4137dc3a6", "searchQuery": "Drop down", "type": "component_set" },
+    "Dropdown Menu": { "figmaName": "Dropdown Menu", "componentKey": "60c79101cb2a0399f9239bd2477634e0591d2e85", "searchQuery": "Dropdown Menu", "type": "component_set" },
+    "Tag": { "figmaName": "Chip", "componentKey": "69274b61923231a45f559e59bed169c121d9bc45", "searchQuery": "Chip", "type": "component_set" },
+    "Badge": { "figmaName": "Badges", "componentKey": "158e4b6d656a62d4244efc4e5583794044328d3a", "searchQuery": "Badges", "type": "component_set" },
+    "Avatar": { "figmaName": "Avatar", "componentKey": "928239e0d3b1666d7ab0d26c42c71ab8a2fd3233", "searchQuery": "Avatar", "type": "component_set" },
+    "Tooltip": { "figmaName": "Tooltip", "componentKey": "ee9488a518bfa321bec5233b512327004534c226", "searchQuery": "Tooltip", "type": "component_set" },
+    "Tabs": { "figmaName": "Tabs", "componentKey": "4851c5917e3ca7aca6aa65f44d49d83b9594f3f0", "searchQuery": "Tabs", "type": "component_set" },
+    "Accordion": { "figmaName": "Accordion", "componentKey": "de19e2bef81becf98aa6f4d504439160d621911b", "searchQuery": "Accordion", "type": "component_set" },
+    "Accordion 2": { "figmaName": "Accordion 2", "componentKey": "711879442ba32efdf1b7926cccb484854d80ad8b", "searchQuery": "Accordion 2", "type": "component_set" },
+    "Breadcrumbs": { "figmaName": "Breadcrumbs", "componentKey": "0a3311e7b166996622dc853a63d3c51cb26b13b2", "searchQuery": "Breadcrumbs", "type": "component_set" },
+    "Table": { "figmaName": "Table", "componentKey": "651b0fc7a3921dfc45c0d7f0f77ef434aa0dc4fb", "searchQuery": "Table", "type": "component_set" },
+    "Attention Box": { "figmaName": "Attention box", "componentKey": "3c58dee55668c602ac70872f8878dfc0e4b0e0f0", "searchQuery": "Attention box", "type": "component_set" },
+    "Card BG": { "figmaName": "Card BG", "componentKey": "0a6610b4540cec27f39b38930dbeae02fbecfabe", "searchQuery": "Card BG", "type": "component_set" },
+    "Divider": { "figmaName": "Divider", "componentKey": "f301e08fa28bfa77c8bf150314425aafc3f3a66c", "searchQuery": "Divider", "type": "component_set" },
+    "Key Value Pair": { "figmaName": "Key value pair", "componentKey": "d35e27d088cd88bd9f860992d5f551a3a3c66086", "searchQuery": "Key value pair", "type": "component_set" },
+    "Sidemenu": { "figmaName": "Sidemenu", "componentKey": "c5cc6958acc9fa1c180d3d51c383d355547c634f", "searchQuery": "Sidemenu", "type": "component_set" },
+    "Layout": { "figmaName": "Layout", "componentKey": "60b7dd3df3911d7f99644f1602f94daabc91543a", "searchQuery": "Layout", "type": "component" },
+    "Header": { "figmaName": "Header", "componentKey": "066d43ab8187bdae310b23a73e2cbb2ecf5e97f7", "searchQuery": "Header", "type": "component" },
+    "ServiceMenu": { "figmaName": "ServiceMenu", "componentKey": "b0441fd9af8a097c3e20185591720472233a0a6e", "searchQuery": "ServiceMenu", "type": "component" },
+    "Stepper": { "figmaName": "Stepper", "componentKey": "454063cba061b3f587dc4e6fad32263e35525c5a", "searchQuery": "Stepper", "type": "component" },
+    "Pagination": { "figmaName": "Pagination", "componentKey": "826469f58d1a4e68df306ac04da418b009ab9380", "searchQuery": "Pagination", "type": "component" },
+    "Popup": { "figmaName": "Deefault Popup", "componentKey": "4200a0aef4a25f7cdbdf628575c41347c9e8a8fe", "searchQuery": "Deefault Popup", "type": "component" },
+    "Popup Blur": { "figmaName": "Popup Blur", "componentKey": "d798b6f836ec9950b2d146cc820338c31180a7fb", "searchQuery": "Popup Blur", "type": "component" },
+    "Table Multi Select": { "figmaName": "Table Multi Select Options", "componentKey": "b0669cabcf4280720c0d18666ffdf278f322f2a8", "searchQuery": "Table Multi Select Options", "type": "component" },
+    "Empty State": { "figmaName": "Primary empty state", "componentKey": "7bd056df8652d9c4737d2add3f5dba1a8c13f6a5", "searchQuery": "Primary empty state", "type": "component" },
+    "No Data": { "figmaName": "No data available", "componentKey": "6524cdbc0d6326b13ae5cad836688187c7a9310b", "searchQuery": "No data available", "type": "component" },
+    "General Details": { "figmaName": "General details", "componentKey": "8ef79b5b49cef788257b05b3959dd032aaede553", "searchQuery": "General details", "type": "component" },
+    "Container": { "status": "manual", "notes": "Build with frames + auto-layout, not a published library component" },
+    "Stack": { "status": "manual", "notes": "Build with frames + auto-layout" },
+    "Grid": { "status": "manual", "notes": "Build with frames + auto-layout" },
+    "Row": { "status": "manual", "notes": "Build with frames + auto-layout" },
+    "Column": { "status": "manual", "notes": "Build with frames + auto-layout" },
+    "Spacer": { "status": "manual", "notes": "Build as empty frame with fixed size" },
+    "Overlay": { "status": "manual", "notes": "Build as dark semi-transparent frame" },
+    "Spinner": { "status": "manual", "notes": "Not in zcat library, build manually" },
+    "Shimmer": { "status": "manual", "notes": "Not in zcat library, build manually" },
+    "Skeleton": { "status": "manual", "notes": "Not in zcat library, build manually" },
+    "Label": { "status": "manual", "notes": "Not a standalone component in zcat, build as text layer" },
+    "Helper Text": { "status": "manual", "notes": "Not a standalone component in zcat, build as text layer" },
+    "Kbd": { "status": "manual", "notes": "Not in zcat library" },
+    "Password Input": { "status": "manual", "notes": "May be a variant inside Text Box" },
+    "Number Input": { "status": "manual", "notes": "May be a variant inside Text Box" },
+    "Textarea": { "status": "manual", "notes": "Not found as separate component in zcat" },
+    "Image": { "status": "manual", "notes": "Not in zcat library, build as frame with image fill" },
+    "Progress Bar": { "status": "manual", "notes": "Not in zcat library, build manually" },
+    "Progress Circle": { "status": "manual", "notes": "Not in zcat library, build manually" },
+    "Rating": { "status": "manual", "notes": "Not in zcat library, build manually" }
+  },
+  "components": [
+    {
+      "name": "Container",
+      "category": "layout",
+      "subcategory": "primitives",
+      "description": "Max-width wrapper component used to constrain content width and center it on the page. Handles horizontal padding and max-width constraints.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Layout Primitives",
+        "status": "manual"
+      },
+      "whenToUse": ["Constraining page content to a max-width", "Centering content horizontally on wide screens", "Wrapping page-level sections"],
+      "whenNotToUse": ["Inside another Container (avoid nesting)", "For sidebar or panel content (use Stack/Column)", "When full-bleed background is needed"],
+      "properties": [
+        { "name": "Size", "type": "enum", "values": ["sm (640px)", "md (768px)", "lg (1024px)", "xl (1280px)", "full (1440px)"], "default": "full" }
+      ],
+      "tokens": {
+        "fill": "color/bg/surface",
+        "border": "color/border/default (1px)",
+        "radius": 6,
+        "padding": 16
+      },
+      "related": ["Stack", "Column"]
+    },
+    {
+      "name": "Stack",
+      "category": "layout",
+      "subcategory": "primitives",
+      "description": "Generic auto-layout container that stacks children horizontally or vertically with configurable alignment and gap. The most fundamental layout building block after Container.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Layout Primitives",
+        "status": "manual"
+      },
+      "whenToUse": ["Grouping related elements with consistent spacing", "Building component internals (icon + label)", "Quick vertical or horizontal arrangements"],
+      "whenNotToUse": ["For page-level max-width wrapping (use Container)", "For 12-column grid layouts (use Grid)", "When you need space-between/around (use Row)"],
+      "properties": [
+        { "name": "Direction", "type": "enum", "values": ["Horizontal", "Vertical"], "default": "Horizontal" },
+        { "name": "Align", "type": "enum", "values": ["Start", "Center", "End"], "default": "Start" },
+        { "name": "Gap", "type": "spacing token", "values": ["Any space/* token"], "default": "space/8" }
+      ],
+      "tokens": {
+        "fill": "color/bg/surface",
+        "border": "color/border/default (1px)"
+      },
+      "related": ["Row", "Column", "Container"]
+    },
+    {
+      "name": "Grid",
+      "category": "layout",
+      "subcategory": "primitives",
+      "description": "Multi-column grid layout component. Distributes children into equal-width columns with configurable gap. Wraps content into rows automatically.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Layout Primitives",
+        "status": "manual"
+      },
+      "whenToUse": ["Card grids, product listings, image galleries", "Dashboard widget layouts", "Multi-column content sections"],
+      "whenNotToUse": ["For single-row horizontal layouts (use Row)", "For vertical stacking (use Column/Stack)", "For unequal column widths (use Row)"],
+      "properties": [
+        { "name": "Columns", "type": "enum", "values": ["2", "3", "4"], "default": "3" },
+        { "name": "Gap", "type": "spacing token", "values": ["Any space/* token"], "default": "space/16" }
+      ],
+      "tokens": {
+        "fill": "color/bg/surface",
+        "border": "color/border/default (1px)"
+      },
+      "related": ["Row", "Column", "Container"]
+    },
+    {
+      "name": "Row",
+      "category": "layout",
+      "subcategory": "primitives",
+      "description": "Horizontal flex container with alignment options. Distributes children along the horizontal axis with configurable spacing. Supports space-between and space-around distribution.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Layout Primitives",
+        "status": "manual"
+      },
+      "whenToUse": ["Distributing items horizontally with equal spacing", "Toolbar layouts, button groups", "Space-between for navigation headers"],
+      "whenNotToUse": ["For vertical stacking (use Column/Stack)", "For grid-based multi-column layouts (use Grid)", "When items need to wrap (use Grid)"],
+      "properties": [
+        { "name": "Align", "type": "enum", "values": ["Start", "Center", "End", "Space Between", "Space Around"], "default": "Start" },
+        { "name": "Gap", "type": "spacing token", "values": ["Any space/* token"], "default": "space/8" }
+      ],
+      "tokens": {
+        "fill": "color/bg/surface",
+        "border": "color/border/default (1px)"
+      },
+      "related": ["Stack", "Column", "Grid"]
+    },
+    {
+      "name": "Column",
+      "category": "layout",
+      "subcategory": "primitives",
+      "description": "Vertical flex container with span property. Stacks children vertically with configurable alignment and gap. Stretch variant fills children to full width.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Layout Primitives",
+        "status": "manual"
+      },
+      "whenToUse": ["Stacking content vertically in a sidebar", "Card content layout (title, description, actions)", "Form field groups"],
+      "whenNotToUse": ["For horizontal layouts (use Row/Stack)", "For page-level centering (use Container)", "For full grid layouts (use Grid)"],
+      "properties": [
+        { "name": "Align", "type": "enum", "values": ["Start", "Center", "End", "Stretch"], "default": "Start" },
+        { "name": "Gap", "type": "spacing token", "values": ["Any space/* token"], "default": "space/8" }
+      ],
+      "tokens": {
+        "fill": "color/bg/surface",
+        "border": "color/border/default (1px)"
+      },
+      "related": ["Row", "Stack", "Grid"]
+    },
+    {
+      "name": "Spacer",
+      "category": "layout",
+      "subcategory": "primitives",
+      "description": "Fixed space element using spacing tokens. Insert between elements to create precise, token-driven gaps without margin hacks.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Layout Primitives",
+        "status": "manual"
+      },
+      "whenToUse": ["Adding precise space between elements", "When auto-layout gap isn't enough (mixed spacing)", "Creating visual breathing room between sections"],
+      "whenNotToUse": ["When auto-layout gap handles spacing (preferred)", "For decorative spacing (use padding)", "Inside tight components (unnecessary nodes)"],
+      "properties": [
+        { "name": "Size", "type": "enum", "values": ["4", "8", "12", "16", "24", "32", "48", "64"], "default": "16" }
+      ],
+      "tokens": {
+        "fill": "color/bg/brand-subtle (visible in design, transparent in code)"
+      },
+      "related": ["Divider"]
+    },
+    {
+      "name": "Divider",
+      "category": "layout",
+      "subcategory": "primitives",
+      "description": "Horizontal or vertical line separator. Solid or dashed style. Uses border color variables for automatic theme compatibility.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Layout Primitives",
+        "componentKey": "f301e08fa28bfa77c8bf150314425aafc3f3a66c",
+        "figmaName": "Divider",
+        "status": "in-library"
+      },
+      "whenToUse": ["Separating sections of content", "Between list items or menu groups", "Sidebar section breaks", "Form section boundaries"],
+      "whenNotToUse": ["As decoration without semantic meaning", "Between tightly related items (use spacing)", "Multiple consecutive dividers"],
+      "properties": [
+        { "name": "Direction", "type": "enum", "values": ["Horizontal", "Vertical"], "default": "Horizontal" },
+        { "name": "Style", "type": "enum", "values": ["Solid", "Dashed"], "default": "Solid" }
+      ],
+      "tokens": {
+        "stroke": "color/border/default",
+        "strokeWeight": 1
+      },
+      "related": ["Spacer"]
+    },
+    {
+      "name": "Aspect Ratio",
+      "category": "layout",
+      "subcategory": "primitives",
+      "description": "Fixed ratio container for images, videos, and media. Clips content to maintain consistent proportions across different content sizes.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Layout Primitives",
+        "status": "manual"
+      },
+      "whenToUse": ["Image thumbnails in cards and grids", "Video player containers", "Avatar placeholders (1:1)", "Hero banners and media previews"],
+      "whenNotToUse": ["For text content (use Stack/Column)", "When content shouldn't be clipped", "For icons (use icon sizing tokens)"],
+      "properties": [
+        { "name": "Ratio", "type": "enum", "values": ["1:1", "4:3", "16:9", "21:9"], "default": "16:9" }
+      ],
+      "variantDimensions": {
+        "1:1": { "width": 100, "height": 100 },
+        "4:3": { "width": 120, "height": 90 },
+        "16:9": { "width": 160, "height": 90 },
+        "21:9": { "width": 210, "height": 90 }
+      },
+      "tokens": {
+        "fill": "color/bg/brand-subtle",
+        "border": "color/border/default (1px)"
+      },
+      "related": ["Image"]
+    },
+    {
+      "name": "Overlay",
+      "category": "atom",
+      "subcategory": "feedback",
+      "description": "Semi-transparent dark background layer behind modals, drawers, and dialogs. Dims underlying content to focus attention on foreground elements. Always dark regardless of theme mode.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Feedback",
+        "status": "manual"
+      },
+      "whenToUse": ["Behind modals and dialogs to dim background", "Behind drawers and side panels", "Behind bottom sheets on mobile", "Full-screen loading states"],
+      "whenNotToUse": ["As a standalone background", "For inline dimming of sections", "Without a foreground element on top"],
+      "properties": [
+        { "name": "Opacity", "type": "enum", "values": ["40%", "60%", "80%"], "default": "60%" }
+      ],
+      "tokens": {
+        "fill": "color/bg/overlay (aliased to neutral/950 in ALL modes)"
+      },
+      "related": ["Spinner"]
+    },
+    {
+      "name": "Spinner",
+      "category": "atom",
+      "subcategory": "feedback",
+      "description": "Circular loading indicator for async operations. Shows indeterminate progress while content loads. Animated via interactive component states with smart animate transition.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Feedback",
+        "status": "manual"
+      },
+      "whenToUse": ["Button loading states", "Page or section loading indicators", "Inline loading within cards", "Async form submission feedback"],
+      "whenNotToUse": ["For determinate progress (use Progress Bar)", "For skeleton loading (use Skeleton)", "As decorative animation", "When loading time < 300ms"],
+      "properties": [
+        { "name": "Size", "type": "enum", "values": ["sm", "md", "lg", "xl"], "default": "md" },
+        { "name": "Color", "type": "enum", "values": ["Default", "Inverse", "White"], "default": "Default" },
+        { "name": "State", "type": "enum", "values": ["1", "2"], "default": "1" }
+      ],
+      "sizeSpecs": {
+        "sm": { "dimensions": 16, "strokeWeight": 2 },
+        "md": { "dimensions": 24, "strokeWeight": 2 },
+        "lg": { "dimensions": 32, "strokeWeight": 3 },
+        "xl": { "dimensions": 48, "strokeWeight": 4 }
+      },
+      "animation": {
+        "trigger": "AFTER_TIMEOUT",
+        "timeoutSeconds": 1,
+        "transition": "SMART_ANIMATE",
+        "easing": "LINEAR",
+        "durationMs": 1000
+      },
+      "related": ["Progress Bar", "Skeleton", "Shimmer"]
+    },
+    {
+      "name": "Shimmer",
+      "category": "atom",
+      "subcategory": "feedback",
+      "description": "Animated loading placeholder that mimics content shape. Uses gradient sweep animation in code. Static representation in Figma.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Feedback",
+        "status": "manual"
+      },
+      "whenToUse": ["Page or section loading placeholders", "Content-first loading patterns", "Card and list skeleton screens", "Image/avatar placeholder while loading"],
+      "whenNotToUse": ["For determinate progress (use Progress Bar)", "For inline async feedback (use Spinner)", "As permanent placeholder", "When loading time < 300ms"],
+      "properties": [
+        { "name": "Shape", "type": "enum", "values": ["Text", "Rectangle", "Circle"], "default": "Text" },
+        { "name": "Lines", "type": "enum", "values": ["1", "2", "3", "-"], "default": "1" },
+        { "name": "Mode", "type": "enum", "values": ["Default", "Dark"], "default": "Default" }
+      ],
+      "variantDimensions": {
+        "Text-1": { "width": 200, "height": 12, "radius": 4 },
+        "Text-2": { "width": 200, "height": 32, "radius": 4 },
+        "Text-3": { "width": 200, "height": 52, "radius": 4 },
+        "Rectangle": { "width": 200, "height": 80, "radius": 6 },
+        "Circle": { "width": 48, "height": 48, "radius": "full" }
+      },
+      "tokens": {
+        "fillDefault": "color/bg/sunken",
+        "fillDark": "color/bg/medium"
+      },
+      "related": ["Skeleton", "Spinner", "Progress Bar"]
+    },
+    {
+      "name": "Skeleton",
+      "category": "atom",
+      "subcategory": "feedback",
+      "description": "Static loading placeholder that mimics content shape and layout. Unlike Shimmer, Skeleton has no animation. Use for content-first loading where animation would be distracting.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Feedback",
+        "status": "manual"
+      },
+      "whenToUse": ["Page and section loading placeholders", "Card content skeleton (avatar + text lines)", "Table row placeholders", "Form field placeholders during async load"],
+      "whenNotToUse": ["For animated loading feedback (use Shimmer)", "For inline spinners (use Spinner)", "For determinate progress (use Progress Bar)", "As permanent empty state"],
+      "properties": [
+        { "name": "Shape", "type": "enum", "values": ["Text", "Rectangle", "Circle"], "default": "Text" },
+        { "name": "Lines", "type": "enum", "values": ["1", "2", "3", "-"], "default": "1" },
+        { "name": "Mode", "type": "enum", "values": ["Default", "Dark"], "default": "Default" }
+      ],
+      "variantDimensions": {
+        "Text-1": { "width": 240, "height": 14, "radius": 6 },
+        "Text-2": { "width": 240, "height": 36, "radius": 6 },
+        "Text-3": { "width": 240, "height": 58, "radius": 6 },
+        "Rectangle": { "width": 240, "height": 100, "radius": 6 },
+        "Circle": { "width": 48, "height": 48, "radius": "full" }
+      },
+      "tokens": {
+        "fillDefault": "color/bg/sunken",
+        "fillDark": "color/bg/medium"
+      },
+      "related": ["Shimmer", "Spinner", "Progress Bar"]
+    },
+    {
+      "name": "Badge",
+      "category": "atom",
+      "subcategory": "data-display",
+      "description": "Small status indicator showing counts or dot-only presence. Used on navigation items, avatars, and list items. Supports solid and subtle styles across 6 semantic colors.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Feedback",
+        "componentKey": "158e4b6d656a62d4244efc4e5583794044328d3a",
+        "figmaName": "Badges",
+        "status": "in-library"
+      },
+      "whenToUse": ["Notification counts on nav items or icons", "Status indicators on list items or cards", "Unread message counts", "Category/priority labels"],
+      "whenNotToUse": ["For interactive tags (use Tag/Chip)", "For large text labels (use Tag)", "As standalone buttons", "For progress indication (use Progress)"],
+      "properties": [
+        { "name": "Style", "type": "enum", "values": ["Solid", "Subtle"], "default": "Solid" },
+        { "name": "Color", "type": "enum", "values": ["Success", "Warning", "Error", "Info", "Neutral", "Brand"], "default": "Success" },
+        { "name": "Size", "type": "enum", "values": ["sm", "md"], "default": "sm" },
+        { "name": "Type", "type": "enum", "values": ["Dot", "Count"], "default": "Dot" },
+        { "name": "Show Dot", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Icon Left", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Icon Right", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Change Icon Left", "type": "instance swap", "default": "Icon/check-circle (9:234)" },
+        { "name": "Change Icon Right", "type": "instance swap", "default": "Icon/check-circle (9:234)" }
+      ],
+      "sizeSpecs": {
+        "sm": { "dot": "6x6px", "fontSize": 10, "fontWeight": "Medium", "padH": 4, "textStyle": "Label/SM" },
+        "md": { "dot": "8x8px", "fontSize": 12, "fontWeight": "Medium", "padH": 6, "textStyle": "Label/MD" }
+      },
+      "tokens": {
+        "radius": 9999
+      },
+      "related": ["Tag", "Avatar"]
+    },
+    {
+      "name": "Label",
+      "category": "atom",
+      "subcategory": "inputs",
+      "description": "Form field label with optional required indicator, optional text hint, and info icon. Used above or beside input fields to identify their purpose.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Inputs",
+        "status": "manual"
+      },
+      "whenToUse": ["Above form fields to identify inputs", "Show required indicator for mandatory fields", "Add info icon for fields needing explanation"],
+      "whenNotToUse": ["As standalone text (use Body text)", "For section headings (use Heading)", "For inline descriptions (use Helper Text)"],
+      "properties": [
+        { "name": "Size", "type": "enum", "values": ["sm", "md"], "default": "sm" },
+        { "name": "State", "type": "enum", "values": ["Default", "Disabled"], "default": "Default" },
+        { "name": "Show Required", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Show Optional", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Show Info Icon", "type": "boolean", "values": [true, false], "default": false }
+      ],
+      "sizeSpecs": {
+        "sm": { "textStyle": "Label/SM (10px Medium)", "iconSize": 12, "gap": 2 },
+        "md": { "textStyle": "Label/MD (12px Medium)", "iconSize": 14, "gap": 4 }
+      },
+      "tokens": {
+        "labelText": "color/text/primary",
+        "requiredAsterisk": "color/text/error",
+        "optionalText": "color/text/secondary",
+        "infoIcon": "color/icon/secondary",
+        "disabledAll": "color/text/disabled"
+      },
+      "related": ["Helper Text", "Text Input"]
+    },
+    {
+      "name": "Helper Text",
+      "category": "atom",
+      "subcategory": "inputs",
+      "description": "Contextual text below form fields providing hints, validation feedback, or error messages. Color-coded by state with optional status icon.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Inputs",
+        "status": "manual"
+      },
+      "whenToUse": ["Below form inputs for validation feedback", "Show error messages on invalid input", "Provide field-specific hints or constraints"],
+      "whenNotToUse": ["For form labels (use Label)", "For standalone paragraphs (use Body text)", "For global error banners (use Alert)"],
+      "properties": [
+        { "name": "Size", "type": "enum", "values": ["sm", "md"], "default": "sm" },
+        { "name": "State", "type": "enum", "values": ["Default", "Error", "Success", "Warning"], "default": "Default" },
+        { "name": "Show Icon", "type": "boolean", "values": [true, false], "default": false }
+      ],
+      "sizeSpecs": {
+        "sm": { "textStyle": "Caption (10px Regular)", "iconSize": 12, "gap": 2 },
+        "md": { "textStyle": "Body/SM (12px Regular)", "iconSize": 14, "gap": 4 }
+      },
+      "stateIcons": {
+        "Default": "Icon/info-circle (9:288)",
+        "Error": "Icon/alert-circle (9:120)",
+        "Success": "Icon/check-circle (9:234)",
+        "Warning": "Icon/alert-triangle (9:124)"
+      },
+      "related": ["Label", "Text Input"]
+    },
+    {
+      "name": "Link",
+      "category": "atom",
+      "subcategory": "navigation",
+      "description": "Navigational text element for in-page or external links. Always uses standard blue color regardless of theme (not brand color). Supports 5 interaction states and optional icons.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Inputs",
+        "componentKey": "15293c62ec6b1e82d6635302c34f128a77aa14f7",
+        "figmaName": "Link",
+        "status": "in-library"
+      },
+      "whenToUse": ["Navigation to other pages or sections", "External links with trailing arrow icon", "Inline links within body text paragraphs"],
+      "whenNotToUse": ["For actions that change data (use Button)", "For primary calls to action (use Button)", "For non-navigational toggles (use Toggle)"],
+      "properties": [
+        { "name": "Size", "type": "enum", "values": ["sm", "md", "lg"], "default": "sm" },
+        { "name": "State", "type": "enum", "values": ["Default", "Hover", "Pressed", "Focused", "Disabled"], "default": "Default" },
+        { "name": "Icon Left", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Icon Right", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Change Icon Left", "type": "instance swap", "default": "Icon/star-02 (9:472)" },
+        { "name": "Change Icon Right", "type": "instance swap", "default": "Icon/star-02 (9:472)" }
+      ],
+      "sizeSpecs": {
+        "sm": { "textStyle": "Body/SM (12px Regular)", "iconSize": 12, "gap": 2 },
+        "md": { "textStyle": "Body/MD (14px Regular)", "iconSize": 14, "gap": 4 },
+        "lg": { "textStyle": "Body/LG (16px Regular)", "iconSize": 16, "gap": 4 }
+      },
+      "stateColors": {
+        "Default": "color/text/link",
+        "Hover": "color/text/link-hover (underlined)",
+        "Pressed": "color/text/link-pressed (underlined)",
+        "Focused": "color/text/link (underlined, 2px focus ring)",
+        "Disabled": "color/text/link-disabled"
+      },
+      "related": ["Button"]
+    },
+    {
+      "name": "Kbd",
+      "category": "atom",
+      "subcategory": "data-display",
+      "description": "Keyboard key indicator displaying shortcut keys. Uses Roboto Mono for consistent monospace rendering. Styled as a subtle raised key with border and bottom shadow.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Inputs",
+        "status": "manual"
+      },
+      "whenToUse": ["Menu item keyboard shortcuts", "Tooltip shortcut hints", "Documentation showing key combos", "Command palette shortcut displays"],
+      "whenNotToUse": ["For styled text labels (use Badge/Tag)", "For button labels (use Button)", "For non-keyboard key content"],
+      "properties": [
+        { "name": "Size", "type": "enum", "values": ["sm", "md"], "default": "sm" }
+      ],
+      "sizeSpecs": {
+        "sm": { "textStyle": "Code/SM (10px Regular)", "font": "Roboto Mono", "padH": 4, "padV": 2, "minWidth": 20, "radius": 4 },
+        "md": { "textStyle": "Code/MD (12px Regular)", "font": "Roboto Mono", "padH": 6, "padV": 2, "minWidth": 24, "radius": 4 }
+      },
+      "tokens": {
+        "background": "color/bg/raised",
+        "text": "color/text/primary",
+        "border": "color/border/default (1px all sides)",
+        "bottomShadow": "color/border/strong (1px bottom)"
+      },
+      "related": ["Tooltip", "Badge"]
+    },
+    {
+      "name": "Tooltip",
+      "category": "atom",
+      "subcategory": "feedback",
+      "description": "Contextual popup providing additional information on hover or focus. Dark background with white text for high contrast. Supports optional heading, icon, and link.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Inputs",
+        "componentKey": "ee9488a518bfa321bec5233b512327004534c226",
+        "figmaName": "Tooltip",
+        "status": "in-library"
+      },
+      "whenToUse": ["Icon-only button labels", "Truncated text full display", "Feature explanations on hover", "Keyboard shortcut hints"],
+      "whenNotToUse": ["For interactive content (use Popover)", "For error messages (use Helper Text)", "For critical info users must see (use Alert)", "For click-to-dismiss content (use Popover)"],
+      "properties": [
+        { "name": "Position", "type": "enum", "values": ["Top", "Bottom", "Left", "Right"], "default": "Top" },
+        { "name": "Show Heading", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Show Icon", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Show Link", "type": "boolean", "values": [true, false], "default": false }
+      ],
+      "sizeSpecs": {
+        "all": { "minWidth": 120, "radius": 6, "padH": 12, "padV": 8, "itemSpacing": 4, "arrowSize": "12x6px" }
+      },
+      "tokens": {
+        "background": "color/bg/tooltip (VariableID:201:2)",
+        "headingText": "white primitive",
+        "bodyText": "white primitive",
+        "iconStroke": "white primitive",
+        "linkText": "color/text/link",
+        "arrowFill": "same as background"
+      },
+      "textStyles": {
+        "heading": "Heading/XS (14px SemiBold)",
+        "body": "Body/SM (12px Regular)",
+        "link": "Body/SM (12px Regular, underlined)"
+      },
+      "related": ["Kbd", "Link"]
+    },
+    {
+      "name": "Button",
+      "category": "atom",
+      "subcategory": "buttons",
+      "description": "Primary action trigger with 4 visual types, 4 colors, 5 sizes, and 4 interaction states. Part of a 4-component button system (Button, Split Button, Icon Button, Nav Button).",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Buttons",
+        "componentKey": "1e04478db049373eb096060a60ee7bbbc4da4e9a",
+        "figmaName": "Buttons",
+        "status": "in-library"
+      },
+      "whenToUse": ["Primary page actions", "Form submissions", "Dialog confirmations", "CTA elements"],
+      "whenNotToUse": ["Navigation (use Link)", "Toggle state (use Toggle)", "Icon-only actions (use Icon Button)"],
+      "properties": [
+        { "name": "Type", "type": "variant", "values": ["Primary", "Secondary", "Outline", "Ghost"], "default": "Primary" },
+        { "name": "Color", "type": "variant", "values": ["Primary", "Danger", "Success", "Neutral"], "default": "Primary" },
+        { "name": "State", "type": "variant", "values": ["Default", "Hover", "Pressed", "Disabled"], "default": "Default" },
+        { "name": "Size", "type": "variant", "values": ["XS", "Small", "Medium", "Default", "Large"], "default": "Default" },
+        { "name": "Icon Left", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Icon Right", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Change Icon Left", "type": "instance swap", "default": "Icon/plus (9:269)" },
+        { "name": "Change Icon Right", "type": "instance swap", "default": "Icon/plus (9:269)" }
+      ],
+      "sizeSpecs": {
+        "XS": { "padV": 4, "padH": 4, "fontSize": 12, "lineHeight": 16, "iconSize": 12, "gap": 2, "radius": 4 },
+        "Small": { "padV": 4, "padH": 6, "fontSize": 14, "lineHeight": 20, "iconSize": 14, "gap": 2, "radius": 4 },
+        "Medium": { "padV": 6, "padH": 8, "fontSize": 14, "lineHeight": 20, "iconSize": 14, "gap": 4, "radius": 6 },
+        "Default": { "padV": 8, "padH": 10, "fontSize": 14, "lineHeight": 20, "iconSize": 16, "gap": 4, "radius": 6 },
+        "Large": { "padV": 8, "padH": 12, "fontSize": 16, "lineHeight": 24, "iconSize": 22, "gap": 6, "radius": 6 }
+      },
+      "colorVariables": {
+        "Primary": { "bg": "color/interactive/default", "bgHover": "color/interactive/hover", "bgPressed": "color/interactive/pressed", "bgDisabled": "color/btn/brand/disabled", "text": "color/text/on-brand" },
+        "Danger": { "bg": "color/btn/danger/default", "bgHover": "color/btn/danger/hover", "bgPressed": "color/btn/danger/pressed", "bgDisabled": "color/btn/danger/disabled", "text": "color/btn/danger/text" },
+        "Success": { "bg": "color/btn/success/default", "bgHover": "color/btn/success/hover", "bgPressed": "color/btn/success/pressed", "bgDisabled": "color/btn/success/disabled", "text": "color/btn/success/text" },
+        "Neutral": { "bg": "color/btn/neutral/bg", "bgHover": "color/btn/neutral/bg-hover", "bgPressed": "color/btn/neutral/bg-pressed", "bgDisabled": "color/btn/neutral/bg-disabled", "text": "color/text/primary" }
+      },
+      "related": ["Split Button", "Icon Button", "Nav Button"]
+    },
+    {
+      "name": "Split Button",
+      "category": "atom",
+      "subcategory": "buttons",
+      "description": "Two-zone button with primary action (left) and dropdown trigger (right). Two separate hover zones with independent states. Same sizing as Button.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Buttons",
+        "status": "manual",
+        "notes": "May be a variant inside Buttons component set"
+      },
+      "whenToUse": ["Primary action with secondary options", "Send with delivery options", "Save with format options"],
+      "whenNotToUse": ["Simple single action (use Button)", "Independent actions (use two Buttons)"],
+      "properties": [
+        { "name": "Type", "type": "variant", "values": ["Primary", "Secondary", "Outline", "Ghost"], "default": "Primary" },
+        { "name": "Color", "type": "variant", "values": ["Primary", "Danger", "Success", "Neutral"], "default": "Primary" },
+        { "name": "State", "type": "variant", "values": ["Default", "Hover", "Pressed", "Disabled"], "default": "Default" },
+        { "name": "Size", "type": "variant", "values": ["XS", "Small", "Medium", "Default", "Large"], "default": "Default" },
+        { "name": "Icon", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Change Icon", "type": "instance swap", "default": "Icon/plus (9:269)" },
+        { "name": "Change Arrow", "type": "instance swap", "default": "Icon/chevron-down (9:300)" }
+      ],
+      "sizeSpecs": "Same as Button",
+      "related": ["Button", "Icon Button"]
+    },
+    {
+      "name": "Icon Button",
+      "category": "atom",
+      "subcategory": "buttons",
+      "description": "Icon-only button with no text. Same variant properties and sizing as Button. Used for compact action triggers.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Buttons",
+        "status": "manual",
+        "notes": "May be a variant inside Buttons component set"
+      },
+      "whenToUse": ["Toolbar actions", "Compact controls (close, minimize)", "Table row actions", "Icon-only affordances with tooltips"],
+      "whenNotToUse": ["When text label is needed (use Button)", "When action is unclear without text"],
+      "properties": [
+        { "name": "Type", "type": "variant", "values": ["Primary", "Secondary", "Outline", "Ghost"], "default": "Primary" },
+        { "name": "Color", "type": "variant", "values": ["Primary", "Danger", "Success", "Neutral"], "default": "Primary" },
+        { "name": "State", "type": "variant", "values": ["Default", "Hover", "Pressed", "Disabled"], "default": "Default" },
+        { "name": "Size", "type": "variant", "values": ["XS", "Small", "Medium", "Default", "Large"], "default": "Default" },
+        { "name": "Change Icon", "type": "instance swap", "default": "Icon/plus (9:269)" }
+      ],
+      "sizeSpecs": "Same as Button",
+      "related": ["Button", "Split Button", "Nav Button"]
+    },
+    {
+      "name": "Nav Button",
+      "category": "atom",
+      "subcategory": "buttons",
+      "description": "Navigation-specific button with Round and Square shape options. Simplified variant model focused on navigation use cases.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Buttons",
+        "status": "manual",
+        "notes": "May be a variant inside Buttons component set"
+      },
+      "whenToUse": ["Navigation arrows (prev/next)", "Back/forward controls", "Carousel navigation"],
+      "whenNotToUse": ["For primary actions (use Button)", "For complex dropdowns (use Split Button)"],
+      "properties": [
+        { "name": "Shape", "type": "variant", "values": ["Round", "Square"], "default": "Round" },
+        { "name": "State", "type": "variant", "values": ["Default", "Hover", "Pressed", "Disabled"], "default": "Default" },
+        { "name": "Size", "type": "variant", "values": ["Small", "Medium", "Default", "Large"], "default": "Default" },
+        { "name": "Change Icon", "type": "instance swap", "default": "Icon/plus (9:269)" }
+      ],
+      "sizeSpecs": "Same as Button (minus XS)",
+      "related": ["Button", "Icon Button"]
+    },
+    {
+      "name": "Text Input",
+      "category": "atom",
+      "subcategory": "inputs",
+      "description": "Single-line text field for capturing user input. 5 sizes matching button heights, 5 interaction states, optional leading/trailing icons. Composes Label and Helper Text.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Inputs",
+        "componentKey": "411f52c2e02879cd0cd7a259933325c7cbc04b5c",
+        "figmaName": "Text Box",
+        "status": "in-library"
+      },
+      "whenToUse": ["Short text: names, emails, search queries, URLs", "Prefix icons to indicate type (search, email)", "Suffix icons for actions (clear, copy)"],
+      "whenNotToUse": ["Multiline text (use Textarea)", "Passwords (use Password Input)", "Numbers with increment (use Number Input)"],
+      "properties": [
+        { "name": "Size", "type": "variant", "values": ["XS", "Small", "Medium", "Default", "Large"], "default": "Default" },
+        { "name": "State", "type": "variant", "values": ["Default", "Hover", "Pressed", "Active", "Error"], "default": "Default" },
+        { "name": "Content", "type": "variant", "values": ["Placeholder", "Filled"], "default": "Placeholder" },
+        { "name": "Has Label", "type": "boolean", "values": [true, false], "default": true },
+        { "name": "Has Helper", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Icon Left", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Icon Right", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Change Icon Left", "type": "instance swap", "default": "Icon/mail-01 (9:475)" },
+        { "name": "Change Icon Right", "type": "instance swap", "default": "Icon/plus (9:269)" }
+      ],
+      "sizeSpecs": {
+        "XS": { "height": 24, "padV": 4, "padH": 4, "fontSize": 12, "lineHeight": 16, "iconSize": 12, "gap": 2, "radius": 4 },
+        "Small": { "height": 28, "padV": 4, "padH": 6, "fontSize": 14, "lineHeight": 20, "iconSize": 14, "gap": 2, "radius": 4 },
+        "Medium": { "height": 32, "padV": 6, "padH": 8, "fontSize": 14, "lineHeight": 20, "iconSize": 14, "gap": 4, "radius": 6 },
+        "Default": { "height": 36, "padV": 8, "padH": 10, "fontSize": 14, "lineHeight": 20, "iconSize": 16, "gap": 4, "radius": 6 },
+        "Large": { "height": 40, "padV": 8, "padH": 12, "fontSize": 16, "lineHeight": 24, "iconSize": 22, "gap": 6, "radius": 6 }
+      },
+      "stateColors": {
+        "Default": { "fieldBg": "color/bg/surface", "border": "color/border/strong" },
+        "Hover": { "fieldBg": "color/bg/sunken", "border": "color/border/hover" },
+        "Pressed": { "fieldBg": "color/bg/sunken", "border": "color/border/hover" },
+        "Active": { "fieldBg": "color/bg/sunken", "border": "color/text/primary (black)" },
+        "Error": { "fieldBg": "color/bg/error-subtle", "border": "color/border/error" }
+      },
+      "composedComponents": {
+        "Label": "152:30",
+        "Helper Text": "154:24"
+      },
+      "related": ["Password Input", "Number Input", "Textarea", "Select"]
+    },
+    {
+      "name": "Password Input",
+      "category": "atom",
+      "subcategory": "inputs",
+      "description": "Password field with masked input and show/hide visibility toggle. Same sizing and state model as Text Input.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Inputs",
+        "status": "manual",
+        "notes": "May be a variant inside Text Box"
+      },
+      "whenToUse": ["Password entry fields", "PIN entry", "Secure text input"],
+      "whenNotToUse": ["Regular text input (use Text Input)", "Visible text that needs to stay visible"],
+      "properties": [
+        { "name": "Size", "type": "variant", "values": ["XS", "Small", "Medium", "Default", "Large"], "default": "Default" },
+        { "name": "State", "type": "variant", "values": ["Default", "Hover", "Pressed", "Active", "Error"], "default": "Default" },
+        { "name": "Content", "type": "variant", "values": ["Placeholder", "Filled"], "default": "Placeholder" },
+        { "name": "Has Label", "type": "boolean", "values": [true, false], "default": true },
+        { "name": "Has Helper", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Icon Left", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Change Icon Left", "type": "instance swap", "default": "Icon/lock-01 (9:545)" },
+        { "name": "Change Toggle Icon", "type": "instance swap", "default": "Icon/eye-off (9:282)" }
+      ],
+      "sizeSpecs": "Same as Text Input",
+      "keyDifferences": ["Eye-off toggle always visible (not optional)", "Filled content shows dots instead of text", "Lock icon as default left icon"],
+      "related": ["Text Input", "Button"]
+    },
+    {
+      "name": "Number Input",
+      "category": "atom",
+      "subcategory": "inputs",
+      "description": "Numeric input field with two type options: Stepper (chevron up/down on right) and Button (minus/plus icon buttons flanking the field).",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Inputs",
+        "status": "manual",
+        "notes": "May be a variant inside Text Box"
+      },
+      "whenToUse": ["Quantity selectors", "Numeric value entry with increment/decrement", "Settings with numeric ranges"],
+      "whenNotToUse": ["Text input (use Text Input)", "Currency amounts without stepper", "Large number entry (use Text Input with validation)"],
+      "properties": [
+        { "name": "Type", "type": "variant", "values": ["Stepper", "Button"], "default": "Stepper" },
+        { "name": "Size", "type": "variant", "values": ["XS", "Small", "Medium", "Default", "Large"], "default": "Default" },
+        { "name": "State", "type": "variant", "values": ["Default", "Hover", "Pressed", "Active", "Error"], "default": "Default" },
+        { "name": "Content", "type": "variant", "values": ["Placeholder", "Filled"], "default": "Placeholder" },
+        { "name": "Has Label", "type": "boolean", "values": [true, false], "default": true },
+        { "name": "Has Helper", "type": "boolean", "values": [true, false], "default": false }
+      ],
+      "sizeSpecs": "Same as Text Input",
+      "typeDetails": {
+        "Stepper": "Chevron-up/down stacked vertically on right. Icon sizes: XS/Small=10px, Medium/Default=12px, Large=14px.",
+        "Button": "Minus icon button (left) + field + Plus icon button (right), using Icon Button Secondary Neutral (350:722). Text center-aligned."
+      },
+      "related": ["Text Input", "Button", "Icon Button"]
+    },
+    {
+      "name": "Textarea",
+      "category": "atom",
+      "subcategory": "inputs",
+      "description": "Multiline text input for longer-form content. 3 sizes with minimum heights, character count display, and same state model as other inputs.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Inputs",
+        "status": "manual"
+      },
+      "whenToUse": ["Long-form text: descriptions, comments, notes", "Feedback forms", "Bio/about sections"],
+      "whenNotToUse": ["Single-line input (use Text Input)", "Rich text editing (use rich text editor)", "Code input (use code editor)"],
+      "properties": [
+        { "name": "Size", "type": "variant", "values": ["Small", "Default", "Large"], "default": "Default" },
+        { "name": "State", "type": "variant", "values": ["Default", "Hover", "Pressed", "Active", "Error"], "default": "Default" },
+        { "name": "Content", "type": "variant", "values": ["Placeholder", "Filled"], "default": "Placeholder" },
+        { "name": "Has Label", "type": "boolean", "values": [true, false], "default": true },
+        { "name": "Has Helper", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Show Count", "type": "boolean", "values": [true, false], "default": true }
+      ],
+      "sizeSpecs": {
+        "Small": { "minHeight": 72, "padV": 6, "padH": 8, "fontSize": 12, "lineHeight": 18, "radius": 4 },
+        "Default": { "minHeight": 88, "padV": 8, "padH": 10, "fontSize": 14, "lineHeight": 20, "radius": 6 },
+        "Large": { "minHeight": 108, "padV": 10, "padH": 12, "fontSize": 16, "lineHeight": 24, "radius": 6 }
+      },
+      "keyDifferences": ["Vertical field layout (not horizontal)", "Fixed minimum height per size", "Uses Zoho Puvi Regular (not Medium) for body text", "Character count row below field", "No icon options", "3 sizes instead of 5"],
+      "related": ["Text Input", "Label", "Helper Text"]
+    },
+    {
+      "name": "Toggle",
+      "category": "atom",
+      "subcategory": "selection",
+      "description": "Binary on/off control. Pill-shaped track with circular thumb. 2 sizes, label hidden by default. Custom variable toggle-thumb-off handles dark mode thumb visibility.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Selection",
+        "componentKey": "35016f9e4ebd41a83c952fa04c3c47a1f36d0ec4",
+        "figmaName": "Toggle button",
+        "status": "in-library"
+      },
+      "whenToUse": ["Feature on/off toggles", "Settings switches", "Quick enable/disable controls"],
+      "whenNotToUse": ["Multiple selection (use Checkbox)", "Single selection from options (use Radio)", "Action trigger (use Button)"],
+      "properties": [
+        { "name": "Size", "type": "variant", "values": ["Small", "Default"], "default": "Default" },
+        { "name": "State", "type": "variant", "values": ["Off", "On"], "default": "Off" },
+        { "name": "Interaction", "type": "variant", "values": ["Default", "Hover", "Focus", "Disabled"], "default": "Default" },
+        { "name": "Show Label", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Show Description", "type": "boolean", "values": [true, false], "default": false }
+      ],
+      "sizeSpecs": {
+        "Small": { "trackW": 32, "trackH": 18, "thumb": 14, "cornerRadius": 18 },
+        "Default": { "trackW": 40, "trackH": 22, "thumb": 18, "cornerRadius": 22 }
+      },
+      "customVariables": {
+        "toggle-thumb-off": { "variableId": "474:73", "lightModes": "neutral/300", "darkModes": "white", "purpose": "Dark mode thumb visibility" }
+      },
+      "related": ["Checkbox", "Radio"]
+    },
+    {
+      "name": "Tag",
+      "category": "atom",
+      "subcategory": "selection",
+      "description": "Compact labels for categorization, filtering, and selections. Used standalone or composed inside Select/Dropdown for multi-select options.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Selection",
+        "componentKey": "69274b61923231a45f559e59bed169c121d9bc45",
+        "figmaName": "Chip",
+        "status": "in-library"
+      },
+      "whenToUse": ["Category labels on cards", "Filter chips", "Multi-select values", "Topic/tag clouds"],
+      "whenNotToUse": ["Status indicators (use Badge)", "Action buttons (use Button)", "Navigation (use Link)"],
+      "properties": [
+        { "name": "Color", "type": "variant", "values": ["Neutral", "Brand", "Success", "Warning", "Error", "Info"], "default": "Neutral" },
+        { "name": "Size", "type": "variant", "values": ["Small", "Default"], "default": "Default" },
+        { "name": "Removable", "type": "variant", "values": ["true", "false"], "default": "false" },
+        { "name": "Show Icon Left", "type": "boolean", "values": [true, false], "default": false }
+      ],
+      "sizeSpecs": {
+        "Small": { "padV": 4, "padH": 8, "fontSize": 12, "lineHeight": 16, "iconSize": 10, "gap": 4, "radius": 4 },
+        "Default": { "padV": 4, "padH": 10, "fontSize": 14, "lineHeight": 20, "iconSize": 12, "gap": 4, "radius": 4 }
+      },
+      "colorMap": {
+        "Neutral": { "bg": "bg/sunken", "text": "text/primary" },
+        "Brand": { "bg": "bg/brand-subtle", "text": "interactive/default" },
+        "Success": { "bg": "bg/success-subtle", "text": "text/success" },
+        "Warning": { "bg": "bg/warning-subtle", "text": "text/warning" },
+        "Error": { "bg": "bg/error-subtle", "text": "text/error" },
+        "Info": { "bg": "bg/info-subtle", "text": "text/info" }
+      },
+      "related": ["Badge", "Select"]
+    },
+    {
+      "name": "Select",
+      "category": "atom",
+      "subcategory": "inputs",
+      "description": "Dropdown selector for single or multi-select options. Uses same sizing and colors as Text Input. 4 content types: placeholder, single selected, multi-select chips with +3more, and comma-separated.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Inputs",
+        "componentKey": "021a6653c106f277f2481ee722ed93d4137dc3a6",
+        "figmaName": "Drop down",
+        "status": "in-library"
+      },
+      "whenToUse": ["Choosing from predefined options", "Multi-select with chip display", "Form fields with dropdown options"],
+      "whenNotToUse": ["Free text input (use Text Input)", "Binary choice (use Toggle)", "Few options visible (use Radio group)"],
+      "properties": [
+        { "name": "Size", "type": "variant", "values": ["Default", "XS", "Small", "Medium", "Large"], "default": "Default" },
+        { "name": "State", "type": "variant", "values": ["Default", "Hover", "Active", "Disabled", "Error"], "default": "Default" },
+        { "name": "Content", "type": "variant", "values": ["Placeholder", "Selected", "Multi", "Comma"], "default": "Placeholder" },
+        { "name": "Has Label", "type": "boolean", "values": [true, false], "default": true },
+        { "name": "Has Helper", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Icon Left", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Change Icon Left", "type": "instance swap", "default": "mail icon" }
+      ],
+      "sizeSpecs": "Same as Text Input",
+      "contentTypes": {
+        "Placeholder": "Select option text in placeholder color",
+        "Selected": "Option selected in primary text, single value",
+        "Multi": "Tag/Chip instances (Neutral, Removable) + +3more overflow text",
+        "Comma": "Comma-separated text with textTruncation=ENDING"
+      },
+      "composedComponents": {
+        "Label": "152:30",
+        "Helper Text": "154:24",
+        "Tag": "448:110 (in Multi content type)"
+      },
+      "related": ["Text Input", "Tag", "Label", "Helper Text"]
+    },
+    {
+      "name": "Checkbox",
+      "category": "atom",
+      "subcategory": "selection",
+      "description": "Binary or tri-state selection control. Supports unchecked, checked, and indeterminate states with optional label and description text. Single size (16x16 box).",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Selection",
+        "componentKey": "f6f4ae2426b2e9d6c3ee7fc3727e06054b0f5d58",
+        "figmaName": "Check Box",
+        "status": "in-library"
+      },
+      "whenToUse": ["Multiple selection from options", "Terms acceptance", "Feature toggles in settings lists", "Select all / partial select"],
+      "whenNotToUse": ["Single selection (use Radio)", "Binary on/off (use Toggle)", "Few exclusive options (use Radio group)"],
+      "properties": [
+        { "name": "Checked", "type": "variant", "values": ["Unchecked", "Checked", "Indeterminate"], "default": "Unchecked" },
+        { "name": "State", "type": "variant", "values": ["Default", "Hover", "Pressed", "Disabled"], "default": "Default" },
+        { "name": "Show Label", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Show Description", "type": "boolean", "values": [true, false], "default": false }
+      ],
+      "sizeSpecs": {
+        "all": { "box": 16, "radius": 4, "gap": 6, "checkIcon": 12, "labelStyle": "14/20 Medium", "descStyle": "12/16 Regular" }
+      },
+      "stateColors": {
+        "Default": { "uncheckedFill": "bg/surface", "uncheckedStroke": "border/strong", "checkedFill": "interactive/default", "icon": "text/on-brand" },
+        "Hover": { "uncheckedFill": "bg/sunken", "uncheckedStroke": "border/hover", "checkedFill": "interactive/hover", "icon": "text/on-brand" },
+        "Pressed": { "uncheckedFill": "bg/sunken", "uncheckedStroke": "border/focus", "checkedFill": "interactive/pressed", "icon": "text/on-brand" },
+        "Disabled": { "uncheckedFill": "bg/medium", "uncheckedStroke": "border/default", "checkedFill": "interactive/disabled", "icon": "text/on-brand" }
+      },
+      "icons": {
+        "Checked": "Icon/check (9:233)",
+        "Indeterminate": "Icon/minus (9:265)"
+      },
+      "related": ["Radio", "Toggle"]
+    },
+    {
+      "name": "Radio",
+      "category": "atom",
+      "subcategory": "selection",
+      "description": "Single selection control for mutually exclusive options. Circular indicator with white dot when selected, optional label and description text. Single size (16x16 ring).",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Selection",
+        "componentKey": "be8763a756a299944aba5cc764d46ad6cec24bdb",
+        "figmaName": "Radio button",
+        "status": "in-library"
+      },
+      "whenToUse": ["Mutually exclusive options (2-5 choices)", "Settings with clear alternatives", "Form fields requiring one selection"],
+      "whenNotToUse": ["Multiple selection (use Checkbox)", "Many options (use Select dropdown)", "Binary on/off (use Toggle)"],
+      "properties": [
+        { "name": "Selected", "type": "variant", "values": ["Off", "On"], "default": "Off" },
+        { "name": "State", "type": "variant", "values": ["Default", "Hover", "Pressed", "Disabled"], "default": "Default" },
+        { "name": "Show Label", "type": "boolean", "values": [true, false], "default": false },
+        { "name": "Show Description", "type": "boolean", "values": [true, false], "default": false }
+      ],
+      "sizeSpecs": {
+        "all": { "ring": 16, "innerDot": 8, "radius": 8, "gap": 6, "labelStyle": "14/20 Medium", "descStyle": "12/16 Regular" }
+      },
+      "stateColors": {
+        "Default": { "offFill": "bg/surface", "offStroke": "border/strong", "onFill": "interactive/default", "dot": "text/on-brand" },
+        "Hover": { "offFill": "bg/sunken", "offStroke": "border/hover", "onFill": "interactive/hover", "dot": "text/on-brand" },
+        "Pressed": { "offFill": "bg/sunken", "offStroke": "border/focus", "onFill": "interactive/pressed", "dot": "text/on-brand" },
+        "Disabled": { "offFill": "bg/medium", "offStroke": "border/default", "onFill": "interactive/disabled", "dot": "text/on-brand" }
+      },
+      "related": ["Checkbox", "Toggle", "Select"]
+    },
+    {
+      "name": "Avatar",
+      "category": "atom",
+      "subcategory": "data-display",
+      "description": "Circular user representation showing image placeholder, initials, or icon. 3 sizes with optional green status indicator for online presence.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Data Display",
+        "componentKey": "928239e0d3b1666d7ab0d26c42c71ab8a2fd3233",
+        "figmaName": "Avatar",
+        "status": "in-library"
+      },
+      "whenToUse": ["User profile pictures", "Comment author avatars", "Team member lists", "Chat message senders"],
+      "whenNotToUse": ["Product/brand logos (use Image)", "Decorative thumbnails (use Image)", "Status indicators alone (use Badge)"],
+      "properties": [
+        { "name": "Size", "type": "variant", "values": ["XS", "Small", "Default"], "default": "Default" },
+        { "name": "Type", "type": "variant", "values": ["Image", "Initials", "Icon"], "default": "Image" },
+        { "name": "Show Status", "type": "boolean", "values": [true, false], "default": false }
+      ],
+      "sizeSpecs": {
+        "XS": { "circle": 24, "fontSize": "10/14 SemiBold", "iconSize": 12, "statusDot": 8 },
+        "Small": { "circle": 32, "fontSize": "12/16 SemiBold", "iconSize": 14, "statusDot": 10 },
+        "Default": { "circle": 40, "fontSize": "14/20 SemiBold", "iconSize": 16, "statusDot": 12 }
+      },
+      "tokens": {
+        "imagePlaceholderBg": "bg/brand-subtle",
+        "initialsBg": "interactive/default",
+        "initialsText": "text/on-brand",
+        "iconBg": "bg/medium",
+        "iconStroke": "icon/primary",
+        "statusDot": "text/success",
+        "statusBorder": "bg/surface (2px stroke)"
+      },
+      "related": ["Badge", "Image"]
+    },
+    {
+      "name": "Image",
+      "category": "atom",
+      "subcategory": "data-display",
+      "description": "Aspect-ratio container for displaying images with loading placeholder, loaded, and error states. 3 ratios, 6px radius, clips content.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Data Display",
+        "status": "manual"
+      },
+      "whenToUse": ["Content images in cards", "Product photos", "Gallery thumbnails", "Media preview"],
+      "whenNotToUse": ["User avatars (use Avatar)", "Decorative backgrounds", "Icons (use Icon component)"],
+      "properties": [
+        { "name": "State", "type": "variant", "values": ["Placeholder", "Loaded", "Error"], "default": "Placeholder" },
+        { "name": "Ratio", "type": "variant", "values": ["1:1", "4:3", "16:9"], "default": "4:3" }
+      ],
+      "sizeSpecs": {
+        "1:1": { "width": 200, "height": 200 },
+        "4:3": { "width": 200, "height": 150 },
+        "16:9": { "width": 200, "height": 112 }
+      },
+      "stateColors": {
+        "Placeholder": { "fill": "bg/sunken" },
+        "Loaded": { "fill": "bg/medium" },
+        "Error": { "fill": "bg/error-subtle", "border": "border/default (1px)", "text": "text/error" }
+      },
+      "tokens": {
+        "radius": 6
+      },
+      "related": ["Avatar", "Aspect Ratio"]
+    },
+    {
+      "name": "Progress Bar",
+      "category": "atom",
+      "subcategory": "feedback",
+      "description": "Horizontal bar indicating task completion or loading state. Supports determinate (percentage fill) and indeterminate (animated sliding bar in code). 3 track heights, 4 colors.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Feedback",
+        "status": "manual"
+      },
+      "whenToUse": ["File upload progress", "Task completion tracking", "Loading bars", "Step progress indication"],
+      "whenNotToUse": ["Indeterminate loading (consider Spinner)", "Circular display (use Progress Circle)", "Very short operations"],
+      "properties": [
+        { "name": "Type", "type": "variant", "values": ["Determinate", "Indeterminate"], "default": "Determinate" },
+        { "name": "Size", "type": "variant", "values": ["Small", "Default", "Large"], "default": "Default" },
+        { "name": "Color", "type": "variant", "values": ["Brand", "Success", "Warning", "Danger"], "default": "Brand" }
+      ],
+      "sizeSpecs": {
+        "Small": { "trackHeight": 4, "radius": 2 },
+        "Default": { "trackHeight": 8, "radius": 4 },
+        "Large": { "trackHeight": 12, "radius": 6 }
+      },
+      "colorMap": {
+        "Brand": { "bar": "interactive/default", "track": "bg/sunken" },
+        "Success": { "bar": "bg/success", "track": "bg/sunken" },
+        "Warning": { "bar": "bg/warning", "track": "bg/sunken" },
+        "Danger": { "bar": "bg/error", "track": "bg/sunken" }
+      },
+      "related": ["Progress Circle", "Spinner"]
+    },
+    {
+      "name": "Progress Circle",
+      "category": "atom",
+      "subcategory": "feedback",
+      "description": "Circular progress indicator for task completion or loading. Uses stroke-based ring with arc progress. 3 sizes, optional center percentage label.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Feedback",
+        "status": "manual"
+      },
+      "whenToUse": ["Compact progress display", "Dashboard widgets", "Circular completion metrics", "Profile completion"],
+      "whenNotToUse": ["Long horizontal bars (use Progress Bar)", "Indeterminate loading (use Spinner)", "Very small contexts"],
+      "properties": [
+        { "name": "Type", "type": "variant", "values": ["Determinate", "Indeterminate"], "default": "Determinate" },
+        { "name": "Size", "type": "variant", "values": ["Small", "Default", "Large"], "default": "Default" },
+        { "name": "Show Label", "type": "boolean", "values": [true, false], "default": false }
+      ],
+      "sizeSpecs": {
+        "Small": { "diameter": 32, "strokeWidth": 3, "fontSize": null },
+        "Default": { "diameter": 48, "strokeWidth": 4, "fontSize": "14/20 SemiBold" },
+        "Large": { "diameter": 64, "strokeWidth": 5, "fontSize": "16/24 SemiBold" }
+      },
+      "tokens": {
+        "trackStroke": "bg/sunken",
+        "arcStroke": "interactive/default",
+        "labelText": "text/primary"
+      },
+      "related": ["Progress Bar", "Spinner"]
+    },
+    {
+      "name": "Rating",
+      "category": "atom",
+      "subcategory": "data-display",
+      "description": "Star-based rating display for user reviews and feedback. 5 stars with filled/empty states. Interactive selection handled in code.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "page": "Atoms - Data Display",
+        "status": "manual"
+      },
+      "whenToUse": ["Product reviews", "Service ratings", "User feedback display", "Quality indicators"],
+      "whenNotToUse": ["Binary feedback (use Toggle/Checkbox)", "Numeric scores without visual stars", "Progress indication (use Progress)"],
+      "properties": [
+        { "name": "Size", "type": "variant", "values": ["Small", "Default", "Large"], "default": "Default" },
+        { "name": "Value", "type": "variant", "values": ["0", "1", "2", "3", "4", "5"], "default": "0" }
+      ],
+      "sizeSpecs": {
+        "Small": { "starSize": 16, "gap": 2 },
+        "Default": { "starSize": 20, "gap": 4 },
+        "Large": { "starSize": 24, "gap": 4 }
+      },
+      "tokens": {
+        "filledStar": "bg/warning (yellow/gold)",
+        "emptyStar": "bg/medium (grey)"
+      },
+      "starShape": { "nodeType": "STAR", "pointCount": 5, "innerRadius": 0.4 },
+      "related": ["Toggle", "Progress Bar"]
+    },
+    {
+      "name": "Accordion",
+      "category": "molecule",
+      "subcategory": "data-display",
+      "description": "Expandable/collapsible content sections with chevron rotation.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "componentKey": "de19e2bef81becf98aa6f4d504439160d621911b",
+        "figmaName": "Accordion",
+        "status": "in-library"
+      },
+      "whenToUse": ["Grouping related content that can be shown/hidden", "FAQ sections", "Settings sections"],
+      "whenNotToUse": ["When all content should always be visible", "For tab-like switching (use Tabs)"]
+    },
+    {
+      "name": "Tabs",
+      "category": "molecule",
+      "subcategory": "navigation",
+      "description": "Tab bar for switching between content views. Primary tabs go in Sub Header, secondary tabs inside Container.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "componentKey": "4851c5917e3ca7aca6aa65f44d49d83b9594f3f0",
+        "figmaName": "Tabs",
+        "status": "in-library"
+      },
+      "whenToUse": ["Switching between related views", "Page-level navigation (Sub Header)", "Section-level content switching (inside Container)"],
+      "whenNotToUse": ["For sequential steps (use Stepper)", "For dropdown options (use Select)"]
+    },
+    {
+      "name": "Breadcrumbs",
+      "category": "molecule",
+      "subcategory": "navigation",
+      "description": "Hierarchical navigation trail with separator icons.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "componentKey": "0a3311e7b166996622dc853a63d3c51cb26b13b2",
+        "figmaName": "Breadcrumbs",
+        "status": "in-library"
+      },
+      "whenToUse": ["Deep page hierarchy navigation", "Showing current location in navigation tree"],
+      "whenNotToUse": ["Flat navigation structures", "When sidebar shows hierarchy"]
+    },
+    {
+      "name": "Table",
+      "category": "organism",
+      "subcategory": "data",
+      "description": "Data table with sortable columns, row selection, and configurable cells.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "componentKey": "651b0fc7a3921dfc45c0d7f0f77ef434aa0dc4fb",
+        "figmaName": "Table",
+        "status": "in-library"
+      },
+      "whenToUse": ["Displaying structured data with multiple columns", "Data with sorting, filtering, pagination", "CRUD listings"],
+      "whenNotToUse": ["Simple lists (use list items)", "Key-value data (use Key Value Pair)"]
+    },
+    {
+      "name": "Attention Box",
+      "category": "molecule",
+      "subcategory": "feedback",
+      "description": "Banner notification with status color, icon, and message. Used for warnings, info, success, and error alerts.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "componentKey": "3c58dee55668c602ac70872f8878dfc0e4b0e0f0",
+        "figmaName": "Attention box",
+        "status": "in-library"
+      },
+      "whenToUse": ["Important notices users must see", "Form-level error messages", "Success confirmations", "Warning banners"],
+      "whenNotToUse": ["Temporary notifications (use Toast)", "Inline field errors (use Helper Text)"]
+    },
+    {
+      "name": "Card BG",
+      "category": "atom",
+      "subcategory": "data-display",
+      "description": "Card background component with themed surface colors.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "componentKey": "0a6610b4540cec27f39b38930dbeae02fbecfabe",
+        "figmaName": "Card BG",
+        "status": "in-library"
+      },
+      "whenToUse": ["Card containers", "Content panels", "Grouped sections"],
+      "whenNotToUse": ["Full-page backgrounds", "Overlays"]
+    },
+    {
+      "name": "Dropdown Menu",
+      "category": "molecule",
+      "subcategory": "overlays",
+      "description": "Floating menu container with menu items, dividers, and submenus.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "componentKey": "60c79101cb2a0399f9239bd2477634e0591d2e85",
+        "figmaName": "Dropdown Menu",
+        "status": "in-library"
+      },
+      "whenToUse": ["Context menus", "Action menus", "More options dropdowns"],
+      "whenNotToUse": ["Form field selection (use Select/Drop down)", "Navigation (use Sidebar)"]
+    },
+    {
+      "name": "Gradient Button",
+      "category": "atom",
+      "subcategory": "buttons",
+      "description": "Button with gradient fill for premium/special CTA actions.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "componentKey": "86fe8b75bd17c1bb5f6116cb827aad942a934012",
+        "figmaName": "Gradient Button",
+        "status": "in-library"
+      },
+      "whenToUse": ["Premium CTAs", "Upgrade prompts", "Special promotional actions"],
+      "whenNotToUse": ["Standard actions (use Button)", "Secondary actions"]
+    },
+    {
+      "name": "Stepper",
+      "category": "molecule",
+      "subcategory": "navigation",
+      "description": "Multi-step process indicator with completed/active/pending states.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "componentKey": "454063cba061b3f587dc4e6fad32263e35525c5a",
+        "figmaName": "Stepper",
+        "status": "in-library"
+      },
+      "whenToUse": ["Multi-step forms", "Wizard flows", "Process progress"],
+      "whenNotToUse": ["Simple navigation (use Tabs)", "Single-step forms"]
+    },
+    {
+      "name": "Pagination",
+      "category": "molecule",
+      "subcategory": "navigation",
+      "description": "Page navigation with prev/next buttons and page numbers.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "componentKey": "826469f58d1a4e68df306ac04da418b009ab9380",
+        "figmaName": "Pagination",
+        "status": "in-library"
+      },
+      "whenToUse": ["Table pagination", "List pagination", "Search results paging"],
+      "whenNotToUse": ["Infinite scroll patterns", "Short lists that fit one page"]
+    },
+    {
+      "name": "Key Value Pair",
+      "category": "molecule",
+      "subcategory": "data-display",
+      "description": "Key-value pairs display for detail views and info sections.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "componentKey": "d35e27d088cd88bd9f860992d5f551a3a3c66086",
+        "figmaName": "Key value pair",
+        "status": "in-library"
+      },
+      "whenToUse": ["Detail page info sections", "Settings display", "Metadata display"],
+      "whenNotToUse": ["Editable fields (use form inputs)", "Tabular data (use Table)"]
+    },
+    {
+      "name": "Double Field",
+      "category": "atom",
+      "subcategory": "inputs",
+      "description": "Two input fields side by side for related paired data entry.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "componentKey": "27388328932ea8eaa0f60d1ae15c8c52457aea13",
+        "figmaName": "Double field",
+        "status": "in-library"
+      },
+      "whenToUse": ["First name + Last name pairs", "Min/Max ranges", "Start/End date pairs"],
+      "whenNotToUse": ["Single field input", "Unrelated fields"]
+    },
+    {
+      "name": "Popup",
+      "category": "molecule",
+      "subcategory": "overlays",
+      "description": "Default popup/dialog container for confirmations and forms.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "componentKey": "4200a0aef4a25f7cdbdf628575c41347c9e8a8fe",
+        "figmaName": "Deefault Popup",
+        "status": "in-library"
+      },
+      "whenToUse": ["Confirmation dialogs", "Quick forms", "Alerts"],
+      "whenNotToUse": ["Full-page content", "Complex multi-step flows"]
+    },
+    {
+      "name": "Empty State",
+      "category": "pattern",
+      "subcategory": "states",
+      "description": "Zero-data state with illustration, message, and CTA.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "componentKey": "7bd056df8652d9c4737d2add3f5dba1a8c13f6a5",
+        "figmaName": "Primary empty state",
+        "status": "in-library"
+      },
+      "whenToUse": ["No data available views", "First-time experience", "Empty search results"],
+      "whenNotToUse": ["Error states", "Loading states"]
+    },
+    {
+      "name": "Layout",
+      "category": "layout",
+      "subcategory": "catalyst",
+      "description": "Full Catalyst page layout component with ServiceMenu, Header, Sidemenu, Sub Header, and Container.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "componentKey": "60b7dd3df3911d7f99644f1602f94daabc91543a",
+        "figmaName": "Layout",
+        "status": "in-library"
+      },
+      "whenToUse": ["Every Catalyst product screen"],
+      "whenNotToUse": ["Non-Catalyst products"]
+    },
+    {
+      "name": "Sidemenu",
+      "category": "layout",
+      "subcategory": "catalyst",
+      "description": "Side navigation menu component with grouped menu items.",
+      "figma": {
+        "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+        "componentKey": "c5cc6958acc9fa1c180d3d51c383d355547c634f",
+        "figmaName": "Sidemenu",
+        "status": "in-library"
+      },
+      "whenToUse": ["Catalyst sidebar navigation"],
+      "whenNotToUse": ["Non-Catalyst products"]
+    }
+  ],
+  "pendingComponents": {
+    "tier3Molecules": {
+      "description": "Next phase - 38 molecule components to be built. Starting with high-priority items.",
+      "highPriority": [
+        { "name": "Form Field", "category": "molecule", "subcategory": "inputs", "description": "Composed field with Label + Input + Helper Text, unified form control" },
+        { "name": "Search Bar", "category": "molecule", "subcategory": "inputs", "description": "Text input with search icon, clear button, and optional suggestions dropdown" },
+        { "name": "Combobox", "category": "molecule", "subcategory": "inputs", "description": "Type-to-filter input with dropdown of filtered results, autocomplete" },
+        { "name": "Menu Item", "category": "molecule", "subcategory": "navigation", "description": "Individual menu row with icon, label, shortcut, submenu indicator" }
+      ],
+      "mediumPriority": [
+        { "name": "Token Input", "category": "molecule", "subcategory": "inputs", "description": "Multi-value input where entered values become tag chips" },
+        { "name": "OTP Input", "category": "molecule", "subcategory": "inputs", "description": "4-6 separate digit boxes for one-time password entry" },
+        { "name": "List Item", "category": "molecule", "subcategory": "data-display", "description": "Standard list row with avatar, text, metadata, and actions" },
+        { "name": "Description List", "category": "molecule", "subcategory": "data-display", "description": "Key-value pairs display for detail views" },
+        { "name": "KPI Card", "category": "molecule", "subcategory": "data-display", "description": "Metric display with value, label, trend indicator" },
+        { "name": "Timeline", "category": "molecule", "subcategory": "data-display", "description": "Chronological event list with connectors and status dots" },
+        { "name": "Snackbar", "category": "molecule", "subcategory": "feedback", "description": "Brief message bar at bottom with optional action button" },
+        { "name": "Inline Message", "category": "molecule", "subcategory": "feedback", "description": "Contextual message embedded within content flow" },
+        { "name": "Popover", "category": "molecule", "subcategory": "overlays", "description": "Floating panel triggered by click, 12 positions with arrow" },
+        { "name": "Context Menu", "category": "molecule", "subcategory": "overlays", "description": "Right-click menu with actions, shortcuts, submenus" },
+        { "name": "Drag Handle", "category": "molecule", "subcategory": "utilities", "description": "Grip indicator for draggable elements" },
+        { "name": "Scroll Area", "category": "molecule", "subcategory": "utilities", "description": "Scrollable container with custom scrollbar styling" },
+        { "name": "Drop Zone", "category": "molecule", "subcategory": "utilities", "description": "File drop target with dashed border and drag-over state" }
+      ],
+      "organisms": [
+        { "name": "Card", "category": "organism", "subcategory": "cards", "description": "Content container with header, body, footer (Basic, Product, User, Stats, Media variants)" },
+        { "name": "Modal", "category": "organism", "subcategory": "overlays", "description": "Dialog window with overlay, header, content, footer actions" },
+        { "name": "Drawer", "category": "organism", "subcategory": "overlays", "description": "Slide-in panel from left/right edge with overlay" },
+        { "name": "Bottom Sheet", "category": "organism", "subcategory": "overlays", "description": "Mobile slide-up panel from bottom edge" },
+        { "name": "Navbar", "category": "organism", "subcategory": "navigation", "description": "Top navigation bar with logo, links, actions" },
+        { "name": "Sidebar", "category": "organism", "subcategory": "navigation", "description": "Vertical navigation panel with menu items and sections" },
+        { "name": "Mega Menu", "category": "organism", "subcategory": "navigation", "description": "Multi-column dropdown navigation panel" },
+        { "name": "Bottom Navigation", "category": "organism", "subcategory": "navigation", "description": "Mobile bottom nav bar with 3-5 icon+label items" },
+        { "name": "Table", "category": "organism", "subcategory": "data", "description": "Data table with sortable columns, pagination, row selection" },
+        { "name": "Calendar", "category": "organism", "subcategory": "date-time", "description": "Month calendar grid for date picking" },
+        { "name": "Date Picker", "category": "organism", "subcategory": "date-time", "description": "Input with calendar popover for date selection" },
+        { "name": "Color Picker", "category": "organism", "subcategory": "advanced", "description": "Color selection tool with spectrum, sliders, presets" },
+        { "name": "Command Palette", "category": "organism", "subcategory": "advanced", "description": "Cmd+K style search with filtered command list" },
+        { "name": "Tree View", "category": "organism", "subcategory": "advanced", "description": "Hierarchical expandable/collapsible node tree" },
+        { "name": "Kanban Board", "category": "organism", "subcategory": "advanced", "description": "Drag-and-drop column board with cards" },
+        { "name": "Chat Bubble", "category": "organism", "subcategory": "chat-ai", "description": "Message bubble with sent/received alignment, timestamps" },
+        { "name": "AI Prompt Input", "category": "organism", "subcategory": "chat-ai", "description": "Input with send button, suggestions, streaming indicator" },
+        { "name": "Slider", "category": "molecule", "subcategory": "selection", "description": "Horizontal track with draggable thumb for value selection" },
+        { "name": "Segmented Control", "category": "molecule", "subcategory": "selection", "description": "Pill-group toggle with sliding active indicator" },
+        { "name": "Toggle Button", "category": "molecule", "subcategory": "buttons", "description": "Button that toggles between on/off visual states" },
+        { "name": "FAB", "category": "molecule", "subcategory": "buttons", "description": "Floating action button with hover elevation, extended variant" },
+        { "name": "File Upload", "category": "molecule", "subcategory": "inputs", "description": "Drop zone with browse button, progress, and file list" },
+        { "name": "Scheduler", "category": "organism", "subcategory": "date-time", "description": "Week/day/month calendar with time slots and event blocks" }
+      ]
+    },
+    "pendingRework": [
+      {
+        "name": "Button color rework",
+        "description": "Button/Split/Icon/Nav button colors need fixing across all 4 theme modes. Do LAST after all components are built.",
+        "affectedComponents": ["Button (347:362)", "Split Button (351:1802)", "Icon Button (350:722)", "Nav Button (367:903)"]
+      }
+    ]
+  },
+  "componentSummary": {
+    "totalBuilt": 52,
+    "totalInLibrary": 28,
+    "totalManual": 24,
+    "breakdown": {
+      "foundation": 3,
+      "layout": 10,
+      "atoms": 31,
+      "molecules": 9,
+      "organisms": 1,
+      "patterns": 1
+    },
+    "atomsBySubcategory": {
+      "feedback": ["Overlay", "Spinner", "Shimmer", "Skeleton", "Badge", "Tooltip", "Progress Bar", "Progress Circle"],
+      "buttons": ["Button", "Gradient Button", "Split Button", "Icon Button", "Nav Button"],
+      "inputs": ["Label", "Helper Text", "Text Input", "Password Input", "Number Input", "Textarea", "Select", "Double Field"],
+      "selection": ["Toggle", "Tag", "Checkbox", "Radio"],
+      "data-display": ["Kbd", "Avatar", "Image", "Rating", "Card BG"],
+      "navigation": ["Link"]
+    },
+    "moleculesBySubcategory": {
+      "data-display": ["Accordion", "Key Value Pair"],
+      "navigation": ["Tabs", "Breadcrumbs", "Stepper", "Pagination"],
+      "overlays": ["Dropdown Menu", "Popup"],
+      "feedback": ["Attention Box"]
+    },
+    "layoutBySubcategory": {
+      "primitives": ["Container", "Stack", "Grid", "Row", "Column", "Spacer", "Divider", "Aspect Ratio"],
+      "catalyst": ["Layout", "Sidemenu"]
+    },
+    "totalPending": 41,
+    "pendingBreakdown": {
+      "highPriorityMolecules": 4,
+      "mediumPriorityMolecules": 13,
+      "organisms": 23,
+      "rework": 1
+    }
+  }
+}
