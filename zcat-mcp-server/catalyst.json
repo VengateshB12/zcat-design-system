@@ -1,0 +1,16 @@
+{
+  "project_id": "20508000000266002",
+  "appsail": [
+    {
+      "name": "zcat-mcp",
+      "stack": "node20",
+      "source": "appsail",
+      "port": 9000,
+      "memory": 2048,
+      "disk": 1024,
+      "env_variables": {
+        "NODE_ENV": "production"
+      }
+    }
+  ]
+}

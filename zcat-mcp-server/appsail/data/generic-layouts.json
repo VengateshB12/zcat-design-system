@@ -1,0 +1,214 @@
+{
+  "version": "1.0.0",
+  "description": "Generic page-type templates for products without a specific layout component",
+
+  "templates": {
+    "function-page": {
+      "displayName": "Function Page",
+      "description": "Standard content page with optional sidebar and content area. Used for listings, dashboards, and general feature pages.",
+      "viewport": { "width": 1440, "height": 900 },
+      "structure": {
+        "root": {
+          "layout": "VERTICAL",
+          "width": 1440,
+          "height": 900,
+          "background": "color/bg/sunken"
+        },
+        "topbar": {
+          "height": 48,
+          "layout": "HORIZONTAL",
+          "alignment": "SPACE_BETWEEN",
+          "padding": [0, 16],
+          "background": "color/bg/surface",
+          "borderBottom": "color/border/subtle"
+        },
+        "body": {
+          "layout": "HORIZONTAL",
+          "grow": true
+        },
+        "sidebar": {
+          "width": 240,
+          "layout": "VERTICAL",
+          "padding": [16, 12],
+          "gap": 4,
+          "background": "color/bg/surface",
+          "borderRight": "color/border/subtle",
+          "optional": true
+        },
+        "main": {
+          "layout": "VERTICAL",
+          "grow": true
+        },
+        "content-header": {
+          "layout": "HORIZONTAL",
+          "alignment": "SPACE_BETWEEN",
+          "padding": [16, 24],
+          "gap": 12
+        },
+        "content-body": {
+          "grow": true,
+          "layout": "VERTICAL",
+          "padding": [0, 24, 24, 24],
+          "gap": 16
+        }
+      }
+    },
+
+    "data-page": {
+      "displayName": "Data Page",
+      "description": "Page focused on displaying data in tables or grids with toolbar, filters, and pagination.",
+      "viewport": { "width": 1440, "height": 900 },
+      "inherits": "function-page",
+      "contentBody": {
+        "sections": [
+          { "name": "toolbar", "layout": "HORIZONTAL", "alignment": "SPACE_BETWEEN", "height": 40 },
+          { "name": "data-area", "grow": true, "options": ["table", "card-grid", "list"] },
+          { "name": "pagination", "layout": "HORIZONTAL", "alignment": "SPACE_BETWEEN", "height": 40 }
+        ]
+      }
+    },
+
+    "settings-page": {
+      "displayName": "Settings Page",
+      "description": "Configuration page with left navigation and sectioned form content.",
+      "viewport": { "width": 1440, "height": 900 },
+      "inherits": "function-page",
+      "contentBody": {
+        "layout": "HORIZONTAL",
+        "sections": [
+          { "name": "settings-nav", "width": 220, "layout": "VERTICAL", "padding": [16, 0] },
+          { "name": "settings-content", "grow": true, "layout": "VERTICAL", "padding": [24, 32], "maxWidth": 720 }
+        ]
+      }
+    },
+
+    "modal": {
+      "displayName": "Modal Dialog",
+      "description": "Overlay dialog for confirmations, quick forms, and alerts.",
+      "sizes": {
+        "sm": { "width": 400 },
+        "md": { "width": 520 },
+        "lg": { "width": 640 }
+      },
+      "structure": {
+        "overlay": { "background": "color/bg/overlay", "opacity": 0.6 },
+        "container": {
+          "radius": 8,
+          "background": "color/bg/raised",
+          "shadow": "elevation/3",
+          "layout": "VERTICAL",
+          "padding": [0, 0]
+        },
+        "modal-header": {
+          "layout": "HORIZONTAL",
+          "alignment": "SPACE_BETWEEN",
+          "padding": [16, 20],
+          "borderBottom": "color/border/subtle"
+        },
+        "modal-body": {
+          "layout": "VERTICAL",
+          "padding": [20, 20],
+          "gap": 16
+        },
+        "modal-footer": {
+          "layout": "HORIZONTAL",
+          "alignment": "END",
+          "padding": [16, 20],
+          "gap": 8,
+          "borderTop": "color/border/subtle"
+        }
+      }
+    },
+
+    "full-page-modal": {
+      "displayName": "Full-Page Modal",
+      "description": "Full-screen overlay for complex creation flows and multi-step wizards.",
+      "viewport": { "width": 1440, "height": 900 },
+      "structure": {
+        "overlay": { "background": "color/bg/surface" },
+        "container": {
+          "width": "100%",
+          "maxWidth": 960,
+          "layout": "VERTICAL",
+          "centerHorizontal": true
+        },
+        "modal-header": {
+          "layout": "HORIZONTAL",
+          "alignment": "SPACE_BETWEEN",
+          "height": 56,
+          "padding": [0, 24],
+          "borderBottom": "color/border/subtle"
+        },
+        "step-indicator": {
+          "layout": "HORIZONTAL",
+          "alignment": "CENTER",
+          "padding": [16, 24],
+          "optional": true
+        },
+        "modal-body": {
+          "grow": true,
+          "layout": "VERTICAL",
+          "padding": [24, 24],
+          "gap": 20,
+          "maxWidth": 640,
+          "centerHorizontal": true
+        },
+        "modal-footer": {
+          "layout": "HORIZONTAL",
+          "alignment": "SPACE_BETWEEN",
+          "padding": [16, 24],
+          "borderTop": "color/border/subtle"
+        }
+      }
+    },
+
+    "form-page": {
+      "displayName": "Form / Creation Page",
+      "description": "Page for creating or editing resources. Single or multi-column form layout.",
+      "viewport": { "width": 1440, "height": 900 },
+      "inherits": "function-page",
+      "contentBody": {
+        "layout": "VERTICAL",
+        "maxWidth": 640,
+        "centerHorizontal": true,
+        "gap": 20,
+        "sections": [
+          { "name": "form-section", "layout": "VERTICAL", "gap": 16 }
+        ],
+        "formFieldLayout": { "options": ["single-column", "two-column"] }
+      }
+    },
+
+    "dashboard": {
+      "displayName": "Dashboard / Overview",
+      "description": "Overview page with KPI cards, charts, and summary widgets.",
+      "viewport": { "width": 1440, "height": 900 },
+      "inherits": "function-page",
+      "contentBody": {
+        "layout": "VERTICAL",
+        "gap": 20,
+        "sections": [
+          { "name": "kpi-row", "layout": "HORIZONTAL", "gap": 16 },
+          { "name": "chart-row", "layout": "HORIZONTAL", "gap": 16 },
+          { "name": "activity-section", "layout": "VERTICAL", "gap": 12 }
+        ]
+      }
+    },
+
+    "empty-state": {
+      "displayName": "Empty State",
+      "description": "Zero-data state with illustration, message, and CTA.",
+      "inherits": "function-page",
+      "contentBody": {
+        "alignment": "CENTER",
+        "gap": 16,
+        "sections": [
+          { "name": "illustration", "width": 200, "height": 200 },
+          { "name": "heading", "textStyle": "heading/lg" },
+          { "name": "description", "textStyle": "body/md", "maxWidth": 400, "textAlign": "center" },
+          { "name": "cta", "component": "Button / Primary / Default" }
+        ]
+      }
+    }
+  }
+}

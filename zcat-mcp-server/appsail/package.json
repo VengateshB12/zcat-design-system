@@ -1,0 +1,14 @@
+{
+  "name": "zcat-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for the zcat design system — serves component data, tokens, layouts, and workflow to any IDE",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "express": "^4.21.0",
+    "zod": "^3.24.0"
+  }
+}

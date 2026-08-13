@@ -1,0 +1,147 @@
+/* Wireframe Styles — Low-fidelity structural blueprints via show_widget
+   Catalyst content area: 1259x736px, scaled to fit viewport */
+:root {
+  --wf-bg: #f8f8f8; --wf-surface: #ffffff;
+  --wf-border: #b0b0b0; --wf-border-subtle: #d4d4d4;
+  --wf-fill-dark: #555; --wf-fill-medium: #888; --wf-fill-light: #ccc; --wf-fill-muted: #e8e8e8;
+  --wf-text-dark: #333; --wf-text-medium: #666; --wf-text-light: #999;
+  --wf-accent: #4a90d9; --wf-overlay: rgba(0,0,0,0.4);
+  --wf-font-label: 'SF Mono','Roboto Mono','Consolas',monospace;
+  --wf-font-content: -apple-system,'Segoe UI',sans-serif;
+  --wf-gap: 8px; --wf-pad: 12px; --wf-radius: 4px;
+}
+
+/* Root container */
+.wireframe {
+  width: 1259px; height: 736px; background: var(--wf-bg);
+  border: 2px solid var(--wf-border); border-radius: 6px;
+  box-sizing: border-box; position: relative; overflow: hidden;
+  transform-origin: top left;
+  font-family: var(--wf-font-content); color: var(--wf-text-dark);
+}
+
+/* Screen title */
+.wf-screen-title {
+  font: 600 13px/1 var(--wf-font-label); color: var(--wf-text-dark);
+  background: var(--wf-fill-muted); padding: 6px var(--wf-pad);
+  border-bottom: 1px solid var(--wf-border);
+  letter-spacing: 0.5px; text-transform: uppercase;
+}
+
+/* Shared ::before label for regions and forms */
+.wf-region, .wf-form {
+  border: 1.5px dashed var(--wf-border); border-radius: var(--wf-radius);
+  padding: var(--wf-pad); position: relative; box-sizing: border-box; min-height: 40px;
+}
+.wf-form { border-color: var(--wf-border-subtle); display: flex; flex-direction: column; gap: var(--wf-gap); }
+.wf-region::before, .wf-form::before {
+  content: attr(data-label);
+  font: 600 9px/1 var(--wf-font-label); text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--wf-text-light); background: var(--wf-bg); padding: 1px 6px;
+  position: absolute; top: -8px; left: 10px;
+}
+
+/* Component placeholder */
+.wf-component {
+  border: 1px solid var(--wf-border-subtle); border-radius: var(--wf-radius);
+  background: var(--wf-surface); padding: 8px var(--wf-pad);
+  font: 10px var(--wf-font-label); color: var(--wf-text-medium);
+  text-align: center; box-sizing: border-box;
+  display: flex; align-items: center; justify-content: center; min-height: 32px;
+}
+.wf-component::before { content: "[" attr(data-name) "]"; }
+
+/* Navigation */
+.wf-nav {
+  background: var(--wf-fill-muted); border-bottom: 1px solid var(--wf-border);
+  padding: 8px var(--wf-pad); display: flex; gap: var(--wf-gap); align-items: center;
+  font: 11px var(--wf-font-label); color: var(--wf-text-medium);
+}
+.wf-nav-item { padding: 4px 10px; border-radius: var(--wf-radius); cursor: default; }
+.wf-nav-item.active { background: var(--wf-surface); color: var(--wf-text-dark); border: 1px solid var(--wf-border-subtle); }
+
+/* Button */
+.wf-button {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 6px 16px; border-radius: var(--wf-radius);
+  font: 500 11px/1 var(--wf-font-label); cursor: default; box-sizing: border-box;
+  border: 1.5px solid var(--wf-fill-dark); background: var(--wf-fill-dark); color: var(--wf-surface);
+}
+.wf-button.secondary { background: var(--wf-surface); color: var(--wf-text-dark); border-color: var(--wf-border); }
+.wf-button.tertiary { background: transparent; color: var(--wf-text-medium); border: none; }
+
+/* Input */
+.wf-input {
+  border: 1px solid var(--wf-border); border-radius: var(--wf-radius);
+  padding: 6px 10px; font: 11px var(--wf-font-content);
+  color: var(--wf-text-light); background: var(--wf-surface);
+  box-sizing: border-box; min-width: 140px;
+}
+.wf-input::before { content: attr(data-placeholder); }
+
+/* Field (label + input wrapper) */
+.wf-field { display: flex; flex-direction: column; gap: 4px; }
+.wf-field-label { font: 10px var(--wf-font-label); color: var(--wf-text-medium); }
+
+/* Card */
+.wf-card {
+  border: 1px solid var(--wf-border-subtle); border-radius: 6px;
+  background: var(--wf-surface); padding: var(--wf-pad); box-sizing: border-box;
+}
+.wf-card-title { font: 600 11px/1 var(--wf-font-label); color: var(--wf-text-dark); margin-bottom: 6px; }
+
+/* Table */
+.wf-table { width: 100%; border-collapse: collapse; font: 11px var(--wf-font-content); }
+.wf-table th {
+  background: var(--wf-fill-muted); font: 600 10px/1 var(--wf-font-label);
+  text-align: left; padding: 6px 8px; border: 1px solid var(--wf-border-subtle);
+  color: var(--wf-text-medium); text-transform: uppercase; letter-spacing: 0.3px;
+}
+.wf-table td { padding: 6px 8px; border: 1px solid var(--wf-border-subtle); color: var(--wf-text-medium); }
+.wf-table tr:nth-child(even) td { background: var(--wf-fill-muted); }
+
+/* Modal */
+.wf-modal {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--wf-overlay); display: flex;
+  align-items: center; justify-content: center; z-index: 100;
+}
+.wf-modal-content {
+  background: var(--wf-surface); border: 1.5px solid var(--wf-border); border-radius: 6px;
+  padding: 16px; min-width: 320px; max-width: 520px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+}
+.wf-modal-title {
+  font: 600 13px/1 var(--wf-font-label); color: var(--wf-text-dark);
+  margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--wf-border-subtle);
+}
+
+/* Annotation callout */
+.wf-annotation {
+  font: 9px var(--wf-font-label); color: var(--wf-accent);
+  background: rgba(74,144,217,0.08); border: 1px solid rgba(74,144,217,0.3);
+  border-radius: 3px; padding: 2px 6px; display: inline-block; white-space: nowrap;
+}
+
+/* Flow indicator */
+.wf-flow-indicator {
+  display: flex; align-items: center; justify-content: center;
+  color: var(--wf-text-light); font-size: 16px; padding: 4px;
+}
+.wf-flow-indicator::after { content: "\2193"; }
+.wf-flow-indicator.right::after { content: "\2192"; }
+.wf-flow-indicator.left::after { content: "\2190"; }
+
+/* Layout utilities */
+.wf-row { display: flex; gap: var(--wf-gap); align-items: stretch; }
+.wf-col { display: flex; flex-direction: column; gap: var(--wf-gap); }
+.wf-grow { flex: 1; }
+.wf-center { display: flex; align-items: center; justify-content: center; }
+.wf-between { display: flex; justify-content: space-between; align-items: center; }
+.wf-wrap { flex-wrap: wrap; }
+.wf-gap-sm { gap: 4px; }
+.wf-gap-lg { gap: 16px; }
+.wf-gap-xl { gap: 24px; }
+.wf-pad { padding: var(--wf-pad); }
+.wf-pad-lg { padding: 16px; }
+.wf-full { width: 100%; }
