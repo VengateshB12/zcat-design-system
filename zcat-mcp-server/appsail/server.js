@@ -100,7 +100,7 @@ Call zcat_get_workflow first and follow it.</code></pre>
     <li><code>zcat_get_component</code> &mdash; full spec</li>
     <li><code>zcat_get_component_key</code> &mdash; Figma key + import method</li>
     <li><code>zcat_get_design_tokens</code> &mdash; variable IDs</li>
-    <li><code>zcat_get_decision_rules</code> &mdash; which component to pick</li>
+    <li><code>zcat_get_decision_rules</code> &mdash; which component to pick (topic-routed, ~4-6k per query)</li>
     <li><code>zcat_get_sample_data</code> &mdash; realistic content</li>
     <li><code>zcat_get_layout</code> &mdash; page layouts</li>
     <li><code>zcat_get_design_workflow</code> &mdash; pre-build analysis &amp; spec workflow</li>
@@ -464,27 +464,64 @@ function buildServer() {
     }
   );
 
+  /* Decision rules are split into small topic files for token efficiency.
+   * The TOPIC_MAP maps keywords → filenames so agents get only the ~4-6k
+   * they need, not the entire 99k monolith. */
+  const TOPIC_MAP = [
+    { file: "dr-which-component.md",     keywords: ["component", "search", "which", "skip", "wireframe coverage", "mandatory", "audit"] },
+    { file: "dr-design-composition.md",  keywords: ["wireframe", "composition", "hierarchy", "anti-pattern", "stat card", "polish", "action bar", "section grouping"] },
+    { file: "dr-design-uniforms.md",     keywords: ["uniform", "consistency", "page layout", "card spec", "text style", "spacing rhythm", "danger zone", "button placement"] },
+    { file: "dr-data-display.md",        keywords: ["data display", "cards", "list", "card grid", "card bg", "kv", "key-value", "general details", "kpi", "description list"] },
+    { file: "dr-table-columns.md",       keywords: ["table ai", "column", "stretch", "boxy", "filter", "chip", "avatarname", "pagination"] },
+    { file: "dr-detail-page.md",         keywords: ["detail page", "master-detail", "side menu", "empty state", "sidebar list"] },
+    { file: "dr-input-selection.md",     keywords: ["input", "dropdown", "radio", "checkbox", "toggle", "textarea", "segmented", "number input"] },
+    { file: "dr-popup-footer.md",        keywords: ["popup", "modal", "dialog", "footer", "stepper", "drawer", "form group", "popup blur"] },
+    { file: "dr-navigation-actions.md",  keywords: ["tabs", "sidebar", "accordion", "breadcrumb", "edit", "action", "overflow", "context menu", "confirmation", "toast", "button group", "navigation"] },
+    { file: "dr-spacing-layout.md",      keywords: ["spacing", "padding", "gap", "column layout", "container pattern", "dashboard", "composite", "feedback", "loading", "progress", "layout"] },
+    { file: "dr-build-reference.md",     keywords: ["token", "optimization", "batch", "error", "recovery", "quirk", "figma runtime", "manual table", "build"] },
+  ];
+
   server.registerTool(
     "zcat_get_decision_rules",
     {
       title: "Get component selection rules",
       description:
         "Decision logic for ambiguous UI patterns — which component to reach " +
-        "for when several could work (dropdown vs autocomplete, modal vs drawer).",
+        "for when several could work (dropdown vs autocomplete, modal vs drawer). " +
+        "Pass a topic keyword to get only the relevant rules (~4-6k chars). " +
+        "Without a topic, returns the topic index for navigation.",
       inputSchema: {
-        topic: z.string().optional().describe("Optional topic filter, e.g. 'modal', 'table'"),
+        topic: z.string().optional().describe(
+          "Topic keyword: 'component', 'table', 'popup', 'spacing', 'input', " +
+          "'composition', 'uniform', 'detail page', 'navigation', 'data display', " +
+          "'build'. Without topic returns the index."
+        ),
       },
     },
     async ({ topic }) => {
-      const doc = readText("decision-rules.md");
-      if (!topic) return asText(doc);
+      if (!topic) return asText(readText("dr-index.md"));
 
       const wanted = topic.trim().toLowerCase();
-      const blocks = doc
-        .split(/\n(?=#{2,3} )/)
-        .filter((b) => b.toLowerCase().includes(wanted));
+      /* Find matching files by keyword overlap. */
+      const matches = TOPIC_MAP.filter((entry) =>
+        entry.keywords.some((kw) => wanted.includes(kw) || kw.includes(wanted))
+      );
 
-      return asText(blocks.length ? blocks.join("\n\n") : doc);
+      if (matches.length === 0) {
+        /* Fallback: search all split files for the keyword. */
+        const results = TOPIC_MAP
+          .map((entry) => ({ entry, doc: readText(entry.file) }))
+          .filter(({ doc }) => doc.toLowerCase().includes(wanted))
+          .map(({ doc }) => doc);
+        return asText(
+          results.length
+            ? results.join("\n\n---\n\n")
+            : readText("dr-index.md") + "\n\n(No match for '" + topic + "' — showing index)"
+        );
+      }
+
+      const docs = matches.map((m) => readText(m.file));
+      return asText(docs.join("\n\n---\n\n"));
     }
   );
 
@@ -713,7 +750,14 @@ app.delete("/mcp", notAllowed);
 setImmediate(() => {
   try {
     manifest();
-    ["workflow.md", "design-tokens.md", "decision-rules.md", "sample-data.md", "design-analysis-workflow.md", "screenshot-design-patterns.md"].forEach(readText);
+    [
+      "workflow.md", "design-tokens.md", "sample-data.md",
+      "design-analysis-workflow.md", "screenshot-design-patterns.md",
+      "dr-index.md", "dr-which-component.md", "dr-design-composition.md",
+      "dr-design-uniforms.md", "dr-data-display.md", "dr-table-columns.md",
+      "dr-detail-page.md", "dr-input-selection.md", "dr-popup-footer.md",
+      "dr-navigation-actions.md", "dr-spacing-layout.md", "dr-build-reference.md",
+    ].forEach(readText);
     mcpReady = true;
     console.log(`zcat-mcp ready — ${manifest().components.length} components loaded`);
   } catch (err) {
