@@ -542,11 +542,14 @@ spacing, missing icons, flat unstyled sections, or cramped layouts.
 10. NEXT → After user confirms, read NEXT page's spec file and repeat
 ```
 
-### Step 3.3 — Why Consistency Is Already Handled
+### Step 3.3 — Consistency Gate (Double Verify)
 
-Since ALL spec files are written together in Phase 2 from the SAME design uniforms file, consistency is built in by design — not enforced after the fact. Every spec references the same card style, same typography, same spacing, same action bar pattern.
-
-The only runtime consistency check needed: verify sidebar active state is correct for each page (different page = different active item).
+Specs are written together from the same design uniforms, so consistency SHOULD be built in — but verify anyway. After building page 2+, screenshot and compare against page 1 BEFORE showing user:
+- Same card style? Same action bar? Same table style?
+- Same section grouping? Same spacing? Same typography?
+- Same icon style? Same color usage?
+- Correct sidebar active state for this page?
+- If anything differs, re-read the design uniforms file and fix.
 
 ---
 
@@ -584,7 +587,7 @@ Show user ALL pages together:
 **Fix:** Spec file cites "Me-" reference and lists specific creative improvements. DESIGN MATCH check catches copies.
 
 ### 4. Inconsistent Patterns Across Pages
-**Fix:** ALL specs written together from same design uniforms. Consistency is built in by design — not enforced after the fact.
+**Fix:** ALL specs written together from same design uniforms + consistency gate after each page as double verify.
 
 ### 5. Forgetting zcat Rules (Sonnet drift)
 **Fix:** Spec file contains EVERY component key, property value, color variable, and placement instruction. Agent doesn't need to remember rules — just reads the spec.
