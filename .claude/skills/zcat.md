@@ -61,9 +61,10 @@ Follow this workflow exactly, step by step.
 46. **Table AI MUST be responsive and use correct column types** — Table AI must use layoutSizingHorizontal = FILL so it stretches to fill the Container. AvatarName column type is ONLY for person/user data (names, owners, assignees). NEVER use AvatarName for database names, regions, storage sizes, dates, or any non-person data. Match column types to the DATA, not to wireframe icons. If the wireframe shows random icons next to every column, IGNORE those icons and pick the correct column type. See decision-rules.md "Table AI column type selection" table
 47. **Wireframe icons are NOT design icons** — wireframes use placeholder icons that don't exist in the zcat library. NEVER try to replicate wireframe icons literally. Instead, find the CLOSEST zcat stroke icon via clone+swap. If no close match exists, use any relevant icon and tell the user to swap it manually. The icon must come from the zcat library — NEVER draw manual shapes, use emoji, or use Unicode characters as icons
 48. **Container Header IS the action bar** — NEVER build a manual frame for the action bar. Use the Container Header component (detach for content insertion). Put Search + filter dropdowns on the left, Export/secondary + Create/primary buttons on the right. The Container Header already has proper internal padding
-49. **Button placement depends on tabs** — NO tabs in Sub Header: buttons (Create, Export) go in the Container Header alongside Search + filters. Sub Header stays simple (title + Help). WITH tabs in Sub Header: primary buttons go in Sub Header right side (same row as tabs), Container Header has only Search + filters. NEVER put buttons in Sub Header when there are no tabs
+49. **Button placement depends on tabs** — NO tabs: buttons go in Container Header alongside Search + filters, Sub Header stays simple (title + Help). Tabs + COMMON action for all tabs (e.g., "Create Function" applies to all tab views): button in Sub Header title row (right side, above tabs), Container Header has only Search + filters. Tabs + TAB-SPECIFIC actions (button changes per tab): buttons in Container Header. NEVER put buttons in Sub Header when there are no tabs
 50. **Pagination is a SEPARATE component** — for stretch table pages, use the standalone Pagination component at the bottom of the Container. Set Table AI `Show Pagination = false`. The Pagination component sits below the Table AI as a sibling, not inside it. For boxy tables, pagination can optionally use Table AI's built-in pagination
-51. **Sub Header is NOT detachable for simple pages** — when there are no tabs, the Sub Header is a simple instance showing just the page title + Help. NEVER detach it just to add buttons — buttons belong in Container Header for tabless pages
+51. **Sub Header is NEVER detached** — the Sub Header is ALWAYS an instance, no exceptions. For tabs: add Tab component instances inside the Sub Header's auto-layout. For back navigation: update the feature name text to "‹ item-name". For buttons: add Button instances inside the title row. For breadcrumbs: use the back navigation pattern, NOT manual breadcrumb frames. Detaching Sub Header is the #1 cause of broken layouts on detail pages
+52. **Empty state pages** — NO Container Header, NO search/filters, NO action bar. CTA lives ONLY in the empty state area (never duplicate in Sub Header). Sub Header stays simple (title + Help instance). Container padding = 0 all sides, itemSpacing = 0
 
 ---
 
@@ -116,6 +117,36 @@ Use `importComponentSetByKeyAsync` for `set` types, `importComponentByKeyAsync` 
 - **Script 3:** Validation
 
 **Pre-plan before building:** List all components needed with keys from the table above. Import all in batched scripts, not one per component.
+
+---
+
+## PHASE 0: Design Analysis (MANDATORY for multi-screen tasks)
+
+**Before ANY build, read and follow `references/design-analysis-workflow.md`.**
+
+This phase ensures creative, consistent, and complete designs by forcing upfront decisions. It covers:
+
+1. **Full scan** — screenshot every wireframe page, name it, identify page type
+2. **Feature inventory** — list EVERY element on EVERY page (tabs, buttons, fields, columns, sections). This becomes the "nothing gets dropped" contract
+3. **Page relationship map** — trace every link/button to its destination. Flag missing wireframes
+4. **Common patterns** — identify what repeats across pages (card style, table style, action bar style). Decide ONE design for each pattern
+5. **Design brief per page** — what it is, what patterns it uses, what creative improvements to make, what components to use
+6. **Design uniforms** — lock in card specs, section specs, action bar specs, table specs for ALL pages
+7. **Action relevance check** — remove irrelevant buttons (no "Copy" with nothing to copy, no "View All" leading nowhere)
+8. **Present to user** — show the analysis and get confirmation before building
+
+**Skip conditions:** Single-component tweaks, quick fixes to existing screens, or when the user explicitly says to skip analysis.
+
+**Build order after analysis:**
+- Build the page with the MOST common patterns first (establishes visual language)
+- Per-page cycle: Plan → Wireframe → Build → Screenshot → Verify → Fix → Re-verify → Show
+- NEVER move to next page until current page passes ALL verification checks
+- After page 2+, run consistency gate against page 1
+
+**The analysis workflow file has:**
+- Templates for feature inventory, page relationship map, and design brief
+- The full verification checklist (copy for every page)
+- 10 common failure modes with fixes (read before every build session)
 
 ---
 
@@ -1334,6 +1365,7 @@ Read these files as needed (read ONLY the sections relevant to your screen type 
 
 | File | When to read | What to read |
 |------|-------------|-------------|
+| `references/design-analysis-workflow.md` | **Phase 0, ALWAYS for multi-screen tasks** | Full file — analysis templates, verification checklist, failure modes |
 | `references/component-manifest.json` | Only if a component isn't in the KEY TABLE above | Just its `componentKeyMap` entry or specific component |
 | `references/decision-rules.md` | Step 4b, ambiguous design choices | Only the relevant section (Table rules, Popup rules, etc.) |
 | `references/design-tokens.md` | Step 4e, custom variable binding | Only if you need variable IDs beyond the color list above |

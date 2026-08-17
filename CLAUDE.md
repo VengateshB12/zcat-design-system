@@ -76,7 +76,7 @@ This applies to prompts like:
 - Minimum font size: 10px
 - Default radius: 6px
 - Same Size within a group — when buttons, dropdowns, and text boxes appear together in the same visual group (an action bar, a form row, a filter bar), they MUST all use the same Size variant (e.g. all "Default" or all "Small"). Never mix sizes within a group
-- Detach whitelist — ONLY detach Layout, Accordion, Accordion Bordered, Dropdown Menu (Menu List), Card BG, Container Header, Sidebar List Panel. For any other component, ask the user before detaching. Detaching is for inserting content, never for restyling the shell. Table AI is ZERO-DETACH — NEVER detach it
+- Detach whitelist — ONLY detach Layout, Accordion, Accordion Bordered, Dropdown Menu (Menu List), Card BG, Container Header, Sidebar List Panel. For any other component, ask the user before detaching. Detaching is for inserting content, never for restyling the shell. Table AI is ZERO-DETACH — NEVER detach it. Sub Header is ZERO-DETACH — NEVER detach it (add tabs, buttons, back nav inside the instance)
 - ALWAYS use Popup Blur component for popup/dialog overlays — NEVER create manual frames with hardcoded black/opacity fills. Popup Blur is a bare backdrop rectangle, NOT a dialog
 - Popup close is in the FOOTER, not the header — the zcat Popup has NO X close button in the header. NEVER add a manual X close icon in the popup header
 - Popup footer layout — simple form: Cancel (Ghost, LEFT) + Create (Fill, RIGHT). Wizard with stepper: Back (Outline, LEFT) + Cancel (Ghost, RIGHT) + Continue (Fill, RIGHT). First wizard step has no Back. See decision-rules.md "Popup Component" for full specs
@@ -85,6 +85,7 @@ This applies to prompts like:
 - Divider component is INTERNAL to Stepper — for general-purpose dividers, build manual 1px frames with fill bound to color/border/default variable
 - Screenshots and existing designs the user provides are REFERENCE ONLY — use them to understand patterns and layout intent, never to copy exact designs or as justification for detaching/manually recreating components that exist in zcat
 - Manual elements MUST use variables — when building manual frames, dividers, section separators, or any non-component element: ALL fills/strokes must be bound to zcat color variables (color/bg/*, color/border/*, color/text/*), ALL spacing (padding, gap) must use values from the spacing scale (0-128px, even numbers), ALL text must use one of the 19 defined text styles. No raw hex colors, no arbitrary spacing, no custom fonts on manual elements
+- NEVER hardcode text colors or font sizes — ALL text must use zcat text styles (Body/SemiBold/16, Body/Regular/14, Body/Regular/12, Headlines/SemiBold/24, etc.) and color variables (color/text/primary, color/text/secondary, color/text/placeholder). NEVER write raw hex like #000000 or #333333 for text. NEVER specify font sizes without binding to a text style
 - 100% wireframe feature coverage — EVERY tab, menu item, button, field, column, and section from the wireframe MUST appear in the final design. Design creativity applies to HOW elements look, never to WHAT appears. NEVER silently drop features
 - Component limits are NOT feature limits — if a component supports max 5 items but the wireframe shows 7, DETACH and add the remaining items manually with matching styling. NEVER remove wireframe content to fit a component's constraints. Tell the user when you detach to extend
 - Wireframes define features, not visual design — extract WHAT (data, actions, navigation, states) from wireframes, then apply design composition (visual hierarchy, section grouping, creative layouts, proper spacing rhythm). Don't copy wireframe layouts literally unless they match established patterns. See decision-rules.md "Design Composition" for full guidance
@@ -111,6 +112,7 @@ This applies to prompts like:
 - Self-critique before showing — NEVER assume your design looks good. Screenshot and verify: (a) every element uses a zcat component, (b) all colors variable-bound, (c) stat cards have icon BGs, (d) no wireframe-copy flat layouts, (e) all dropdowns filled, (f) no duplicate info. Fix failures before showing
 - Think and decide, then inform — for ambiguous design choices, make the decision yourself and tell the user in your summary. Do NOT ask about every small choice
 - NEVER skip components — the library has 79 components covering virtually every UI pattern. Common skips: General Details (for key-value info), Code Block (for code/SQL), Key Value Pair (for metadata), Attention Box (for warnings), Timeline (for decorative timelines), Container Header (for section headings), Avatar (for user icons), Tooltip (for hover info), Breadcrumbs (for navigation), Progress Bar (for progress), Chip (for tags/filters). If a wireframe shows ANY of these patterns, search and use the component
+- Empty state pages — ALWAYS use the Empty State component (`03321dc06395aa6b94783d0289637de8ddc82de0`, type `component`). NEVER manually build empty state UI. It has boolean properties: Show Illustration, Show Heading, Show Description, Show Primary Button, Show Outline Button. NO Container Header, NO search/filters, NO duplicate CTAs. Sub Header stays simple (title + Help instance). Container padding = 0 all sides, itemSpacing = 0
 
 ## Figma API Pitfalls
 
@@ -141,15 +143,16 @@ Building a single screen should use ~8-12k tokens, not 20k+. Follow these rules:
 ## Catalyst Container Rules
 
 - Container width is FIXED (1259px for Default layout, 1489px for No Left Menu layout) — all content must fit within it
-- Container height grows — `primaryAxisSizingMode = "AUTO"`, `counterAxisSizingMode = "FIXED"`
-- All children must use `layoutSizingHorizontal = "FILL"`
+- Container auto-layout: VERTICAL, `counterAxisSizingMode = "FIXED"`, `itemSpacing = 10`
+- Container children: Table AI and Pagination use `layoutSizingHorizontal = "FILL"`, Container Header uses FIXED width
 - NO page title inside Container — the Sub Header already shows it
 - Primary tabs ALWAYS go in Sub Header FIRST — NEVER place primary (whole-page) tabs in Container. Container tabs are ONLY for secondary/section-scoped tabs. This is the #1 tab placement mistake
-- Buttons placement depends on tabs — NO tabs in Sub Header: buttons go in Container Header (as part of the action bar with Search + filters). Tabs in Sub Header: buttons go in Sub Header right side (same row as tabs). NEVER put buttons in Sub Header when there are no tabs — the Sub Header stays simple (title + Help only). See layout-info.md for full decision order
+- Buttons placement depends on tabs — NO tabs in Sub Header: buttons go in Container Header (as part of the action bar with Search + filters). Tabs + common action for all tabs: button in Sub Header title row (right side, above tabs). Tabs + tab-specific actions: buttons in Container Header (they change per tab). NEVER put buttons in Sub Header when there are no tabs — the Sub Header stays simple (title + Help only). See layout-info.md for full decision order
 - Container Header IS the action bar — NEVER build a manual frame for the action bar. Use the Container Header component (detach for content), put Search + filters on left, buttons on right
 - Table AI column types — Table AI has 10 swappable column types (AvatarName, Badge, Date, Text, ExecutionStatus, IconText, Button, Checkbox, Threedot, Icon). Map wireframe columns to these types via instance swap. NEVER detach Table AI — configure entirely via setProperties(). If a column type doesn't exist, ask the user
 - Table AI content updates — update header and cell text by finding TEXT nodes inside the instance and setting characters in-place. DO NOT DETACH to edit text. Navigate: table.children → rows → cells → TEXT nodes
-- Stretch table Container padding = 0, Container Header component as action bar (has its own padding), Table AI directly below, Pagination component as separate instance at bottom. Table AI Show Pagination = false for stretch tables (use separate Pagination component). Boxy Container padding = 16px all sides
+- Stretch table Container padding = 16 top, 0 right/bottom/left. Cards view Container padding = 16 top/bottom, 0 left/right. Empty state Container padding = 0 all sides. Boxy Container padding = 16px all sides. Body frame padding = 14px all sides, itemSpacing = 10. Container Header has internal padding (6/14/6/14). Table AI Show Pagination = false for stretch tables (use separate Pagination component)
+- NEVER detach Sub Header — it is ALWAYS an instance. For tabs, add Tab component instances inside the Sub Header's auto-layout. For back navigation, update the feature name text to "‹ item-name". For breadcrumbs, use back navigation variant, NOT manual breadcrumb frames. Detaching Sub Header breaks styling and is NEVER needed
 - NEVER modify the layout shell (Header, spacing, borders, backgrounds)
 - PAUSE AND ASK on build problems — if a component doesn't import, properties throw, layout breaks, or the Table component doesn't match the schema, STOP and ask the user. NEVER continue burning tokens on a failing approach. One question costs nothing; rebuilding a broken screen wastes thousands of tokens
 

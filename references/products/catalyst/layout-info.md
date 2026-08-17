@@ -97,13 +97,22 @@ For each new Catalyst screen:
    - Bind all colors to zcat variables
 7. **Don't modify** — Header, layout spacing, borders, backgrounds, Union shape
 
-## Sub Header Variants
+## Sub Header — NEVER DETACH
+
+**The Sub Header is ALWAYS an instance — NEVER detach it.** This is an absolute
+rule with NO exceptions. Detaching the Sub Header breaks its styling, spacing,
+and variant behavior. All configurations below work within the instance.
+
+**CRITICAL:** Even for back navigation, breadcrumbs, tabs, or buttons — modify
+the instance's internal children (update text, add Tab instances, add Button
+instances inside the existing auto-layout). NEVER detach to "make room" for
+custom content.
 
 The Sub Header (`1319:37210`) supports different configurations:
 
 - **Default:** Feature name (left) + Help link (right)
 - **With Primary Tabs:** Feature name (left) + Help (right) on the first row, then a primary Tab bar below
-  - Build tabs as a row inside the Sub Header frame, below the feature name row
+  - Build tabs as a row inside the Sub Header instance, below the feature name row
   - Use the zcat Tab component from `search_design_system`
   - The tab bar sits at the bottom of the Sub Header with a bottom border
 - **With Actions:** Feature name (left) + Help (right) on the first row, then a row below with page-level actions: Primary button, Secondary button, and/or the overflow (three-dot / "Icon Button") menu
@@ -113,6 +122,11 @@ The Sub Header (`1319:37210`) supports different configurations:
   drill-down into one item selected from a list elsewhere (a Code Recipe, a
   row in a Side Menu list). An inline status chip can sit next to the title
   (e.g. "500 Trial runs left"). Help stays on the right as usual.
+
+**Common agent mistake:** Agent detaches Sub Header to add breadcrumbs + tabs
+manually. This is WRONG — breadcrumb navigation is handled by the back
+navigation variant (update the feature name text to show "‹ item-name"), and
+tabs are added as Tab component instances inside the Sub Header's auto-layout.
 
 ## Header Action & Tab Placement — Decision Order
 
@@ -128,18 +142,29 @@ the page has tabs.
    becomes the action bar: Search (left) + filter dropdowns + Export/secondary
    button + Create/primary button (right). This is the standard list page pattern.
 
-2. **Tabs in Sub Header → buttons go in Sub Header.** When the Sub Header has
-   primary tabs, place action buttons on the right side of the tab row (same
-   row as tabs). The Container Header is then used for Search + filters only
-   (no primary buttons).
+2. **Tabs in Sub Header + COMMON action for all tabs → button in Sub Header.**
+   When the button applies regardless of which tab is active (e.g., "Create
+   Function" works for All Functions, Event Functions, Cron Functions alike),
+   place it in the Sub Header's title row (right side, same row as the page
+   title, ABOVE the tabs). The Container Header has only Search + filters.
 
-3. **Section-scoped actions → Container.** If a button acts on a specific
+3. **Tabs in Sub Header + TAB-SPECIFIC actions → buttons in Container Header.**
+   When each tab has its own distinct action that changes per tab, buttons go
+   in the Container Header (because the button changes when the user switches
+   tabs). The Sub Header only has tabs, no buttons.
+
+4. **Section-scoped actions → Container.** If a button acts on a specific
    section, card, or table (e.g., "Add Replica" next to a replicas table),
    place it in that section's header, not in Sub Header.
 
 **CRITICAL: NEVER put buttons in Sub Header when there are no tabs.** The Sub
 Header without tabs is just the page title + Help link. Putting buttons there
 detaches or modifies the Sub Header component unnecessarily.
+
+**Sub Header button position:** Buttons go in the TITLE ROW (same row as the
+page title + Help), NOT in the tab row. The Sub Header has two rows when tabs
+are present: row 1 = title + buttons + Help, row 2 = Primary Tabs. Buttons
+are always in row 1.
 
 ### Tabs
 
@@ -193,24 +218,42 @@ NEVER build a manual frame for the action bar. ALWAYS use Container Header.
 - **Background:** The Container MUST keep its background fill bound to `color/bg/surface` variable — NEVER clear or remove Container fills
 - **Border radius:** 6px (Container has rounded corners)
 - **Padding:** 14px from Body frame edges
-- **Recommended content padding:**
-  - **Stretch table page:** Container padding = **0**. Use Container Header component as the action bar (it has its own internal padding). Table AI sits directly below with no gap, running edge-to-edge. Pagination component sits at the bottom of the Container as a separate instance (NOT Table AI's built-in pagination).
-  - **Boxy table page / standard page:** Container padding = **16px all sides**.
+- **Container auto-layout (all page types):**
+  - `layoutMode = "VERTICAL"`
+  - `counterAxisSizingMode = "FIXED"` (locks width)
+  - `itemSpacing = 10`
+- **Recommended Container padding by page type:**
+  - **Stretch table page:** padding = **16 top, 0 right, 0 bottom, 0 left**. The 16px top gives breathing room above Container Header. Table AI and Pagination run edge-to-edge.
+  - **Cards view page:** padding = **16 top, 0 right, 16 bottom, 0 left**. Top and bottom padding, sides edge-to-edge for cards grid.
+  - **Empty state page:** padding = **0 all sides**, `itemSpacing = 0`. The empty state illustration centers itself.
+  - **Boxy table page / standard page:** padding = **16px all sides**.
   - See "Table Variant: Stretch vs Boxy" in `decision-rules.md` for the full decision and structure.
+
+- **Body frame (parent of Container):**
+  - `layoutMode = "VERTICAL"`, padding = **14px all sides**, `itemSpacing = 10`
+  - `layoutSizingHorizontal = "FILL"`, `layoutSizingVertical = "FILL"`
 
 - **Stretch table Container structure (correct order):**
   ```
-  Container (padding 0)
-  ├── Container Header (component instance, detached for content)
+  Container (VERTICAL, padding 16/0/0/0, itemSpacing 10)
+  ├── Container Header (FIXED width, HUG height, internal padding 6/14/6/14)
   │   ├── Search (left) + filter Dropdowns + buttons (right)
-  ├── Table AI (Stretch, FILL width, Show Pagination = false)
-  └── Pagination (separate component instance at bottom)
+  ├── Table AI (FILL horizontal, FILL vertical, Show Pagination = false)
+  └── Pagination (FILL horizontal, FIXED vertical, internal padding 6/16/6/16)
   ```
   Table AI's `Show Pagination` should be **false** — use the separate Pagination component instead, which sits at the Container bottom edge.
 
-**WIDTH RULE:** Container width is 1259px. ALL content (tables, action bars, forms, cards) MUST fit within this width. Use `layoutSizingHorizontal = "FILL"` on all direct children so they stretch to fill — never exceed — the Container width. The Container's `counterAxisSizingMode` must be `"FIXED"` to lock the width.
+- **Cards view Container structure:**
+  ```
+  Container (VERTICAL, padding 16/0/16/0, itemSpacing 10)
+  ├── Container Header (FIXED width, HUG height, internal padding 6/14/6/14)
+  │   ├── Search (left) + filter Dropdowns + buttons (right)
+  └── Cards Grid (auto-layout frame, FILL horizontal)
+  ```
 
-**HEIGHT RULE:** Container height CAN grow beyond 736px if the content requires it. Use `primaryAxisSizingMode = "AUTO"` so the Container expands vertically with its content.
+**WIDTH RULE:** Container width is 1259px (Default layout) or 1489px (No Left Menu). ALL content must fit within this width. Table AI and Pagination use `layoutSizingHorizontal = "FILL"` to stretch. Container Header uses FIXED width matching the container. The Container's `counterAxisSizingMode` must be `"FIXED"` to lock the width.
+
+**HEIGHT RULE:** Container height CAN grow beyond 736px if the content requires it. Use `primaryAxisSizingMode = "AUTO"` (or `"FIXED"` + `layoutSizingVertical = "FILL"` for stretch tables where the table should fill remaining space).
 
 **TITLE RULE:** The Sub Header already displays the page/feature name. NEVER add a duplicate title heading inside the Container.
 

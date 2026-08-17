@@ -51,6 +51,7 @@ Structured decision trees for choosing the right component when the designer's i
 | Selection cards | Radio Button or Card BG (selected state) | Draws bordered rectangles |
 | Accordion/expandable | Accordion | Draws a section with chevron |
 | Tab navigation | Tabs (in Sub Header or as component) | Draws underlined text buttons |
+| Empty/first-time page | Empty State | Manually builds illustration + text + buttons |
 
 **The rule is simple: if the UI pattern exists in the above list, search for it and use the component. ZERO exceptions. The agent that built the "Create Database" wizard hand-drew the stepper, toggle, dropdown, selection cards, and close button — all of which are zcat components.**
 
@@ -126,23 +127,30 @@ Compare the built screen against the wireframe feature list. Every item must be 
 
 ### Visual Hierarchy
 
-**Text hierarchy (use consistently across ALL screens):**
+**CRITICAL: NEVER hardcode font sizes, weights, or hex colors in text.** Use zcat text styles and color variables. The design system defines 19 text styles — use them instead of specifying raw "16px SemiBold #000000".
 
-| Role | Size | Weight | Color Variable |
-|------|------|--------|---------------|
-| Section heading | 16px | SemiBold | `color/text/primary` |
-| Sub-section heading | 14px | SemiBold | `color/text/primary` |
-| Body / data text | 14px | Regular | `color/text/primary` |
-| Label / caption | 12px | Regular | `color/text/secondary` |
-| Help text / description | 12px | Regular | `color/text/placeholder` |
+**Text hierarchy (use zcat text styles and color variables):**
+
+| Role | Text Style | Color Variable |
+|------|-----------|---------------|
+| Section heading | Body/SemiBold/16 | `color/text/primary` |
+| Sub-section heading | Body/SemiBold/14 | `color/text/primary` |
+| Body / data text | Body/Regular/14 | `color/text/primary` |
+| Label / caption | Body/Regular/12 | `color/text/secondary` |
+| Help text / description | Body/Regular/12 | `color/text/placeholder` |
+| Card title | Body/SemiBold/16 | `color/text/primary` |
+| Card subtitle | Body/Regular/14 | `color/text/secondary` |
+| Card timestamp | Body/Regular/12 | `color/text/placeholder` |
+
+**ALL text colors MUST be bound to variables** — NEVER use raw hex like `#000000`, `#333333`, `#666666`. Use `color/text/primary`, `color/text/secondary`, `color/text/placeholder`, `color/text/on-brand`, etc.
 
 **Stat card values (make numbers prominent, not flat):**
 
-| Element | Size | Weight |
-|---------|------|--------|
-| Metric value (the number) | 24-28px | SemiBold or Bold |
-| Metric label (what it measures) | 12px | Regular, `color/text/secondary` |
-| Metric unit/suffix (GB, active, etc.) | 14px | Regular, `color/text/secondary` |
+| Element | Text Style | Color Variable |
+|---------|-----------|---------------|
+| Metric value (the number) | Headlines/SemiBold/24 | `color/text/primary` |
+| Metric label (what it measures) | Body/Regular/12 | `color/text/secondary` |
+| Metric unit/suffix (GB, active, etc.) | Body/Regular/14 | `color/text/secondary` |
 
 **Action hierarchy:**
 - Primary action → Fill button (`color/interactive`), most prominent
@@ -183,9 +191,36 @@ Container (padding: 0)
 └── Pagination bar (bottom)
 ```
 
-**Detail Page (boxy, multi-section):**
+**Detail Page with Tabs (boxy, multi-section):**
+
+When a detail page has primary tabs in the Sub Header (e.g., Overview |
+Monitoring | Backups | Settings), each tab's content area uses this structure:
+
 ```
-Container (padding: 16px, gap: 20-24px)
+Sub Header (INSTANCE — title row: page name + Export/common action, tab row: tabs)
+Body (padding 14px all sides)
+└── Container (padding ~10/16/16/0, gap 10)
+    ├── Container Header (section title matching active tab + description + filter controls)
+    └── Content Frame (padding 0/16/16/16, gap 16)
+        ├── Stat cards row (HORIZONTAL auto-layout, gap: 16px)
+        │   ├── Card BG — large bold value + small label (FILL width)
+        │   └── ...
+        ├── Two-column row (HORIZONTAL auto-layout, gap: 16px)
+        │   ├── Left section (FILL width) — Card BG or bordered frame
+        │   └── Right section (FILL width) — Card BG or bordered frame
+        └── Full-width section — Card BG or bordered frame
+            ├── Section heading
+            └── Content (table, chart, progress)
+```
+
+**Container Header on detail pages** shows the active tab's section context:
+the section heading (e.g., "Monitoring"), an optional description line, and
+filter controls (e.g., "Last 24 Hours" dropdown) — NOT the page-level actions
+which go in Sub Header.
+
+**Detail Page without Tabs (boxy, multi-section):**
+```
+Container (padding: 16px all sides, gap: 16)
 ├── Stat cards row (HORIZONTAL auto-layout, gap: 16px)
 │   ├── Card BG — large bold value + small label (FILL width)
 │   ├── Card BG — large bold value + small label (FILL width)
@@ -393,8 +428,7 @@ These are the fixed visual specs that EVERY screen must use. They ensure uniform
 | Form fields (vertical stack) | 16px |
 | Label → its input | 4px |
 | Cards in a horizontal row | 16px |
-| Action bar → table (stretch layout) | 0px |
-| Table → pagination | 12px |
+| Container children (Container Header → Table → Pagination) | 10px (Container itemSpacing) |
 | Toggle/checkbox rows | 12px |
 | Help text below a control | 4px |
 
@@ -524,6 +558,41 @@ Reserve a colored/brand card outside these three for genuine one-off emphasis
 — highlighting a single card among otherwise-neutral peers, or a deliberate
 call-to-action — not as a default.
 
+### Card Grid Layout (Applications / Catalog pages)
+
+**When a page shows items as cards instead of a table, use this pattern:**
+
+**Container structure:**
+```
+Container (VERTICAL, padding 16/0/16/0, itemSpacing 10)
+├── Container Header (FIXED width, HUG height, internal padding 6/14/6/14)
+│   ├── Search (left) + filter dropdowns + Create button (right)
+└── Cards Container frame (FILL horizontal, auto-layout VERTICAL, 16px padding left+right)
+    ├── Cards Row 1 (horizontal auto-layout, 16px gap, 3 cards FILL width)
+    │   ├── Card 1, Card 2, Card 3
+    └── Cards Row 2 (same)
+        ├── Card 4, Card 5, Card 6
+```
+
+**Individual card layout:**
+```
+Card frame (FILL width, Card BG fills, 16px padding, border-radius 6px)
+├── Icon BG (40x40, top-left, cornerRadius 10, subtle color fill)
+│   └── Stroke icon (18x18, centered)
+├── Badge (top-RIGHT corner, positioned absolutely or via spacer)
+├── Title (Body/SemiBold/16, color/text/primary) — below Icon BG
+├── Subtitle (Body/Regular/14, color/text/secondary) — "Production · Java"
+└── Timestamp (Body/Regular/12, color/text/placeholder) — "Last deployed: 2 hours ago"
+```
+
+**Key rules:**
+- Badge goes at **TOP-RIGHT** of the card, NOT below the title/subtitle
+- Icon BG at top-left, then title + subtitle below it as a group
+- Timestamp at the bottom
+- 3 cards per row, all FILL width (equal sizing)
+- Cards use Card BG component (detached for content), with border from `color/border/default`
+- All text uses zcat text styles and color variables — NEVER hardcode
+
 ### List Item Selection: Highlight vs Checkbox
 
 **When this comes up:** A sidebar list or master list selects items to show
@@ -555,7 +624,7 @@ sidebar is a common mistake — it confuses the interaction model by implying
 
 ### Building a Side Menu inside Container (Master-Detail)
 
-**Structure:** Container padding is **0** (not 16) — each panel manages its own
+**Structure:** Container padding is **16 top, 0 right/bottom/left** — each panel manages its own
 internal padding. Two panels sit side by side, separated by a **Divider**
 (`search_design_system("Divider")`, confirmed key
 `ae8ace032eb5e3ff8b86424a97be7a3728bde3bd`, Direction: "Vertical",
@@ -597,6 +666,56 @@ Stretch. If it has other sections too, that's Boxy.
 > variant property either, so "primary tab treatment" here is a placement/
 > styling intent, not yet a specific `setProperties()` call — confirm both via
 > `search_design_system` / `zcat_get_component` before building.
+
+---
+
+### Empty State Pages
+
+**When this comes up:** A page that shows when no data exists yet (no databases,
+no functions, no applications).
+
+**ALWAYS use the Empty State component** (key `03321dc06395aa6b94783d0289637de8ddc82de0`,
+type `component`). NEVER manually build empty state UI with frames, text, and
+buttons. The component has configurable boolean properties:
+
+| Property | Default | Purpose |
+|----------|---------|---------|
+| Show Illustration | true | Illustration graphic at top |
+| Show Heading | true | Title text (e.g. "No Database Yet") |
+| Show Description | true | Subtitle text (e.g. "Create your first database...") |
+| Show Primary Button | true | Fill CTA button (e.g. "Create Database") |
+| Show Outline Button | true | Outline secondary button (e.g. "View Docs") |
+
+Import: `await figma.importComponentByKeyAsync('03321dc06395aa6b94783d0289637de8ddc82de0')`
+then `.createInstance()`. Update heading, description, and button text via
+`findAll(n => n.type === 'TEXT')`.
+
+**Rules:**
+
+1. **NO Container Header** — there's nothing to search or filter. Never show
+   Search, filter dropdowns, or action bars on an empty state page.
+2. **NO duplicate CTAs** — if the empty state has a "Create X" button, do NOT
+   also put a "Create X" button in the Sub Header. The CTA lives in ONE place
+   only: the Empty State component.
+3. **Sub Header stays simple** — title + Help only (instance, not detached).
+4. **Container padding = 0 all sides**, `itemSpacing = 0`.
+5. **Empty State component** centers itself inside an Empty State Area frame
+   (FILL both axes, center both axes alignment).
+
+**Structure:**
+```
+Sub Header (INSTANCE — title + Help only, NO buttons)
+Body (padding 14px all sides)
+└── Container (padding 0/0/0/0, itemSpacing 0)
+    └── Empty State Area (FRAME, FILL both, center both axes)
+        └── Empty State (INSTANCE — component, key 03321dc0...)
+```
+
+**Common mistakes:**
+- Agents manually build empty state UI with frames + text + buttons instead of
+  using the Empty State component — this is ALWAYS wrong
+- Agents add Container Header with Search + filters — empty state = no action bar
+- Agents duplicate the CTA in both Sub Header and empty state
 
 ---
 
@@ -646,21 +765,24 @@ Table AI is zero-detach — configure via `setProperties({ "Style": "Stretch" })
 
 **How the two differ structurally, once chosen:**
 
-- **Stretch:** Container padding = **0**. Use the **Container Header component**
-  (detached for content) as the action bar — it has its own internal padding.
-  Table AI sits directly below with no gap, running edge-to-edge inside the
-  Container's rounded corners. **Pagination is a SEPARATE component instance**
-  at the bottom of the Container — set Table AI `Show Pagination = false` and
-  use the standalone Pagination component instead.
+- **Stretch:** Container padding = **16 top, 0 right, 0 bottom, 0 left**,
+  `itemSpacing = 10`. The 16px top gives breathing room above the Container
+  Header. Use the **Container Header component** (detached for content) as the
+  action bar — it has its own internal padding (6/14/6/14). Table AI sits below
+  running edge-to-edge. **Pagination is a SEPARATE component instance** at the
+  bottom — set Table AI `Show Pagination = false`.
   ```
-  Container (padding 0)
-  ├── Container Header (detached, Search + filters + buttons)
-  ├── Table AI (Stretch, FILL width, Show Pagination = false)
-  └── Pagination (separate component instance)
+  Container (VERTICAL, padding 16/0/0/0, itemSpacing 10)
+  ├── Container Header (FIXED width, HUG height, internal padding 6/14/6/14)
+  ├── Table AI (Stretch, FILL horizontal, FILL vertical, Show Pagination = false)
+  └── Pagination (FILL horizontal, FIXED vertical, internal padding 6/16/6/16)
   ```
-- **Boxy:** Container padding = **16px all sides**. The table sits
-  within that padded space like any other section, bordered to match the
-  other cards on the page.
+  Body frame (Container's parent): padding 14px all sides, itemSpacing 10.
+- **Boxy:** Container padding = **16px all sides**, `itemSpacing = 10`. The
+  table sits within that padded space like any other section.
+- **Cards view:** Container padding = **16 top, 0 right, 16 bottom, 0 left**,
+  `itemSpacing = 10`. Top and bottom breathing room, cards grid edge-to-edge.
+- **Empty state:** Container padding = **0 all sides**, `itemSpacing = 0`.
 
 ---
 
