@@ -144,11 +144,12 @@ Building a single screen should use ~8-12k tokens, not 20k+. Follow these rules:
 - Container height grows — `primaryAxisSizingMode = "AUTO"`, `counterAxisSizingMode = "FIXED"`
 - All children must use `layoutSizingHorizontal = "FILL"`
 - NO page title inside Container — the Sub Header already shows it
-- Primary tabs ALWAYS go in Sub Header FIRST — NEVER place primary (whole-page) tabs in Container. Container tabs are ONLY for secondary/section-scoped tabs. This is the #1 tab placement mistake. See layout-info.md "Header Action & Tab Placement" for the full decision order
-- Page-level actions (Primary/Secondary button, three-dot overflow) go in the Sub Header FIRST — fall back to a Container action bar only when that placement isn't meaningful for the screen (see layout-info.md)
+- Primary tabs ALWAYS go in Sub Header FIRST — NEVER place primary (whole-page) tabs in Container. Container tabs are ONLY for secondary/section-scoped tabs. This is the #1 tab placement mistake
+- Buttons placement depends on tabs — NO tabs in Sub Header: buttons go in Container Header (as part of the action bar with Search + filters). Tabs in Sub Header: buttons go in Sub Header right side (same row as tabs). NEVER put buttons in Sub Header when there are no tabs — the Sub Header stays simple (title + Help only). See layout-info.md for full decision order
+- Container Header IS the action bar — NEVER build a manual frame for the action bar. Use the Container Header component (detach for content), put Search + filters on left, buttons on right
 - Table AI column types — Table AI has 10 swappable column types (AvatarName, Badge, Date, Text, ExecutionStatus, IconText, Button, Checkbox, Threedot, Icon). Map wireframe columns to these types via instance swap. NEVER detach Table AI — configure entirely via setProperties(). If a column type doesn't exist, ask the user
 - Table AI content updates — update header and cell text by finding TEXT nodes inside the instance and setting characters in-place. DO NOT DETACH to edit text. Navigate: table.children → rows → cells → TEXT nodes
-- Stretch table Container padding = 0, action bar frame gets 16px top + left + right padding (no bottom — table sits directly below). Boxy Container padding = 16px all sides
+- Stretch table Container padding = 0, Container Header component as action bar (has its own padding), Table AI directly below, Pagination component as separate instance at bottom. Table AI Show Pagination = false for stretch tables (use separate Pagination component). Boxy Container padding = 16px all sides
 - NEVER modify the layout shell (Header, spacing, borders, backgrounds)
 - PAUSE AND ASK on build problems — if a component doesn't import, properties throw, layout breaks, or the Table component doesn't match the schema, STOP and ask the user. NEVER continue burning tokens on a failing approach. One question costs nothing; rebuilding a broken screen wastes thousands of tokens
 

@@ -116,35 +116,42 @@ The Sub Header (`1319:37210`) supports different configurations:
 
 ## Header Action & Tab Placement — Decision Order
 
-Page-level actions (Primary button, Secondary button, three-dot overflow menu)
-and Primary tabs follow the same rule: **try the Sub Header first.**
+Page-level actions and primary tabs follow different rules depending on whether
+the page has tabs.
 
-1. **First preference — Sub Header.** If the screen has page-level actions
-   (an action that applies to the whole page, e.g. "Create Function", "Import",
-   an overflow menu of page-level operations) and/or primary tabs (top-level
-   navigation switching the entire page content, e.g. "Tables | ZCQL Console"),
-   place them in the Sub Header, in the row below the feature name — actions on
-   the right, tabs on the left, same row when both are present.
+### Buttons (Create, Export, etc.)
 
-2. **Fallback — Container.** Only when placing them in the Sub Header would
-   not be meaningful — the action or tabs are scoped to a specific section of
-   the page rather than the page as a whole — build them as an action bar at
-   the top of the Container instead.
+**The placement depends on whether the Sub Header has primary tabs:**
 
-3. **Primary tabs specifically are always first-preference Sub Header.** Do
-   not place primary (whole-page) tabs in the Container unless the Sub Header
-   genuinely cannot express them for that screen. This holds even when action
-   buttons end up in the Container by rule 2 — each is decided independently.
+1. **NO tabs in Sub Header → buttons go in Container Header.** The Sub Header
+   stays simple (page title + Help only). The Container Header component
+   becomes the action bar: Search (left) + filter dropdowns + Export/secondary
+   button + Create/primary button (right). This is the standard list page pattern.
 
-**Two levels of tabs** — placement still depends on the tab's role:
+2. **Tabs in Sub Header → buttons go in Sub Header.** When the Sub Header has
+   primary tabs, place action buttons on the right side of the tab row (same
+   row as tabs). The Container Header is then used for Search + filters only
+   (no primary buttons).
 
-- **Primary tabs** (top-level page navigation, e.g., "Tables | ZCQL Console") →
-  **Sub Header**, first preference. These switch the entire page content.
-- **Secondary tabs** (content-level tabs within a section, e.g., "General |
-  Advanced | Permissions" inside a settings panel) → **Container**. These
-  switch content within a specific section of the page.
+3. **Section-scoped actions → Container.** If a button acts on a specific
+   section, card, or table (e.g., "Add Replica" next to a replicas table),
+   place it in that section's header, not in Sub Header.
 
-**How to decide (tabs):** If the tabs control what the whole page shows → Sub
+**CRITICAL: NEVER put buttons in Sub Header when there are no tabs.** The Sub
+Header without tabs is just the page title + Help link. Putting buttons there
+detaches or modifies the Sub Header component unnecessarily.
+
+### Tabs
+
+**Primary tabs** (top-level page navigation, e.g., "Overview | Monitoring |
+Backups | Settings") → **Sub Header**, always. These switch the entire page
+content.
+
+**Secondary tabs** (content-level tabs within a section, e.g., "General |
+Advanced | Permissions" inside a settings panel) → **Container**. These
+switch content within a specific section of the page.
+
+**How to decide:** If the tabs control what the whole page shows → Sub
 Header. If they control a section within the page → Container.
 
 **Sub Header tabs default to primary tab styling — don't copy an inconsistent
@@ -158,10 +165,26 @@ different tab style there when the specific wireframe/screenshot/PRD you were
 given explicitly shows that treatment for the screen you're building — never
 because you've seen it once elsewhere in the live product.
 
-**How to decide (actions):** If the button/menu acts on the whole page or its
-primary object (e.g., "Create Function" on a functions list page) → Sub
-Header, first preference. If it acts on a specific section, card, or table row
-→ Container, next to what it acts on.
+### Container Header as Action Bar
+
+**The Container Header component is the standard action bar inside the Container.**
+It is an existing zcat component — NEVER build a manual action bar frame.
+
+**Standard list page Container Header layout (no tabs):**
+```
+Container Header (component instance, FILL width, detach for content)
+├── Left side: Search component + filter Dropdowns
+└── Right side: Export button (Outline/Ghost) + Create button (Fill)
+```
+
+**Container Header with tabs in Sub Header (filters only):**
+```
+Container Header (component instance, FILL width, detach for content)
+├── Left side: Search component + filter Dropdowns
+└── Right side: (no primary buttons — they're in Sub Header)
+```
+
+NEVER build a manual frame for the action bar. ALWAYS use Container Header.
 
 ## Content Area Specs
 
@@ -171,9 +194,19 @@ Header, first preference. If it acts on a specific section, card, or table row
 - **Border radius:** 6px (Container has rounded corners)
 - **Padding:** 14px from Body frame edges
 - **Recommended content padding:**
-  - **Stretch table page:** Container padding = **0**. The action bar frame gets **16px top + left + right padding, 0 bottom** — the table sits directly below with no gap, running edge-to-edge inside the Container's rounded corners.
+  - **Stretch table page:** Container padding = **0**. Use Container Header component as the action bar (it has its own internal padding). Table AI sits directly below with no gap, running edge-to-edge. Pagination component sits at the bottom of the Container as a separate instance (NOT Table AI's built-in pagination).
   - **Boxy table page / standard page:** Container padding = **16px all sides**.
   - See "Table Variant: Stretch vs Boxy" in `decision-rules.md` for the full decision and structure.
+
+- **Stretch table Container structure (correct order):**
+  ```
+  Container (padding 0)
+  ├── Container Header (component instance, detached for content)
+  │   ├── Search (left) + filter Dropdowns + buttons (right)
+  ├── Table AI (Stretch, FILL width, Show Pagination = false)
+  └── Pagination (separate component instance at bottom)
+  ```
+  Table AI's `Show Pagination` should be **false** — use the separate Pagination component instead, which sits at the Container bottom edge.
 
 **WIDTH RULE:** Container width is 1259px. ALL content (tables, action bars, forms, cards) MUST fit within this width. Use `layoutSizingHorizontal = "FILL"` on all direct children so they stretch to fill — never exceed — the Container width. The Container's `counterAxisSizingMode` must be `"FIXED"` to lock the width.
 

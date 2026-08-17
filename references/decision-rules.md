@@ -646,11 +646,18 @@ Table AI is zero-detach — configure via `setProperties({ "Style": "Stretch" })
 
 **How the two differ structurally, once chosen:**
 
-- **Stretch:** Container padding = **0**. The action bar (and the filter-chip
-  row, if filters are applied) live inside their own auto-layout frame with
-  **16px top + left + right padding, 0 bottom** — the table sits directly
-  below the action bar with no gap, so it runs edge-to-edge inside the
-  Container's rounded corners.
+- **Stretch:** Container padding = **0**. Use the **Container Header component**
+  (detached for content) as the action bar — it has its own internal padding.
+  Table AI sits directly below with no gap, running edge-to-edge inside the
+  Container's rounded corners. **Pagination is a SEPARATE component instance**
+  at the bottom of the Container — set Table AI `Show Pagination = false` and
+  use the standalone Pagination component instead.
+  ```
+  Container (padding 0)
+  ├── Container Header (detached, Search + filters + buttons)
+  ├── Table AI (Stretch, FILL width, Show Pagination = false)
+  └── Pagination (separate component instance)
+  ```
 - **Boxy:** Container padding = **16px all sides**. The table sits
   within that padded space like any other section, bordered to match the
   other cards on the page.
