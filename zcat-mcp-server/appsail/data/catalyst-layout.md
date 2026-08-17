@@ -81,21 +81,60 @@ Layout (1554:19926) — COMPONENT
 For each new Catalyst screen:
 
 1. **Import** — `const layoutSet = await figma.importComponentSetByKeyAsync('c321d468b0231e052b921026407ff896bdf2c55e')` then `const instance = layoutSet.defaultVariant.createInstance()` (or select No Left Menu variant first)
-2. **Configure** — Set boolean properties BEFORE detaching: `instance.setProperties({'Show Sidemenu': false})` etc.
-3. **Detach** — `const frame = instance.detachInstance()` — returns a NEW node with a new ID. Reassign to use the new reference.
-4. **Name** — Rename the top frame to the screen name (e.g., "Functions - List View")
-4. **Sub Header** — Find node `1319:37210`, update "Feature Names" → actual name (e.g., "Functions")
-5. **Sidebar** — Find node `1319:37208`, update:
-   - Menu heading text → feature section names
-   - List item text → feature sub-pages
-   - Highlight the active item (List item 2 style = selected)
-6. **Content** — Find Container (`1319:37212`):
+2. **Configure** — Set boolean properties BEFORE detaching. Property keys may have hash suffixes — inspect `Object.keys(instance.componentProperties)` to get actual keys if `setProperties()` throws. Example: `instance.setProperties({'Show Sidemenu#13106:9': false})`
+3. **Detach** — `const frame = instance.detachInstance()` — returns a NEW node with a new ID. **All child node IDs change after detach.** Reassign to use the new reference.
+4. **Re-find nodes** — After detach, ALL pre-detach node IDs are invalid. Re-find by name:
+   ```js
+   const body = frame.findOne(n => n.name === 'Body & Sub Header' || n.name === 'Body');
+   const subHeader = frame.findOne(n => n.name === 'Sub Header');
+   const sidebar = frame.findOne(n => n.name === 'Sidemenu');
+   const container = body.findOne(n => n.name === 'Container');
+   ```
+5. **Name** — Rename the top frame to the screen name (e.g., "Functions - List View")
+6. **Sub Header** — Update "Feature Names" → actual name (e.g., "Functions")
+7. **Sidebar** — Update sidebar menu (see Sidebar Structure below)
+8. **Content** — Build inside Container:
    - Clear any placeholder content
    - Build the screen's UI inside this frame
    - Use auto-layout for all content structure
    - Import and place zcat components
    - Bind all colors to zcat variables
-7. **Don't modify** — Header, layout spacing, borders, backgrounds, Union shape
+9. **Clone for additional screens** — `frame.clone()` lands on the SAME page. Always `targetPage.appendChild(clonedFrame)` to move it. Without this, clones silently appear on wrong pages
+10. **Don't modify** — Header, layout spacing, borders, backgrounds, Union shape
+
+## Sidebar (Sidemenu) Internal Structure
+
+The sidebar instance has this nested structure:
+
+```
+Sidemenu (INSTANCE, 230×812)
+├── Service Name (TEXT) — the product/service header
+├── NAVIGATION (FRAME) — group 1
+│   ├── HEADING (FRAME)
+│   │   └── heading text (TEXT)
+│   ├── _Sidemenu Source (INSTANCE) — menu item template (hidden)
+│   ├── List item 2 (INSTANCE) — menu item 1
+│   ├── List item 2 (INSTANCE) — menu item 2
+│   ├── List item 2 (INSTANCE) — menu item 3
+│   └── ... more List items
+├── NAVIGATION (FRAME) — group 2 (duplicate, same structure)
+├── NAVIGATION (FRAME) — group 3 (duplicate, same structure)
+└── ... more groups
+```
+
+**Default:** The sidebar ships with 3 duplicate NAVIGATION groups, each containing a heading + 3-5 list items.
+
+### How to Configure
+
+1. **Hide unused groups** — If you need only 1-2 groups, set `.visible = false` on the extra NAVIGATION frames
+2. **Update headings** — Find TEXT nodes inside HEADING frames, load font, set characters
+3. **Update menu items** — Find "List item 2" instances inside each NAVIGATION group:
+   - Update text: find TEXT child, load font, set characters
+   - Set active state: `listItem.setProperties({"State": "Active"})` for the current page's item
+   - Set default state: `listItem.setProperties({"State": "Default"})` for all others
+   - Hide extras: set `.visible = false` on unneeded items
+4. **"_Sidemenu Source"** — This is a hidden template instance. Leave it hidden. Do not modify.
+5. **EXACTLY ONE item must be Active** — matching the page being shown
 
 ## Sub Header — NEVER DETACH
 

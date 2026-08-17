@@ -140,6 +140,11 @@ This applies to prompts like:
 - Button Type vs Variant: Type selects the button KIND (Default Button, Split Button, Navigation Buttons). Variant selects the STYLE (Fill, Outline, Ghost). `setProperties({Type: 'Ghost'})` will throw — Ghost is a Variant value
 - Card BG variant is State (Default/Hover/Selected/Disabled), NOT Color (White/Grey/Bordered/Elevated) — `setProperties({Color: 'White'})` will throw
 - Badge variant properties are Type/Color/Size — NOT Style/Color/Size
+- Property keys may have hash suffixes — `setProperties()` uses the FULL property key including any `#nodeId` suffix (e.g., `"Show Sidemenu#13106:9"`). If `setProperties({"Show Sidemenu": true})` throws, inspect `Object.keys(instance.componentProperties)` to get the actual keys with suffixes. Set properties BEFORE detaching — after detach, component property toggles no longer work
+- `node.clone()` lands on the SAME page as the original — NOT your target page. After cloning, always `targetPage.appendChild(clonedNode)` to move it to the correct page. Without this, clones silently appear on wrong pages
+- Scripts are ATOMIC — if ANY line throws, ALL mutations in that script are rolled back. Never mix creation code with risky inspection code. Wrap uncertain operations in try/catch, or split into separate use_figma calls
+- After detaching Layout, child node IDs change — re-find all nodes (Container, Sub Header, Sidebar, Body) using names or structure traversal AFTER detach, not before. IDs saved before detach are invalid
+- Table AI is COLUMN-based, not row-based — structure is `Table > Col 1 (header + data cells vertically) > Col 2 > ...`. To update text: traverse columns first, then cells within each column. Header is the first child in each column, data cells follow
 
 ## Token Optimization (MANDATORY)
 

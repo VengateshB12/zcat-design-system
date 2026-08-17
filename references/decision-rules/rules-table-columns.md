@@ -196,6 +196,55 @@ Run through EVERY column and verify:
 | `Show Pagination` | boolean (default true) |
 | `Col 1` through `Col 8` | instance swap (component node ID, NOT key) |
 
+## Table AI Internal Structure — COLUMN-Based, NOT Row-Based
+
+Table AI uses a **column-first** layout. Each column is a vertical stack containing a header cell and data cells:
+
+```
+Table AI (INSTANCE)
+├── Col 1 (INSTANCE — e.g. AvatarName by default)
+│   ├── Header cell (FRAME)
+│   │   └── TEXT node ("Column 1")
+│   ├── Data cell 1 (FRAME)
+│   │   └── TEXT node ("Row 1 data")
+│   ├── Data cell 2 (FRAME)
+│   │   └── TEXT node ("Row 2 data")
+│   ├── Data cell 3
+│   ├── Data cell 4
+│   └── Data cell 5
+├── Col 2 (INSTANCE — e.g. Badge by default)
+│   ├── Header cell
+│   ├── Data cell 1
+│   └── ...
+├── Col 3, Col 4, ... (same pattern)
+├── Checkbox column (optional, leftmost)
+└── Threedot column (optional, rightmost)
+```
+
+### How to Update Text Content (NEVER DETACH)
+
+1. **Find all TEXT nodes:** `const texts = table.findAll(n => n.type === 'TEXT')`
+2. **Load fonts:** `for (const t of texts) await figma.loadFontAsync(t.fontName)`
+3. **Navigate by column:** Each `Col N` instance contains cells top-to-bottom. First TEXT child = header, rest = data cells
+4. **Set characters:** `textNode.characters = "New Value"`
+5. **Hide unused rows:** Set `.visible = false` on data cell frames you don't need
+
+### How to Clear Default Data
+
+Table AI ships with dummy data ("orders-prod", "Aurora MySQL 3.0", "us-east-1", etc.). You MUST overwrite ALL text content with your actual data from sample-data.md. For unused rows, hide the entire data cell frame (not just clear the text).
+
+```js
+// Pattern: update all cells in a column
+const col = table.findOne(n => n.name === 'Col 1');
+const textNodes = col.findAll(n => n.type === 'TEXT');
+// textNodes[0] = header, textNodes[1..N] = data cells
+for (const t of textNodes) await figma.loadFontAsync(t.fontName);
+textNodes[0].characters = "Rule Name";      // header
+textNodes[1].characters = "Auto Archive";    // row 1
+textNodes[2].characters = "Notify Assignee"; // row 2
+// ... etc
+```
+
 ## Structural Differences by Style
 
 **Stretch:**

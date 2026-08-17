@@ -754,13 +754,13 @@
       "figmaName": "Stepper",
       "componentKey": "2c2cd669431492f516b4c9a2a4fde585cfd74116",
       "searchQuery": "Stepper",
-      "type": "component"
+      "type": "component_set"
     },
     "Pagination": {
       "figmaName": "Pagination",
       "componentKey": "e2e8d2df4e0e1de88032ff157aeb1dd51b2d370b",
       "searchQuery": "Pagination",
-      "type": "component"
+      "type": "component_set"
     },
     "Sidebar List Panel": {
       "figmaName": "Sidebar List Panel",
