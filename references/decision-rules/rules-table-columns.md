@@ -106,8 +106,11 @@ AvatarName forces 2 text lines on every cell. This is WRONG when:
 | Empty/blank | Wasted row height | Change to **Text** |
 
 **Line 2 is CORRECT only when:**
-- Person name + their email/role ("John Smith" / "john@company.com")
-- Entity name + genuine subtitle ("orders-prod" / "Aurora MySQL 3.0") — and ONLY with IconText or AvatarName when appropriate
+- Person name + their email/role ("John Smith" / "john@company.com") — ONLY with AvatarName
+
+**In Catalyst, two-line cells are RARE.** Most table columns use single-line Text. Two-line cells (name + subtitle) are only for person columns where the subtitle adds genuine value (email, role). Do NOT use two-line format for entity names — "orders-prod" does NOT need "Aurora MySQL 3.0" as a subtitle in the same cell. Put them in separate columns instead.
+
+**If you see an avatar photo next to a non-person item (database name, function name, rule name), the column type is WRONG.** Avatars are faces — databases don't have faces. Switch to Text or IconText.
 
 ---
 
@@ -183,6 +186,27 @@ If every badge in a table looks like a bold colored pill, you're using Primary �
 
 ---
 
+## Header-Column Match — MANDATORY Verification
+
+**Every column header MUST match the data in its cells.** If the header says "Rule Name", every cell in that column MUST contain a rule name — not an avatar, not a subtitle, not data from another column.
+
+**Common mismatches to catch:**
+| Header | Wrong cell content | Fix |
+|--------|-------------------|-----|
+| "Rule Name" | AvatarName with photo + name + subtitle | Swap to Text — rules don't have faces or subtitles |
+| "Database" | AvatarName with random avatar photo | Swap to IconText (database icon) or Text |
+| "Amount" | Badge pill instead of number | Swap to Text — amounts are not statuses |
+| "Created Date" | Text showing a name | Data is in the wrong column — fix the text mapping |
+| Any header | Cell shows data from a different column | Text updates were applied to wrong nodes — remap |
+
+**If a column has unwanted elements (avatars on non-person data, two-line format where single line is enough, badge on non-status data), rework it:**
+1. Swap the column type to match the data
+2. Update text content to show only what the header describes
+3. Remove/hide subtitle lines if they add no value
+4. Screenshot and re-verify the column reads correctly top to bottom
+
+---
+
 ## Self-Check After Building Any Table
 
 Run through EVERY column and verify:
@@ -190,9 +214,10 @@ Run through EVERY column and verify:
 1. **Column 1 is AvatarName?** → Is this column about a PERSON? Would a face icon make sense? If NO → swap to Text or IconText
 2. **Column 2 is Badge?** → Is this a STATUS column with varying semantic values? If NO → swap to Text
 3. **Any column has Badge?** → Do the values VARY across rows? Does each value have a DIFFERENT meaning? Are the colors DIFFERENT per value? If all same color → fix colors or change to Text
-4. **AvatarName has 2 text lines?** → Is line 2 different from line 1? Is it meaningful? If line 2 = line 1 → swap to Text
-5. **Status column exists but is plain Text?** → Swap to Badge with semantic colors (you're losing the color signal)
-6. **Data aligned correctly?** → Read each row left to right — does each cell match its column header?
+4. **AvatarName has 2 text lines?** → Is line 2 different from line 1? Is it genuinely useful? In Catalyst, two-line cells are RARE — only person name + email/role. If the subtitle adds nothing, swap to single-line Text
+5. **Status column exists but is plain Text?** → Swap to Badge (Type=Secondary) with semantic colors
+6. **Data aligned correctly?** → Read each row left to right — does each cell match its column header? If ANY cell contains data that belongs in a different column, the text mapping is broken — fix it
+7. **Badge Type?** → Must be Type=Secondary (subtle) in tables. If badges look like bold filled pills, switch from Primary to Secondary
 
 ---
 
