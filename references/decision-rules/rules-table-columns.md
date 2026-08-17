@@ -50,6 +50,36 @@ After importing Table AI, you MUST:
 
 ---
 
+## Column Order is FLEXIBLE — Match Data, Not Defaults
+
+**Table AI column positions (Col 1, Col 2, Col 3…) can hold ANY column type.** You are NOT locked into AvatarName on Col 1 or Badge on Col 2. Swap column types into ANY position via instance swap to match the wireframe and data requirements:
+
+- Badge can be Col 3 or Col 5 — put it where status appears in the wireframe
+- Name/entity can be Col 1 or Col 4 — put it where the wireframe shows it
+- IconText can be Col 1 for entity-first tables, or Col 2 after a checkbox
+
+**All column reordering is done via instance swap on `Col 1` through `Col 8` — NEVER detach Table AI to rearrange columns.**
+
+---
+
+## Entity Columns MUST Use IconText — NOT AvatarName, NOT Badge
+
+**For non-person entities (databases, functions, services, APIs, files), ALWAYS use the IconText column type.** IconText renders an icon + text — exactly right for entity data that has a natural icon representation.
+
+**NEVER use AvatarName for entities** — AvatarName renders a person's avatar photo. Databases, functions, and APIs are not people and should not have face photos next to them.
+
+**NEVER use Badge for entity names** — Badge is for status/category values only. Entity names like "orders-prod" or "cache-redis" are identifiers, not statuses.
+
+| Entity data | WRONG column type | CORRECT column type |
+|-------------|-------------------|---------------------|
+| "orders-prod" (database) | AvatarName (face photo) | **IconText** (database icon) |
+| "cache-redis" (cache) | AvatarName (face photo) | **IconText** (database icon) |
+| "processOrder" (function) | AvatarName or Badge | **IconText** (function icon) |
+| "user-auth-service" (API) | AvatarName or Badge | **IconText** (API icon) |
+| "report-2024.pdf" (file) | AvatarName | **IconText** (file icon) |
+
+---
+
 ## Column Type Decision — Ask These Questions for EVERY Column
 
 ### Question 1: "Would a PERSON'S FACE make sense next to this data?"
@@ -111,6 +141,22 @@ AvatarName forces 2 text lines on every cell. This is WRONG when:
 **In Catalyst, two-line cells are RARE.** Most table columns use single-line Text. Two-line cells (name + subtitle) are only for person columns where the subtitle adds genuine value (email, role). Do NOT use two-line format for entity names — "orders-prod" does NOT need "Aurora MySQL 3.0" as a subtitle in the same cell. Put them in separate columns instead.
 
 **If you see an avatar photo next to a non-person item (database name, function name, rule name), the column type is WRONG.** Avatars are faces — databases don't have faces. Switch to Text or IconText.
+
+### Maximum Lines Per Cell — STRICT LIMIT
+
+**NO table cell should have more than 2 lines of text.** Three-line or multi-line cells break table row height consistency and make the table look messy.
+
+| Cell type | Max lines | Rule |
+|-----------|-----------|------|
+| Name/ID/label | **1 line** | Single-line Text — the default |
+| Person name + email/role | **2 lines** | AvatarName ONLY — rare in Catalyst |
+| Description/long text | **2 lines + "View More"** | Truncate to 2 lines, show "View More" link. Clicking expands to show full content |
+| Status/badge | **1 line** | Badge pill is always single-line |
+| Date | **1 line** | Formatted date is always single-line |
+
+**Description columns with long content:** Truncate at 2 lines with text overflow ellipsis. Add a "View More" text link (color/text/link) that expands the cell to show the full description. By default, only 2 lines are visible — the rest is hidden until the user clicks "View More".
+
+**NEVER allow 3+ lines in any table cell.** If a cell needs more than 2 lines, it needs truncation + expand, not more row height.
 
 ---
 
@@ -211,13 +257,16 @@ If every badge in a table looks like a bold colored pill, you're using Primary �
 
 Run through EVERY column and verify:
 
-1. **Column 1 is AvatarName?** → Is this column about a PERSON? Would a face icon make sense? If NO → swap to Text or IconText
+1. **Column 1 is AvatarName?** → Is this column about a PERSON? Would a face icon make sense? If NO → swap to IconText (for entities with natural icons) or Text (for plain identifiers)
 2. **Column 2 is Badge?** → Is this a STATUS column with varying semantic values? If NO → swap to Text
 3. **Any column has Badge?** → Do the values VARY across rows? Does each value have a DIFFERENT meaning? Are the colors DIFFERENT per value? If all same color → fix colors or change to Text
 4. **AvatarName has 2 text lines?** → Is line 2 different from line 1? Is it genuinely useful? In Catalyst, two-line cells are RARE — only person name + email/role. If the subtitle adds nothing, swap to single-line Text
 5. **Status column exists but is plain Text?** → Swap to Badge (Type=Secondary) with semantic colors
 6. **Data aligned correctly?** → Read each row left to right — does each cell match its column header? If ANY cell contains data that belongs in a different column, the text mapping is broken — fix it
 7. **Badge Type?** → Must be Type=Secondary (subtle) in tables. If badges look like bold filled pills, switch from Primary to Secondary
+8. **Column order matches wireframe?** → Column positions are flexible. Badge doesn't have to be Col 2. Reorder via instance swap to match the wireframe layout
+9. **Any cell has 3+ lines?** → MAX 2 lines per cell. Descriptions get 2-line truncation + "View More" link. NEVER allow 3+ line cells
+10. **Entity columns using AvatarName?** → Databases, functions, APIs, files MUST use IconText, NEVER AvatarName
 
 ---
 

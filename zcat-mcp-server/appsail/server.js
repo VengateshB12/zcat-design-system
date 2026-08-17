@@ -518,10 +518,10 @@ function buildServer() {
    * they need, not the entire 99k monolith. */
   const TOPIC_MAP = [
     { file: "dr-which-component.md",     keywords: ["component", "search", "which", "skip", "wireframe coverage", "mandatory", "audit"] },
-    { file: "dr-design-composition.md",  keywords: ["wireframe", "composition", "hierarchy", "anti-pattern", "stat card", "polish", "action bar", "section grouping"] },
+    { file: "dr-design-composition.md",  keywords: ["wireframe", "composition", "hierarchy", "anti-pattern", "stat card", "polish", "action bar", "section grouping", "card recipe", "card pattern", "improve", "enhance", "creative", "three-dot", "hover", "link color"] },
     { file: "dr-design-uniforms.md",     keywords: ["uniform", "consistency", "page layout", "card spec", "text style", "spacing rhythm", "danger zone", "button placement"] },
     { file: "dr-data-display.md",        keywords: ["data display", "cards", "list", "card grid", "card bg", "kv", "key-value", "general details", "kpi", "description list"] },
-    { file: "dr-table-columns.md",       keywords: ["table ai", "column", "stretch", "boxy", "filter", "chip", "avatarname", "pagination"] },
+    { file: "dr-table-columns.md",       keywords: ["table ai", "column", "stretch", "boxy", "filter", "chip", "avatarname", "pagination", "badge", "secondary", "header-column", "header match", "two-line", "icon", "icontext", "column order", "view more", "truncat", "cell line"] },
     { file: "dr-detail-page.md",         keywords: ["detail page", "master-detail", "side menu", "empty state", "sidebar list"] },
     { file: "dr-input-selection.md",     keywords: ["input", "dropdown", "radio", "checkbox", "toggle", "textarea", "segmented", "number input"] },
     { file: "dr-popup-footer.md",        keywords: ["popup", "modal", "dialog", "footer", "stepper", "drawer", "form group", "popup blur"] },
