@@ -27,7 +27,7 @@ Follow this workflow exactly, step by step.
 12. **Load /figma-use** — ALWAYS before ANY use_figma call
 13. **One screen at a time** — build, show, approve, then next
 14. **Same Size in a group** — buttons, dropdowns, text boxes in same row MUST use same Size variant
-15. **Detach whitelist** — ONLY Layout, Accordion, Accordion Bordered, Dropdown Menu, Card BG, Container Header, Sidebar List Panel, Table. Ask before detaching anything else
+15. **Detach whitelist** — ONLY Layout, Accordion, Accordion Bordered, Dropdown Menu, Card BG, Container Header, Sidebar List Panel. Ask before detaching anything else. Table AI is ZERO-DETACH — NEVER detach it
 16. **Screenshots are reference only** — never copy exact designs or use them to justify manual builds
 17. **Primary tabs → Sub Header FIRST** — NEVER place primary (whole-page) tabs in Container. Container tabs are ONLY for secondary/section-scoped tabs
 18. **Pause on errors** — if a component doesn't import or properties throw, STOP and ask the user. Never burn tokens on a failing approach
@@ -35,6 +35,28 @@ Follow this workflow exactly, step by step.
 20. **Component limits ≠ feature limits** — if Tab supports 5 but wireframe shows 7, DETACH and add more manually with matching styling. NEVER remove content to fit a component's constraints
 21. **Design composition** — wireframes define features, not visual design. Apply visual hierarchy (24px bold stat values, 16px section headings, 12px labels), section grouping (Card BG, bordered frames), multi-column layouts for detail pages, consistent spacing (16px card gap, 24px section gap, 12px heading-to-content). Use Design Uniforms from decision-rules.md
 22. **Label:Value = horizontal, ALWAYS** — for read-only info (connection details, metadata, config summaries), use General Details component or Key Value Pair (Layout=Horizontal). Label LEFT, value RIGHT. NEVER stack label on top with value below. General Details is a pre-built block; Key Value Pair is the individual row component
+23. **Icons: clone+swap ONLY** — the Icon component set is internal/non-published. `importComponentSetByKeyAsync` and `importComponentByKeyAsync` both FAIL for icons. You MUST clone an icon instance from an existing component (e.g., Button's Help variant → find Icon Left child) and then `swapComponent()` to the desired variant. NEVER use emoji or Unicode characters (▶, ✕, ▾, ●, ←) as icons
+24. **Button labels: override nested TEXT node** — Button has NO text component property. Set label by: `btn.findAll(n => n.type === 'TEXT')` → find node with characters 'Button Text' → `await figma.loadFontAsync(node.fontName)` → `node.characters = "Your Label"`. There is no shortcut
+25. **Build before destroy** — NEVER remove existing content before confirming replacement content can be created. Build new content first, validate it works, then swap. A failed script that already removed old content leaves a broken screen with no undo
+26. **No manual UI controls** — NEVER create a rectangle/circle/frame to represent a button, input, badge, toggle, checkbox, or any UI control. If you catch yourself doing this, STOP and search for the component. The ONLY manual frames are structural layout containers (rows, columns, sections)
+27. **Shadow effects need blendMode** — all `DROP_SHADOW` effects require `blendMode: "NORMAL"` in the effect object. Omitting it throws an error
+28. **Container navigation** — NEVER use `findOne(n => n.name === "Container")` from the root screen — it can match Container nodes inside nested instances (e.g., inside Dropdown). Always find via Body frame's direct children: `for (const c of bodyFrame.children) { if (c.name === 'Container' && c.type === 'FRAME') ... }`
+29. **appendChild inside instances** — you can ONLY appendChild to FRAME nodes that are NOT inside any INSTANCE ancestor. If any ancestor is INSTANCE, detach it first. Check the parent chain before appending
+30. **Tab State property** — Tab instance property name is `"State"` (plain), values `"Active"` / `"Default"`. Hash-suffixed names (like `"State#548:8025"`) vary by instance — always try the plain name first
+31. **Components on EVERY screen** — do NOT use components for the first screen and then forget for subsequent screens. EVERY screen must use the exact same component workflow: import → configure → place. If you find yourself writing `figma.createFrame()` for a button, input, badge, or any UI control on ANY screen, STOP — you are drifting. Re-read this checklist before EVERY screen build
+32. **Use stroke icons everywhere** — wherever an icon is needed (stat cards, action buttons, navigation, status indicators), use a zcat stroke icon from the library via the clone+swap pattern. Even if the exact icon doesn't exist, use the closest available icon and tell the user: "I used [icon name] as a placeholder — swap it manually in Figma if needed." NEVER skip icons or substitute emoji/Unicode
+33. **Action bar balance** — when a button appears on the right side of an action bar or section header, ALWAYS provide a supporting element on the left side (Search component, section heading text, breadcrumb, filter dropdowns). NEVER leave a lonely right-aligned button with empty space on the left. This applies to Container action bars, card headers, section headers, and any horizontal row with a right-aligned action. Think MORE than the wireframe — enrich with Search, filters, or descriptive text
+34. **Design beyond wireframes** — wireframes are MINIMUM requirements. You MUST improve them: (a) flat wireframe cards → use Card BG with icon backgrounds, color variables, visual hierarchy (24px bold values, 12px labels), (b) wireframe tabs inside content → move primary tabs to Sub Header, (c) plain text lists → use proper components with badges, icons, spacing, (d) empty action bars → add Search, filters, or headings alongside buttons. The final design should look like a polished product, not a wireframe with components swapped in
+35. **Eliminate duplicate information** — if the wireframe shows the same data in two places (e.g., Storage as a stat card AND a separate storage graph card), MERGE them into one creative card or REMOVE the redundant one. Think about what value each element adds — don't blindly copy every wireframe element. Tell the user: "I merged the storage stat card and storage graph into one card since they show the same data"
+36. **Use Code Block / Code Editor component** — for SQL consoles, query editors, code views, JSON displays, and any monospace text area, ALWAYS use the Code Block component or build a code editor frame with `color/bg/sunken` fill, `color/border/default` border, and Roboto Mono font. NEVER build a plain text frame for code content. See component-manifest.json for Code Block details
+37. **Master-detail = Side Menu pattern** — when a wireframe shows a list on the left and detail on the right that changes when you click a list item (e.g., Schema page: table list → column schema), ALWAYS use the Side Menu / master-detail layout pattern from Recipe 4. NEVER copy the wireframe's flat two-panel layout. Use Sidebar List Panel or Nav Button list + Divider + detail panel
+38. **Fill ALL dropdown/input content** — EVERY dropdown must show a realistic selected value or meaningful placeholder from sample-data.md. NEVER leave dropdowns showing "Select List", "Enter Label Text", or default placeholder text. Same for text inputs — fill with realistic data that matches the screen context
+39. **ZERO hardcoded hex colors** — after building, verify that EVERY fill and stroke is bound to a zcat variable. Check the Selection Colors panel in Figma — if you see ANY raw hex values (like 0F1F3D, EBEDF5, 7887A8, FFFFFF, 2966F0, etc.), those are BUGS. Dark mode will break. Use `figma.variables.setBoundVariableForPaint` for EVERY color. The ONLY acceptable colors in the Selection Colors panel are variable references (like "color/bg/surface", "CARDS/Bg Default/Primary", etc.)
+40. **Self-critique before showing** — NEVER assume your design looks good. Before showing each screen to the user, take a screenshot and verify: (a) does every element use a zcat component? (b) are all colors variable-bound? (c) are stat cards creative with icon BGs? (d) is master-detail using Side Menu pattern? (e) are all dropdowns/inputs filled with real values? (f) is there any duplicate information? (g) does it look like a polished product or a wireframe copy? If ANY of these fail, fix them before showing
+41. **Think and decide, then inform** — when you encounter ambiguous design choices (merge duplicate sections, choose between layouts, improve wireframe patterns), make the decision yourself and inform the user in your summary: "I made these design decisions: [list]. Let me know if you want changes." Do NOT ask about every small choice — make good decisions and tell the user what you decided
+42. **Popup close is in FOOTER only** — the zcat Popup component has NO X close button in the header. Cancel/Close is a Ghost button in the footer, next to the primary action button (e.g., Cancel + Create, Cancel + Back + Continue). NEVER add a manual X icon in the popup header. The popup header contains ONLY the title (and optionally a Stepper or primary Tabs below it)
+43. **Stepper/Tabs in Popup header** — in wizard popups, the Stepper or primary Tabs ALWAYS go in the popup HEADER area directly below the title, NOT in the content body. Stepper must be responsive (layoutSizingHorizontal = FILL) to span the full popup width. Use the Stepper component — NEVER draw circles + lines manually
+44. **NEVER hand-build ANY UI control** — before creating ANY visual element, check the "Components Agents Commonly Skip" table in decision-rules.md. If the element matches ANY row in that table, use the component. This includes: toggles, dropdowns, text inputs, checkboxes, radio buttons, steppers, chips, alerts, loaders, avatars, search, date pickers, pagination, tooltips, accordions, breadcrumbs, progress bars, code blocks, section headings, and selection cards. The library has 79 components — if you're drawing rectangles, circles, or lines to make a UI control, you're doing it wrong
 
 ---
 
@@ -48,7 +70,7 @@ Use `importComponentSetByKeyAsync` for `set` types, `importComponentByKeyAsync` 
 | Button | `1e04478db049373eb096060a60ee7bbbc4da4e9a` | set | Type=Default Button/Split Button, Variant=Fill/Outline/Ghost, Size, Color, State |
 | Text Box | `411f52c2e02879cd0cd7a259933325c7cbc04b5c` | set | Size, State, Content=Placeholder/Filled, Has Label, Icon Left |
 | Drop down | `021a6653c106f277f2481ee722ed93d4137dc3a6` | set | Size, State, Content, Has Label, Icon Left |
-| Table | `954cd82ff912bd312206e7f2776a75d80049ede0` | set | Type=Default/Compact. Detach to customize columns |
+| Table AI | `f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07` | set | Style=Stretch/Boxy, Columns=3-8, Show Checkbox/Threedot/Pagination booleans, Col 1-8 instance swaps. ZERO-DETACH — configure entirely via setProperties(). See TABLE AI section below |
 | Badge | `158e4b6d656a62d4244efc4e5583794044328d3a` | set | Type=Primary/Secondary, Color=8 values, Size=Default/Small/Dot |
 | Tag/Chip | `69274b61923231a45f559e59bed169c121d9bc45` | set | Color, Size, Removable="true"/"false" |
 | Checkbox | `f6f4ae2426b2e9d6c3ee7fc3727e06054b0f5d58` | set | Checked=Unchecked/Checked/Indeterminate, State, Show Label |
@@ -396,7 +418,7 @@ Before writing ANY use_figma code, go through this checklist. For EVERY UI eleme
 | Any link text | `search_design_system("Link")` | Never create blue underlined text manually |
 | Any accordion | `search_design_system("Accordion")` | Never create expand/collapse manually |
 | Any tabs | `search_design_system("Tabs")` | Never create tab-like buttons manually |
-| Any table | `search_design_system("Table")` | Never create rows/columns of text manually |
+| Any table | Use **Table AI** directly (key `f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07`) | Never create rows/columns of text manually. Never use legacy Table. Never detach Table AI |
 | Any breadcrumbs | `search_design_system("Breadcrumbs")` | Never create breadcrumb text with separators |
 | Any attention/alert | `search_design_system("Attention box")` | Never create colored banner manually |
 | Any pagination | `search_design_system("Pagination")` | Never create page number buttons manually |
@@ -637,7 +659,136 @@ function bindTextColor(node, varName) {
 // bindFill(frame, "color/bg/surface");
 // bindStroke(frame, "color/border/default");
 // bindTextColor(textNode, "color/text/primary");
+
+
+// ═══════════════════════════════════════════════════════
+// TABLE AI — key: f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07
+// ZERO-DETACH: configure entirely via setProperties()
+// NEVER use legacy Table (954cd82ff912bd312206e7f2776a75d80049ede0)
+// ═══════════════════════════════════════════════════════
+const tableSet = await figma.importComponentSetByKeyAsync("f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07");
+const table = tableSet.defaultVariant.createInstance();
+
+// Step 1: Set variant properties
+table.setProperties({
+  "Style": "Stretch",     // "Stretch" (full-bleed, no border) or "Boxy" (6px radius, 1px border)
+  "Columns": "5",         // "3", "4", "5", "6", "7", or "8"
+  "Show Checkbox": false,  // row selection checkbox column
+  "Show Threedot": true,   // three-dot overflow menu column
+  "Show Pagination": true  // pagination bar at bottom
+});
+
+// Step 2: Swap column types to match your schema
+// Available column types (instance swap):
+//   _Table_Col_Text        (72d50704...) — generic text, 200px
+//   _Table_Col_AvatarName  (098e8873...) — avatar + name + subtitle, 280px
+//   _Table_Col_Date        (5ea76720...) — date + time, 200px
+//   _Table_Col_Badge       (f54ff134...) — status badge, 200px
+//   _Table_Col_ExecutionStatus (9c1f1f05...) — dot + status text, 200px
+//   _Table_Col_IconText    (e877af2d...) — icon + text, 200px
+//   _Table_Col_Button      (abbc84ec...) — ghost button action, 200px
+//   _Table_Col_Icon        (eb970147...) — single action icon, 48px
+//
+// Import the column type component, then swap:
+const badgeCol = await figma.importComponentByKeyAsync("f54ff134a0c90e39702568598321cb7c69ec3635");
+table.setProperties({ "Col 2": badgeCol.id });  // swap Col 2 to Badge type
+
+const dateCol = await figma.importComponentByKeyAsync("5ea7672068a9a6f18396ae92ad0184a75bf254c4");
+table.setProperties({ "Col 3": dateCol.id });    // swap Col 3 to Date type
+
+// Step 3: Update text content in each column
+// Table AI text is updated by finding TEXT nodes inside the instance.
+// DO NOT DETACH — update text in-place.
+// Pattern: find all text nodes, identify by position/name, load font, set characters
+const allTexts = table.findAll(n => n.type === "TEXT");
+for (const t of allTexts) {
+  await figma.loadFontAsync(t.fontName);
+  // Header texts typically have names like "Header" or contain default column names
+  // Body texts contain placeholder data — replace with real data from sample-data.md
+}
+
+// CRITICAL: To update specific cell text, navigate the instance tree:
+// table.children → rows → cells → TEXT nodes
+// Each row is a frame containing cell frames for each column
+// Find cells by index (Col 1 = first visible data column after checkbox if shown)
+
+// INSTANCE SWAP property names: "Col 1", "Col 2", "Col 3", ... "Col 8"
+// The value for each MUST be a component NODE ID (not component key)
+// Import the column type component first, then pass its .id
+
+// NEVER DETACH Table AI. If you need more columns than 8, ask the user.
+// If a column type doesn't exist (e.g., progress bar column), ask the user.
 ```
+
+#### ICON CLONE+SWAP PATTERN
+
+Icons in zcat are internal components — they CANNOT be imported directly via
+`importComponentByKeyAsync` or `importComponentSetByKeyAsync`. Both will fail.
+
+```javascript
+// The ONLY way to get an icon: clone from an existing component instance
+// Step 1: Import a component that HAS an icon (e.g., Button with Help variant)
+const btnSet = await figma.importComponentSetByKeyAsync("1e04478db049373eb096060a60ee7bbbc4da4e9a");
+const helpBtn = btnSet.defaultVariant.createInstance();
+helpBtn.setProperties({ "Type": "Help" }); // Help variant has an icon
+
+// Step 2: Find the icon instance inside the component
+const iconSource = helpBtn.findOne(n => n.type === "INSTANCE" && n.name.toLowerCase().includes("icon"));
+
+// Step 3: Clone the icon
+const myIcon = iconSource.clone();
+
+// Step 4: Swap to the desired icon variant
+// First, find all available icon variants:
+const iconComp = iconSource.mainComponent;
+const iconSet = iconComp.parent; // the component set
+const targetVariant = iconSet.children.find(v => v.variantProperties?.Icon === "deploy");
+if (targetVariant) myIcon.swapComponent(targetVariant);
+
+// Step 5: Clean up the helper button (we only needed it for the icon)
+helpBtn.remove();
+
+// Step 6: Place the icon where you need it
+targetFrame.appendChild(myIcon);
+
+// ICON BACKGROUND PATTERN (for stat card icons):
+// 40x40 frame, cornerRadius 10, VERTICAL center layout, 11px padding all sides
+// Fill MUST be bound to a zcat color variable — NEVER hardcoded RGB
+const iconBg = figma.createAutoLayout("VERTICAL", {
+  name: "Icon BG",
+  counterAxisAlignItems: "CENTER",
+  primaryAxisAlignItems: "CENTER",
+  paddingTop: 11, paddingBottom: 11, paddingLeft: 11, paddingRight: 11
+});
+iconBg.resize(40, 40);
+iconBg.cornerRadius = 10;
+bindFill(iconBg, "color/bg/brand-subtle"); // use a zcat variable!
+iconBg.appendChild(myIcon);
+myIcon.resize(18, 18);
+
+// NEVER use emoji (🚀, ⚡, 📁) or Unicode (▶, ✕, ▾, ●, ←) as icons.
+// ALWAYS use zcat stroke icons via this clone+swap pattern.
+```
+
+#### COMPONENT GOTCHAS
+
+**Attention Box** — has layout issues with long text. Internal text nodes
+sometimes have width=1px with textAutoResize=HEIGHT, causing vertical overflow.
+For info banners with multi-line content, hand-build a frame with icon + text
+instead of the Attention Box component. Bind all colors to variables.
+
+**Timeline** — decorative component only (colored dots + connecting line, NO
+text nodes). For activity timelines with text, build manually: vertical frame
+with rows of [badge dot + text column (title + timestamp)]. Bind colors to
+variables.
+
+**Container children after Layout detach** — the Container frame retains
+hidden Instance children from the Layout component (Empty State, Sidebar List
+Panel instances). These CANNOT be removed (`.remove()` throws). Only remove
+FRAME-type children you manually added.
+
+**Progress Bar fill** — fill width must be calculated as percentage of parent
+track width AFTER layout settles: `fillNode.resize(trackNode.width * 0.41, 6)`.
 
 #### PAGE LAYOUT RECIPES
 
@@ -664,12 +815,10 @@ Container (padding: 0 all sides, layoutMode: VERTICAL, primaryAxisSizingMode: AU
 │   ├── Tag [Chip, Removable: "true", text: "Status: Active"]
 │   └── Link ["Clear All"]
 │
-└── Table (FILL width, no extra padding — runs edge-to-edge)
-    ├── Header Row (FILL width, all columns)
-    ├── Data Row 1 (FILL width)
-    ├── Data Row 2 (FILL width)
-    ├── ... more rows ...
-    └── Pagination [at the bottom]
+└── Table AI (FILL width, Style: Stretch, Columns: match wireframe, Show Pagination: true)
+    ├── Swap Col 1-N to match wireframe column types (AvatarName, Badge, Date, Text, etc.)
+    ├── Update header and cell text in-place (DO NOT DETACH)
+    └── Pagination is built-in (toggle via Show Pagination boolean)
 ```
 
 **Composite shortcut (AI source):** Import Container Header (`c1e72c452cc937aa5dfc80c6308008c5038bc10f`, component_set) with Type=Search. Toggle on: Primary Button, and any needed filters (Filter 1, Filter 2, Filter 3). This replaces the manual action bar build.
@@ -691,9 +840,9 @@ Container (padding: 16-24, layoutMode: VERTICAL, gap: 16)
 │   ├── Card BG [neutral, stat: "99.2% Success Rate"]
 │   └── Card BG [neutral, stat: "142ms Avg Latency"]
 │
-└── Related Records — Table (Boxy variant, bordered)
+└── Related Records — Table AI (Style: Boxy, Columns: match wireframe)
     ├── Section heading + action button
-    └── Table [with header + rows + pagination]
+    └── Table AI [configure via setProperties, update text in-place, DO NOT DETACH]
 ```
 
 **Recipe 3: Modal / Popup with Form**

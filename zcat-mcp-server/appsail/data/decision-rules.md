@@ -22,7 +22,39 @@ Structured decision trees for choosing the right component when the designer's i
 
 **The library has 79 components.** Whatever you're about to build manually, search first. The search takes 1 second; a manual build takes minutes, wastes tokens, and produces wrong results (hardcoded colors, wrong spacing, no variable bindings).
 
-**For Tables specifically:** After importing and detaching, explore the column children. Each `_Table_Col` has a different cell template (avatar+text, badge, plain text, etc.). Swap columns to match the wireframe schema — don't use the default avatar+text template for every column and then detach when it doesn't fit.
+### Components Agents Commonly Skip (CHECK THIS LIST)
+
+**Before building ANYTHING, scan this list. If your screen has any of these patterns, use the component — do NOT hand-build.**
+
+| UI Pattern | CORRECT Component | Agent Mistake |
+|-----------|-------------------|---------------|
+| Popup/Modal/Dialog | Popup + Popup Blur | Hand-draws a frame with X close button |
+| Toggle switch | Toggle Button | Draws circles + rectangles manually |
+| Dropdown/Select | Dropdown | Draws a frame with text + chevron |
+| Text input | Text Box | Draws a bordered rectangle |
+| Checkbox | Check Box | Draws a square + checkmark |
+| Radio selection | Radio Button | Draws circles manually |
+| Step indicator | Stepper | Draws numbered circles + lines |
+| Tags/filters | Chip | Draws small bordered rectangles with text |
+| Warnings/alerts | Attention Box | Draws a colored box with icon |
+| Loading indicator | Loader | Draws spinning circles |
+| User icon | Avatar | Draws a colored circle with initials |
+| Key-value info | General Details or Key Value Pair | Stacks label+value as plain text |
+| Code/SQL editor | Code Block | Draws a plain text frame |
+| Section heading | Container Header | Writes bold text manually |
+| Progress indicator | Progress Bar | Draws rectangles for progress |
+| Breadcrumb trail | Breadcrumbs | Writes "Home > Page > Sub" as text |
+| Pagination | Pagination | Draws page number buttons manually |
+| Tooltip | Tooltip | Draws a small floating frame |
+| Search input | Search | Draws a text field with magnifying glass |
+| Date input | Date Picker | Draws a text field with calendar icon |
+| Selection cards | Radio Button or Card BG (selected state) | Draws bordered rectangles |
+| Accordion/expandable | Accordion | Draws a section with chevron |
+| Tab navigation | Tabs (in Sub Header or as component) | Draws underlined text buttons |
+
+**The rule is simple: if the UI pattern exists in the above list, search for it and use the component. ZERO exceptions. The agent that built the "Create Database" wizard hand-drew the stepper, toggle, dropdown, selection cards, and close button — all of which are zcat components.**
+
+**For Tables: ALWAYS use Table AI** (key `f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07`). Table AI is zero-detach — configure entirely via setProperties(). It has 10 swappable column types (AvatarName, Badge, Date, Text, ExecutionStatus, IconText, Button, Checkbox, Threedot, Icon). Set Style (Stretch/Boxy), Columns count (3-8), toggle Show Checkbox/Threedot/Pagination booleans, and swap column types via instance swap properties (Col 1 through Col 8). Update text content in-place by finding TEXT nodes — NEVER detach. NEVER use legacy Table (`954cd82ff912bd312206e7f2776a75d80049ede0`).
 
 ---
 
@@ -204,6 +236,79 @@ Popup Blur (full page backdrop)
     └── Footer (Back button outline + Continue/Create button fill)
 ```
 
+### ANTI-PATTERN: Wireframe Copy (THE #1 DESIGN QUALITY FAILURE)
+
+**The agent's most common failure is copying the wireframe layout literally into Figma with components swapped in — producing a "wireframe with components" instead of a polished design.**
+
+**How to identify a wireframe copy (if ANY of these are true, the design is bad):**
+- Stat cards are flat text-only blocks: just "ENGINE" / "Aurora" / "v3.0" with no icon, no icon background, no visual weight
+- Connection details are plain text blocks instead of using General Details or Key Value Pair components
+- Recent activity is an unstyled text list instead of items with status dots, timestamps, and a Card BG wrapper
+- Storage/progress indicators are basic flat bars instead of creative visualizations (donut chart, circular progress)
+- All sections float loose in the Container without Card BG wrappers or bordered frames
+- The design looks like a wireframe that happens to use the right font — no visual hierarchy, no depth, no polish
+- Sections are stacked vertically when they should be side-by-side (Connection on left, Recent Activity on right)
+
+**Every detail/overview page MUST have these creative elements:**
+
+1. **Stat cards with icon backgrounds** — NOT flat text. See pattern below
+2. **Connection/details in General Details component** — NOT manual text blocks
+3. **Activity feeds in Card BG with status dots** — NOT plain text lists
+4. **Two-column layout for info sections** — NOT everything stacked vertically
+5. **Progress/usage as creative visualizations** — circular progress, donut charts, not just flat bars
+6. **Every section wrapped in Card BG or bordered frame** — NO floating content
+
+### Stat Card Design — Creative, Not Flat
+
+**Wireframes show flat stat cards. Your designs must NOT.**
+
+Stat cards are the most visible element on a detail page — they set the visual tone.
+
+**BAD (wireframe copy):**
+```
+Card (flat, no icon)
+├── "ENGINE" (12px, secondary)
+├── "Aurora" (16px, primary)
+└── "v3.0" (12px, secondary)
+```
+This is NOT a design. This is a wireframe with a border around it.
+
+**GOOD (creative, polished):**
+```
+Card BG (detached, 16px padding, FILL width)
+├── HORIZONTAL auto-layout, gap: 12, center-aligned
+│   ├── Icon BG frame (40×40, cornerRadius: 10, padding: 11, centered)
+│   │   └── zcat stroke icon (18×18, clone+swap, color: color/text/on-brand)
+│   │   └── Fill: bind to a zcat color variable (color/bg/brand-subtle)
+│   └── VERTICAL auto-layout, gap: 4
+│       ├── Label (12px Regular, color/text/secondary) — "Engine"
+│       ├── Value (24px SemiBold, color/text/primary) — "Aurora"
+│       └── Subtitle (12px Regular, color/text/placeholder) — "v3.0" (optional)
+```
+
+**Rules:**
+- ALWAYS include an icon BG with a zcat stroke icon — never omit the icon
+- Each card in a row should use a DIFFERENT subtle color for the icon BG (brand-subtle, success-subtle, info-subtle, warning-subtle)
+- Value text is the HERO — 24px SemiBold minimum
+- Label text is secondary context — 12px, muted color
+- All cards in a row use FILL width (equal sizing)
+- If the exact icon doesn't exist, use the CLOSEST available zcat stroke icon and tell the user
+
+### Action Bar Design — Balance Left and Right
+
+**NEVER place a button alone on the right with empty space on the left.**
+
+When an action bar has a right-aligned button (e.g., "Add Read Replica", "Create Database"), the left side MUST have supporting content:
+
+| Screen type | Left side content | Right side content |
+|-------------|------------------|-------------------|
+| List page | Search + Filters | Create button |
+| Detail section | Section heading text ("Replicas", "Backups") | Action button |
+| Settings section | Section heading + description | Save/Apply button |
+| Card header | Title text | Action icon or link |
+
+If the wireframe shows a lonely right-aligned button, ADD a section heading or Search on the left. This is not optional — an empty left side looks broken.
+
 ### Visual Polish Checklist
 
 Apply these to EVERY screen before showing it to the user:
@@ -217,6 +322,10 @@ Apply these to EVERY screen before showing it to the user:
 7. **Help text under controls** — toggles, complex form fields, and section headers benefit from 12px descriptive text in `color/text/placeholder`
 8. **Danger zone separation** — destructive actions (Delete, Remove permanently) get visual separation from the rest of the page using Attention Box (type=Error) or a red-bordered frame
 9. **Consistent component sizing** — all buttons in one group same Size variant, all inputs in one form same Size variant
+10. **Components on EVERY screen** — verify that EVERY button, input, badge, toggle, checkbox, dropdown, and table is a zcat component instance, NOT a manual frame. This check applies to ALL screens, not just the first one. Context drift (using components on screen 1, then hand-building on screens 2-10) is the #2 failure pattern after skipping search
+11. **Stroke icons everywhere** — every icon visible in the design must be a zcat stroke icon via clone+swap. Even if the exact icon doesn't match perfectly, use the closest available one and note it for the user. NEVER use emoji, Unicode, or text characters as icons
+12. **Action bars are balanced** — every right-aligned button has a supporting left-side element (Search, heading, filters). No lonely buttons
+13. **Stat cards have icon backgrounds** — every stat card has a 40×40 icon BG frame with a zcat stroke icon inside, using a subtle color variable fill. Flat text-only stat cards are not acceptable
 
 ### Consistency Across Screens
 
@@ -227,6 +336,8 @@ Apply these to EVERY screen before showing it to the user:
 - Sidebar menu structure, Sub Header format, table column styling, card dimensions, section heading typography, action bar layout, and pagination placement must be consistent
 - Build the first screen, get approval, then replicate the same patterns for subsequent screens
 - Only deviate when the screen type is genuinely different (list vs detail vs settings vs wizard)
+
+**CRITICAL: Component usage does NOT decay across screens.** If screen 1 uses Button, Text Box, Badge, Table AI, and Card BG components, then screens 2-10 MUST also use these same components. Agents tend to "drift" after the first screen — using components for screen 1 then gradually falling back to manual frames for subsequent screens. This is the #2 failure pattern. Before building each screen, re-read the component checklist in zcat.md. The wireframe defines WHAT to build, the component checklist defines HOW to build it — and HOW never changes between screens
 
 ### Design Uniforms — Mandatory Specs for All Screens
 
@@ -489,12 +600,15 @@ Stretch. If it has other sections too, that's Boxy.
 
 ---
 
-### Table Variant: Stretch vs Boxy
+### Table AI Variant: Stretch vs Boxy
 
-**When this comes up:** You're placing a Table inside a Catalyst Container and
-need to decide how the Container itself is structured around it.
+**When this comes up:** You're placing a Table AI inside a Catalyst Container and
+need to decide the Style property.
 
-**Use Stretch (full-bleed) when:**
+**ALWAYS use Table AI** (key `f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07`), NEVER legacy Table.
+Table AI is zero-detach — configure via `setProperties({ "Style": "Stretch" })` or `"Boxy"`.
+
+**Use Stretch when:**
 - The Container's content is a list page: action bar (search + filters +
   primary/secondary buttons) plus the table, and nothing else
 - There is one context on the page — the table is the whole point of the screen
@@ -506,12 +620,13 @@ need to decide how the Container itself is structured around it.
 
 **Default:** Stretch for single-context list pages. Boxy for detail/multi-section pages.
 
-> **Unconfirmed:** the manifest does not yet document Table's exact variant
-> property name/values in Figma. Before relying on `setProperties()` with a
-> "Stretch"/"Boxy" value, confirm the real property name via
-> `zcat_get_component("Table")` or `search_design_system` — Figma silently
-> ignores `setProperties()` calls with an unrecognized property name, so a
-> wrong guess here fails invisibly rather than erroring.
+**Table AI properties (confirmed):**
+- `Style`: "Stretch" or "Boxy"
+- `Columns`: "3", "4", "5", "6", "7", "8"
+- `Show Checkbox`: boolean (default false)
+- `Show Threedot`: boolean (default true)
+- `Show Pagination`: boolean (default true)
+- `Col 1` through `Col 8`: instance swap (value = component node ID, NOT key)
 
 **How the two differ structurally, once chosen:**
 
@@ -789,6 +904,55 @@ Two components exist for label:value displays — pick by scope:
 - Opening/closing is frequent during a workflow
 
 **Default:** Popup Modal for confirmations and quick forms. Drawer for detail panels and supplementary content. Full-Page Modal for complex creation flows.
+
+### Popup Component — MANDATORY Structure Rules
+
+**The zcat Popup component has a specific structure. NEVER deviate from it.**
+
+**Popup close action is ALWAYS in the FOOTER, NEVER in the header:**
+- The Popup component does NOT have an X close button in the header
+- Close/Cancel is a Ghost or Outline button in the footer, next to the primary action button
+- NEVER add a manual X close icon in the popup header — this is not the zcat pattern
+- Footer layout: Cancel (Ghost, left-aligned) + Back (Outline, right) + Continue/Create (Fill, right)
+
+**BAD (agent keeps doing this):**
+```
+Popup
+├── Header: "Create Database" + ✕ close button  ← WRONG
+├── Content...
+└── Footer: Back + Continue
+```
+
+**GOOD (zcat Popup pattern — simple form):**
+```
+Popup
+├── Header: "Popup Heading" (title only, NO close button)
+├── Description text (optional)
+├── Content (form fields, selections, etc.)
+└── Footer: Cancel (Ghost, left) + Back (Outline, right) + Create (Fill, right)
+```
+
+**GOOD (zcat Popup pattern — wizard with stepper):**
+```
+Popup
+├── Header area:
+│   ├── Title "Create Database"
+│   └── Stepper component (responsive, FILL width) ← Stepper is ALWAYS in the header
+├── Content (step-specific form fields — changes per step)
+└── Footer: Cancel (Ghost, left) + Back (Outline, right) + Continue (Fill, right)
+```
+
+**Stepper/Tabs in Popup header rules:**
+- Stepper or primary Tabs ALWAYS go in the Popup HEADER area, directly below the title — NEVER in the content body
+- Stepper must be responsive (layoutSizingHorizontal = FILL) to span the full popup width
+- Only the current step's content appears in the content area below
+- The Stepper component must be used — NEVER draw circles + lines manually
+
+**Other Popup rules:**
+- ALWAYS use the Popup component — NEVER build a manual modal frame
+- ALWAYS use Popup Blur behind the Popup for the backdrop overlay
+- ALL form elements inside the Popup must use zcat components (Text Box, Dropdown, Radio Button, Toggle Button, Checkbox)
+- Selection cards (like compute instance sizes) should use Radio Button component or Card BG with proper selected/default states — NEVER hand-draw bordered rectangles
 
 ### Grouping fields inside a modal or form
 

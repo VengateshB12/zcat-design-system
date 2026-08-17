@@ -22,6 +22,38 @@ Structured decision trees for choosing the right component when the designer's i
 
 **The library has 79 components.** Whatever you're about to build manually, search first. The search takes 1 second; a manual build takes minutes, wastes tokens, and produces wrong results (hardcoded colors, wrong spacing, no variable bindings).
 
+### Components Agents Commonly Skip (CHECK THIS LIST)
+
+**Before building ANYTHING, scan this list. If your screen has any of these patterns, use the component — do NOT hand-build.**
+
+| UI Pattern | CORRECT Component | Agent Mistake |
+|-----------|-------------------|---------------|
+| Popup/Modal/Dialog | Popup + Popup Blur | Hand-draws a frame with X close button |
+| Toggle switch | Toggle Button | Draws circles + rectangles manually |
+| Dropdown/Select | Dropdown | Draws a frame with text + chevron |
+| Text input | Text Box | Draws a bordered rectangle |
+| Checkbox | Check Box | Draws a square + checkmark |
+| Radio selection | Radio Button | Draws circles manually |
+| Step indicator | Stepper | Draws numbered circles + lines |
+| Tags/filters | Chip | Draws small bordered rectangles with text |
+| Warnings/alerts | Attention Box | Draws a colored box with icon |
+| Loading indicator | Loader | Draws spinning circles |
+| User icon | Avatar | Draws a colored circle with initials |
+| Key-value info | General Details or Key Value Pair | Stacks label+value as plain text |
+| Code/SQL editor | Code Block | Draws a plain text frame |
+| Section heading | Container Header | Writes bold text manually |
+| Progress indicator | Progress Bar | Draws rectangles for progress |
+| Breadcrumb trail | Breadcrumbs | Writes "Home > Page > Sub" as text |
+| Pagination | Pagination | Draws page number buttons manually |
+| Tooltip | Tooltip | Draws a small floating frame |
+| Search input | Search | Draws a text field with magnifying glass |
+| Date input | Date Picker | Draws a text field with calendar icon |
+| Selection cards | Radio Button or Card BG (selected state) | Draws bordered rectangles |
+| Accordion/expandable | Accordion | Draws a section with chevron |
+| Tab navigation | Tabs (in Sub Header or as component) | Draws underlined text buttons |
+
+**The rule is simple: if the UI pattern exists in the above list, search for it and use the component. ZERO exceptions. The agent that built the "Create Database" wizard hand-drew the stepper, toggle, dropdown, selection cards, and close button — all of which are zcat components.**
+
 **For Tables: ALWAYS use Table AI** (key `f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07`). Table AI is zero-detach — configure entirely via setProperties(). It has 10 swappable column types (AvatarName, Badge, Date, Text, ExecutionStatus, IconText, Button, Checkbox, Threedot, Icon). Set Style (Stretch/Boxy), Columns count (3-8), toggle Show Checkbox/Threedot/Pagination booleans, and swap column types via instance swap properties (Col 1 through Col 8). Update text content in-place by finding TEXT nodes — NEVER detach. NEVER use legacy Table (`954cd82ff912bd312206e7f2776a75d80049ede0`).
 
 ---
@@ -204,22 +236,54 @@ Popup Blur (full page backdrop)
     └── Footer (Back button outline + Continue/Create button fill)
 ```
 
+### ANTI-PATTERN: Wireframe Copy (THE #1 DESIGN QUALITY FAILURE)
+
+**The agent's most common failure is copying the wireframe layout literally into Figma with components swapped in — producing a "wireframe with components" instead of a polished design.**
+
+**How to identify a wireframe copy (if ANY of these are true, the design is bad):**
+- Stat cards are flat text-only blocks: just "ENGINE" / "Aurora" / "v3.0" with no icon, no icon background, no visual weight
+- Connection details are plain text blocks instead of using General Details or Key Value Pair components
+- Recent activity is an unstyled text list instead of items with status dots, timestamps, and a Card BG wrapper
+- Storage/progress indicators are basic flat bars instead of creative visualizations (donut chart, circular progress)
+- All sections float loose in the Container without Card BG wrappers or bordered frames
+- The design looks like a wireframe that happens to use the right font — no visual hierarchy, no depth, no polish
+- Sections are stacked vertically when they should be side-by-side (Connection on left, Recent Activity on right)
+
+**Every detail/overview page MUST have these creative elements:**
+
+1. **Stat cards with icon backgrounds** — NOT flat text. See pattern below
+2. **Connection/details in General Details component** — NOT manual text blocks
+3. **Activity feeds in Card BG with status dots** — NOT plain text lists
+4. **Two-column layout for info sections** — NOT everything stacked vertically
+5. **Progress/usage as creative visualizations** — circular progress, donut charts, not just flat bars
+6. **Every section wrapped in Card BG or bordered frame** — NO floating content
+
 ### Stat Card Design — Creative, Not Flat
 
 **Wireframes show flat stat cards. Your designs must NOT.**
 
-Stat cards are the most visible element on a detail page — they set the visual tone. Use this pattern:
+Stat cards are the most visible element on a detail page — they set the visual tone.
 
+**BAD (wireframe copy):**
+```
+Card (flat, no icon)
+├── "ENGINE" (12px, secondary)
+├── "Aurora" (16px, primary)
+└── "v3.0" (12px, secondary)
+```
+This is NOT a design. This is a wireframe with a border around it.
+
+**GOOD (creative, polished):**
 ```
 Card BG (detached, 16px padding, FILL width)
 ├── HORIZONTAL auto-layout, gap: 12, center-aligned
 │   ├── Icon BG frame (40×40, cornerRadius: 10, padding: 11, centered)
 │   │   └── zcat stroke icon (18×18, clone+swap, color: color/text/on-brand)
-│   │   └── Fill: bind to a zcat color variable (color/bg/brand-subtle, color/bg/success-subtle, etc.)
+│   │   └── Fill: bind to a zcat color variable (color/bg/brand-subtle)
 │   └── VERTICAL auto-layout, gap: 4
-│       ├── Label (12px Regular, color/text/secondary) — "Read replicas"
-│       ├── Value (24px SemiBold, color/text/primary) — "1"
-│       └── Subtitle (12px Regular, color/text/placeholder) — "healthy" (optional)
+│       ├── Label (12px Regular, color/text/secondary) — "Engine"
+│       ├── Value (24px SemiBold, color/text/primary) — "Aurora"
+│       └── Subtitle (12px Regular, color/text/placeholder) — "v3.0" (optional)
 ```
 
 **Rules:**
@@ -228,6 +292,7 @@ Card BG (detached, 16px padding, FILL width)
 - Value text is the HERO — 24px SemiBold minimum
 - Label text is secondary context — 12px, muted color
 - All cards in a row use FILL width (equal sizing)
+- If the exact icon doesn't exist, use the CLOSEST available zcat stroke icon and tell the user
 
 ### Action Bar Design — Balance Left and Right
 
@@ -839,6 +904,55 @@ Two components exist for label:value displays — pick by scope:
 - Opening/closing is frequent during a workflow
 
 **Default:** Popup Modal for confirmations and quick forms. Drawer for detail panels and supplementary content. Full-Page Modal for complex creation flows.
+
+### Popup Component — MANDATORY Structure Rules
+
+**The zcat Popup component has a specific structure. NEVER deviate from it.**
+
+**Popup close action is ALWAYS in the FOOTER, NEVER in the header:**
+- The Popup component does NOT have an X close button in the header
+- Close/Cancel is a Ghost or Outline button in the footer, next to the primary action button
+- NEVER add a manual X close icon in the popup header — this is not the zcat pattern
+- Footer layout: Cancel (Ghost, left-aligned) + Back (Outline, right) + Continue/Create (Fill, right)
+
+**BAD (agent keeps doing this):**
+```
+Popup
+├── Header: "Create Database" + ✕ close button  ← WRONG
+├── Content...
+└── Footer: Back + Continue
+```
+
+**GOOD (zcat Popup pattern — simple form):**
+```
+Popup
+├── Header: "Popup Heading" (title only, NO close button)
+├── Description text (optional)
+├── Content (form fields, selections, etc.)
+└── Footer: Cancel (Ghost, left) + Back (Outline, right) + Create (Fill, right)
+```
+
+**GOOD (zcat Popup pattern — wizard with stepper):**
+```
+Popup
+├── Header area:
+│   ├── Title "Create Database"
+│   └── Stepper component (responsive, FILL width) ← Stepper is ALWAYS in the header
+├── Content (step-specific form fields — changes per step)
+└── Footer: Cancel (Ghost, left) + Back (Outline, right) + Continue (Fill, right)
+```
+
+**Stepper/Tabs in Popup header rules:**
+- Stepper or primary Tabs ALWAYS go in the Popup HEADER area, directly below the title — NEVER in the content body
+- Stepper must be responsive (layoutSizingHorizontal = FILL) to span the full popup width
+- Only the current step's content appears in the content area below
+- The Stepper component must be used — NEVER draw circles + lines manually
+
+**Other Popup rules:**
+- ALWAYS use the Popup component — NEVER build a manual modal frame
+- ALWAYS use Popup Blur behind the Popup for the backdrop overlay
+- ALL form elements inside the Popup must use zcat components (Text Box, Dropdown, Radio Button, Toggle Button, Checkbox)
+- Selection cards (like compute instance sizes) should use Radio Button component or Card BG with proper selected/default states — NEVER hand-draw bordered rectangles
 
 ### Grouping fields inside a modal or form
 
