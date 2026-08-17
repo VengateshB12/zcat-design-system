@@ -291,9 +291,17 @@ Pattern source: [Me- reference]
 ## Tables
 - List page: Table AI, Style=Stretch, Show Pagination=false (use separate Pagination)
 - Detail section: Table AI, Style=Boxy
-- Status columns: ExecutionStatus (dot + text) for operational status
-- Person columns only: AvatarName
-- All others: Text, Date, Badge as appropriate
+- Column types MUST match DATA type (see rules-table-columns.md):
+  - AvatarName: ONLY for person data (user name, owner, assignee, email)
+  - Badge: ONLY for status/category columns — each status value gets its own color
+  - Text: names, IDs, amounts, descriptions, regions, counts
+  - Date: timestamps, dates
+  - ExecutionStatus: running/stopped operational state (dot + text)
+  - IconText: entity name with icon (database, function, service)
+  - Threedot: row actions
+- NEVER use AvatarName for non-person data (IDs, amounts, dates, company names)
+- NEVER use Badge for non-status data (customer names, IDs, amounts, dates)
+- Badge colors: Green=success/paid, Red=error/failed, Amber=pending/warning, Blue=processing/draft, Grey=inactive
 
 ## Sub Header
 - Detail pages: back nav "< [item name]" + tabs + Help + three-dot
@@ -420,21 +428,33 @@ For EVERY page and popup identified in Phase 1, write a complete build spec file
   - Import: importComponentSetByKeyAsync
   - Properties: { Style: "Boxy", Columns: "5", Show Pagination: false, Show Threedot: true }
   - layoutSizingHorizontal: FILL
-  - Column setup:
-    Col 1: Text — header "Replica Name" — data: replica-east-1, replica-west-2, ...
-    Col 2: Text — header "Region" — data: us-east-1, us-west-2, ...
-    Col 3: Text — header "Replication Lag" — data: 12ms, 8ms, ...
-    Col 4: Text — header "Instance Class" — data: db.r6g.large, db.r6g.xlarge, ...
-    Col 5: Badge — header "Status" — data: Available (Success), Syncing (Warning)
+  - Column setup (MUST justify each type — "why this type for this data?"):
+    Col 1: Text — header "Replica Name" — WHY: entity name, not a person → Text
+           data: replica-east-1, replica-west-2, ...
+    Col 2: Text — header "Region" — WHY: location string → Text
+           data: us-east-1, us-west-2, ...
+    Col 3: Text — header "Replication Lag" — WHY: numeric metric → Text
+           data: 12ms, 8ms, ...
+    Col 4: Text — header "Instance Class" — WHY: config value → Text
+           data: db.r6g.large, db.r6g.xlarge, ...
+    Col 5: Badge — header "Status" — WHY: status category → Badge
+           Badge color mapping:
+             "Available" → Green (success)
+             "Syncing" → Amber (warning/in-progress)
+             "Error" → Red (failure)
       Swap to: importComponentByKeyAsync("f54ff134...")
   - Text update approach: find TEXT nodes, load font, set characters. DO NOT DETACH
 
 ## Validation Checklist (verify after build)
-- [ ] Sub Header: [N] tabs present, correct text, correct active state
+- [ ] Sub Header: [N] tabs present, correct text, ACTIVE TAB correctly set
 - [ ] Sidebar: all [N] items present, correct group, active item highlighted
-- [ ] Stat cards: [N] cards, each with icon BG + value + label
+- [ ] Stat cards: [N] cards, each with icon BG (DIFFERENT colors) + value + label, HUG height
 - [ ] [Section name]: all [N] fields present with correct labels and values
 - [ ] Table: [N] columns, correct headers, correct data in cells
+- [ ] Table columns: AvatarName ONLY on person columns, Badge ONLY on status columns
+- [ ] Badge colors: DIFFERENT color per status meaning (green/red/amber/blue/grey)
+- [ ] Card height: HUG (auto-layout) — NOT fixed pixel height
+- [ ] Tab active state: exactly ONE tab active, matches visible content
 - [ ] Colors: ZERO hardcoded hex — all bound to variables
 - [ ] Icons: all zcat stroke icons — no emoji/unicode/shapes
 - [ ] Layout: matches [Me- reference] pattern

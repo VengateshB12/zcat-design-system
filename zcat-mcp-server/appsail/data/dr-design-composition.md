@@ -18,6 +18,7 @@ Components alone don't make a design good; how you compose them does.
 - Visual hierarchy — wireframes are intentionally flat
 - Section styling — wireframes don't show cards, shadows, borders
 - Typography scale — wireframes often use uniform text sizing
+- Column icons/avatars — wireframes put random icons next to columns; match column type to DATA, not wireframe icons
 
 ### When to Follow vs Improve Wireframe Layout
 
@@ -64,10 +65,14 @@ Components alone don't make a design good; how you compose them does.
 
 **How to identify a wireframe copy (if ANY are true, the design is bad):**
 - Stat cards are flat text-only blocks with no icon, no icon background
+- Stat cards have fixed height instead of auto-layout HUG
 - Connection details are plain text instead of General Details or Key Value Pair
 - Activity is an unstyled text list instead of items with status dots + Card BG
 - All sections float loose without Card BG wrappers or bordered frames
 - Sections stacked vertically when they should be side-by-side
+- Table shows avatar on every column (ID, amount, date) instead of only person columns
+- All badges in a table are the same color regardless of status meaning
+- Tab active state is wrong or not set
 
 **Every detail/overview page MUST have:**
 1. Stat cards with icon backgrounds — NOT flat text
@@ -76,13 +81,45 @@ Components alone don't make a design good; how you compose them does.
 4. Two-column layout for info sections — NOT everything vertical
 5. Every section wrapped in Card BG or bordered frame — NO floating content
 
+---
+
+## Tab Active State — MANDATORY
+
+When a page has tabs (in Sub Header or Container), EXACTLY ONE tab must show the active/selected state. The active tab is the one whose content is currently visible.
+
+**How to set active tab:**
+- Find the Tab component instance for the active tab
+- Set its State property to "Active" or "Selected" (verify via `zcat_get_component`)
+- All other tabs remain in "Default" state
+- The active tab typically shows: brand-color text + bottom border indicator
+
+**Common mistakes:**
+- All tabs showing "Default" state — one MUST be active
+- Setting the wrong tab as active (doesn't match the content shown)
+- Not setting any tab state at all — the active indicator is missing
+
+---
+
+## Card Height — NEVER Fixed
+
+**Stat cards and info cards MUST use auto-layout with HUG height.** NEVER set a fixed pixel height on cards.
+
+- `counterAxisSizingMode = "AUTO"` on the card frame
+- `layoutSizingVertical = "HUG"` when the card is inside an auto-layout parent
+- Let content determine the height — label + value + subtitle naturally size the card
+- All cards in a row should have equal height via the parent's `counterAxisAlignItems = "STRETCH"` — this makes them match the tallest card without fixing any height
+
+**Why this matters:** Fixed-height cards break when content changes, create awkward empty space, and look unprofessional. Auto-layout ensures the card fits its content exactly.
+
+---
+
 ## Stat Card Design — Creative, Not Flat
 
 **BAD (wireframe copy):** flat card with just label + value text, no icon.
 
 **GOOD:**
 ```
-Card BG (detached, 16px padding, FILL width)
+Card BG (detached, 16px padding, FILL width, HUG height)
 ├── HORIZONTAL auto-layout, gap: 12, center-aligned
 │   ├── Icon BG frame (40×40, cornerRadius: 10, padding: 11)
 │   │   └── zcat stroke icon (18×18, color: color/text/on-brand)
@@ -97,6 +134,44 @@ Card BG (detached, 16px padding, FILL width)
 - Each card uses DIFFERENT subtle color (brand-subtle, success-subtle, info-subtle, warning-subtle)
 - Value is the HERO — 24px SemiBold minimum
 - All cards in a row use FILL width
+- **HUG height — NEVER fixed pixel height**
+
+---
+
+## Semantic Colors — Badge, Status, Icon BG
+
+**Every color choice MUST carry meaning. Same color everywhere = no information.**
+
+### Badge Colors (in tables, cards, anywhere)
+
+| Meaning | Color | Examples |
+|---------|-------|----------|
+| Success / positive / done | **Green** | Paid, Active, Available, Completed, Live |
+| Error / negative / critical | **Red** | Failed, Overdue, Critical, Expired, Deleted |
+| Warning / caution / pending | **Amber** | Pending, Warning, Modifying, Expiring |
+| Info / neutral-active / processing | **Blue** | Processing, In Progress, Draft, Queued |
+| Neutral / inactive / unknown | **Grey** | Archived, Inactive, N/A, Paused |
+
+### Icon BG Colors (in stat cards)
+
+Each stat card in a row uses a DIFFERENT color to create visual variety:
+- Card 1: `color/bg/brand-subtle` (blue)
+- Card 2: `color/bg/success-subtle` (green)
+- Card 3: `color/bg/warning-subtle` (amber)
+- Card 4: `color/bg/danger-subtle` (red)
+
+If there are only 2-3 cards, pick from the above. NEVER use the same color for all cards.
+
+### ExecutionStatus Colors (in tables)
+
+| State | Dot Color |
+|-------|-----------|
+| Running / Success / Enabled | Green dot |
+| Stopped / Failed / Disabled | Red dot |
+| Starting / Provisioning | Blue dot |
+| Warning / Degraded | Amber dot |
+
+---
 
 ## Action Bar Design — Balance Left and Right
 
@@ -117,11 +192,14 @@ Apply to EVERY screen before showing:
 3. Consistent spacing — same gaps for same-level elements
 4. Multi-column where appropriate — detail pages use side-by-side
 5. Prominent stat values — 24-28px bold number, 12px label
-6. Semantic status colors — green=success, amber=warning, red=error, blue=info
+6. **Semantic status colors — badges use DIFFERENT colors per status meaning** (green/red/amber/blue/grey)
 7. Help text under controls — 12px in `color/text/placeholder`
 8. Danger zone separation — Attention Box (Error) or red-bordered frame
 9. Consistent component sizing — same Size variant in groups
 10. Components on EVERY screen — no context drift to manual frames
 11. Stroke icons everywhere — clone+swap, never emoji/Unicode
 12. Action bars balanced — right button needs left-side element
-13. Stat cards have icon backgrounds — 40×40 icon BG with stroke icon
+13. Stat cards have icon backgrounds — DIFFERENT colors, HUG height
+14. **Tab active state set correctly** — exactly one tab shows active/selected
+15. **Table AvatarName ONLY on person columns** — ID, amount, date, status columns use Text/Badge/Date
+16. **Card height is HUG** — never fixed pixel height on stat/info cards
