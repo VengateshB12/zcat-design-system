@@ -14,7 +14,7 @@ The workflow: user describes a screen (via wireframes, PRDs, screenshots, or tex
 .claude/skills/zcat.md          — The main build workflow (6 steps). READ THIS FIRST for any design task.
 references/
   component-manifest.json       — Structured catalog of all zcat components (names, keys, types, variants)
-  decision-rules.md             — Component selection logic for ambiguous UI patterns
+  decision-rules/               — Split decision rules by topic (11 files, ~4-6k each)
   design-tokens.md              — Figma variable IDs for color/spacing/radius binding
   sample-data.md                — Realistic data for populating screens (never use lorem ipsum)
   wireframe-styles.css          — CSS for rendering low-fi wireframes via show_widget
