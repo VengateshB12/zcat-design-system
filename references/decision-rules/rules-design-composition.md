@@ -209,11 +209,188 @@ Screenshot the screen → select ANY element → check the Fill/Stroke panel on 
 
 ---
 
-## Stat Card Design — Creative, Not Flat
+## Card Composition Recipes — Different Cards for Different Purposes
 
-**BAD (wireframe copy):** flat card with just label + value text, no icon.
+Cards are NOT one-size-fits-all. The card's internal composition depends on what the card represents. Use the right recipe for the right context.
 
-**GOOD:**
+### Recipe A: Stat/Metric Card (dashboard, overview)
+```
+Card BG (detached, 16px padding, FILL width, HUG height)
+├── HORIZONTAL auto-layout, gap: 12, center-aligned
+│   ├── Icon BG frame (40x40, cornerRadius: 10) — ONLY if a meaningful icon exists
+│   │   └── zcat stroke icon (18x18)
+│   │   └── Fill: color/bg/brand-subtle (vary per card)
+│   └── VERTICAL auto-layout, gap: 4
+│       ├── Label (12px Regular, color/text/secondary)
+│       ├── Value (24px SemiBold, color/text/primary)
+│       └── Subtitle (12px Regular, color/text/placeholder) — optional
+```
+Use when: KPI values, counts, percentages, summary metrics.
+Icon BG: only when a meaningful icon exists (Users → person, Revenue → currency). Skip for abstract stats.
+
+### Recipe B: Feature/Recipe Card (grid of clickable items)
+```
+Card BG (detached, 16px padding, FILL width, HUG height)
+├── VERTICAL auto-layout, gap: 12
+│   ├── Icon circle (48x48, cornerRadius: 24, colored fill)
+│   │   └── zcat stroke icon (24x24, white or on-brand)
+│   ├── Title (16px SemiBold, color/text/primary)
+│   └── Description (14px Regular, color/text/secondary, 2-3 lines max)
+```
+Use when: feature tiles, code recipes, integration cards, template selectors.
+These are clickable cards that navigate to a detail page. Icon represents the feature category.
+Arrange in 2-4 column grid with equal-width cards.
+
+### Recipe C: Settings/Config Card (inside accordion or settings section)
+```
+Card BG (detached, 16px padding, FILL width, HUG height)
+├── VERTICAL auto-layout, gap: 8
+│   ├── HORIZONTAL auto-layout (FILL width, SPACE_BETWEEN)
+│   │   ├── Title (16px SemiBold, color/text/primary)
+│   │   └── Three-dot Icon Button — OR — nothing (if no actions)
+│   ├── Description (14px Regular, color/text/secondary)
+│   └── HORIZONTAL auto-layout, gap: 12 — footer area
+│       ├── Link/action ("App Settings" with icon, color/interactive/default)
+│       └── Badge/status ("Enabled" green) — optional
+```
+Use when: settings panels, config options, feature toggles inside accordion sections.
+Three-dot menu: include when the card has actions (Edit, Delete, Reset). Skip when the card only navigates.
+Status badge: include when the card has an on/off or status state. Skip when status is irrelevant.
+
+### Recipe D: Info/Description Card (bordered, no elevation)
+```
+Bordered frame (1px color/border/default, 6px radius, 16-24px padding, FILL width, HUG height)
+├── HORIZONTAL auto-layout, gap: 24
+│   ├── Left content (FILL width)
+│   │   ├── Title (16px SemiBold, color/text/primary)
+│   │   ├── Description (14px Regular, color/text/secondary, multi-line)
+│   │   └── HORIZONTAL auto-layout, gap: 16, paddingTop: 12
+│   │       ├── Button (Outline, "Connect Cookbook")
+│   │       └── Link text ("Learn More", color/interactive/default)
+│   └── Right content (HUG width) — optional
+│       ├── Label + value pairs (Key Value Pair or manual text)
+│       └── Copy icon buttons for copyable values
+```
+Use when: connection info, getting started, feature descriptions with actions.
+No Card BG component needed — manual bordered frame with variable-bound colors.
+
+### Recipe E: Simple Card (no icon, no actions)
+```
+Card BG (detached, 16px padding, FILL width, HUG height)
+├── VERTICAL auto-layout, gap: 4
+│   ├── Title (16px SemiBold, color/text/primary)
+│   └── Value or description (14px Regular, color/text/secondary)
+```
+Use when: the card contains a single piece of information that doesn't need icon or action decoration.
+NOT every card needs an icon, a three-dot menu, or a badge. Simple cards are fine when the content speaks for itself.
+
+### Recipe F: Stat Card with Info Tooltip (dashboard metrics)
+```
+Card BG (detached, 16px padding, FILL width, HUG height)
+├── HORIZONTAL auto-layout, gap: 12, center-aligned, SPACE_BETWEEN
+│   ├── HORIZONTAL auto-layout, gap: 12, center-aligned
+│   │   ├── Icon BG circle (48x48, cornerRadius: 24, colored fill)
+│   │   │   └── zcat stroke icon (24x24)
+│   │   │   └── Fill: varies per card (brand-subtle, danger-subtle, info-subtle, warning-subtle)
+│   │   └── VERTICAL auto-layout, gap: 2
+│   │       ├── Value (24px SemiBold, color/text/primary) — "0", "NA", "1,247"
+│   │       └── Label (12px Regular, color/text/secondary) — "Total Invocations"
+│   └── Info icon (ⓘ tooltip trigger, color/text/placeholder) — optional
+```
+Use when: KPI metrics on detail/overview pages with different colored icon BGs per metric.
+Each card in a row gets a DIFFERENT icon BG color. Info tooltip for metric explanation.
+
+### Recipe G: Key-Value Settings Card with Edit Action
+```
+Card BG (detached, 16px padding, FILL width, HUG height)
+├── VERTICAL auto-layout, gap: 16
+│   ├── HORIZONTAL auto-layout (FILL width, SPACE_BETWEEN)
+│   │   ├── Title (16px SemiBold, color/text/primary) — "App Execution Settings"
+│   │   └── Edit link (icon + "Edit", color/interactive/default)
+│   └── VERTICAL auto-layout, gap: 12 — key-value pairs
+│       ├── HORIZONTAL: Label (14px Regular, color/text/secondary, fixed-width) + Value (14px Regular, color/text/primary)
+│       ├── HORIZONTAL: Label + Value
+│       └── HORIZONTAL: Label + Value
+```
+Use when: read-only config/settings display with an edit action. Labels left-aligned in a column, values right.
+Use General Details component when available. Edit link top-right, NOT a button.
+
+### Recipe H: Entity Card (card grid with ID + status)
+```
+Card BG (detached, 16px padding, FIXED width per grid column, HUG height)
+├── VERTICAL auto-layout, gap: 12
+│   ├── Name (16px SemiBold, color/text/primary) — "hjm"
+│   ├── ID line (12px Regular, color/text/secondary) — "ID : 3069000000039886"
+│   ├── Dotted divider (1px dashed, color/border/subtle)
+│   └── HORIZONTAL auto-layout, gap: 8, SPACE_BETWEEN
+│       ├── HORIZONTAL: Integration icon + name (14px, color/text/secondary) — "Zoho CRM"
+│       └── HORIZONTAL: Status dot (8x8 circle, green) + text (14px) — "Enabled"
+```
+Use when: entity listing in card grid (publishers, integrations, connections). Shows identity + metadata + status.
+Cards in a grid use fixed width per column, wrap to next row. Status dot = ExecutionStatus pattern.
+
+### Recipe I: Plan/Summary Cards with Icon BG + Sub-Content
+```
+Card BG (detached, 16-24px padding, FILL width, HUG height)
+├── VERTICAL auto-layout, gap: 16
+│   ├── HORIZONTAL auto-layout, gap: 12, center-aligned
+│   │   ├── Icon BG circle (48x48, cornerRadius: 24, colored fill)
+│   │   │   └── zcat stroke icon (24x24)
+│   │   └── VERTICAL auto-layout, gap: 2
+│   │       ├── Title (16px SemiBold, color/text/primary) — "Current Plan"
+│   │       └── Subtitle (12px Regular, color/text/secondary) — "20 Jul 2026 - 20 Aug 2026"
+│   └── Sub-content area — varies by card:
+│       ├── Nested badge cards (plan tier + price) — OR
+│       ├── Label + value + info icon — OR
+│       ├── Title + description text
+```
+Use when: overview/billing cards where each card represents a different concept (Current Plan, Forecast, Previous Plan).
+Sub-content varies per card — NOT all cards in the row need identical internal structure.
+
+### Recipe J: Selection Card (selectable option in a grid)
+```
+Card BG (detached, 16px padding, HUG or FIXED width, HUG height)
+├── VERTICAL auto-layout, gap: 8, center-aligned
+│   ├── Icon circle (48x48, cornerRadius: 24, colored fill)
+│   │   └── zcat stroke icon or product logo (24x24)
+│   └── Label (14px SemiBold, color/text/primary) — "Java", "Nodejs", "Python"
+State: Default (grey border) / Selected (brand border + brand-subtle bg)
+```
+Use when: option selection grids (runtime picker, template chooser, integration selector).
+Use Card BG component State property: Default for unselected, Selected for chosen.
+Arrange in horizontal row, equal-width cards. One card shows Selected state.
+
+### Choosing the Right Card Recipe
+
+| Context | Recipe | Icon? | Three-dot? | Badge/Status? |
+|---------|--------|-------|------------|---------------|
+| Dashboard KPI with natural icon | A or F | YES | NO | NO |
+| Dashboard KPI without natural icon | E | NO | NO | NO |
+| Feature tiles in a grid | B | YES | NO | NO |
+| Settings option with actions | C | NO | YES | MAYBE |
+| Settings option without actions | C (no three-dot) | NO | NO | MAYBE |
+| Connection info / instructions | D | NO | NO | NO |
+| Read-only config with edit action | G | NO | NO | NO |
+| Entity card grid (with ID/status) | H | NO | NO | YES (status dot) |
+| Plan/billing summary cards | I | YES | NO | MAYBE (badges) |
+| Selection/option picker grid | J | YES | NO | NO (Selected state) |
+| Simple display value | E | NO | NO | NO |
+
+**Key principles:**
+- Card composition follows the CONTENT, not a template. Ask "what does this card NEED?" not "what can I add to this card?"
+- These 10 recipes are a REFERENCE, not a limit. If the content calls for a card composition not listed here, creatively compose one using zcat components and variable-bound colors. The recipes show proven patterns — the agent should match OR exceed them
+- Cards in the same row do NOT need identical internal structure if they represent different concepts (see Recipe I — plan cards each have different sub-content)
+- NEVER force an icon, three-dot, or badge onto a card just because other recipes have them. Every element must earn its place
+
+---
+
+## Stat Card Design — Use Judgment, Not a Template
+
+Stat cards are Recipe A, E, or F from the Card Composition Recipes above. Choose based on the content.
+
+**BAD (wireframe copy):** flat card with just label + value text, no visual hierarchy.
+
+**GOOD — with icon BG (Recipe A/F):** when a meaningful icon exists for the metric.
 ```
 Card BG (detached, 16px padding, FILL width, HUG height)
 ├── HORIZONTAL auto-layout, gap: 12, center-aligned
@@ -226,8 +403,16 @@ Card BG (detached, 16px padding, FILL width, HUG height)
 │       └── Subtitle (12px Regular, color/text/placeholder) — optional
 ```
 
-- ALWAYS include icon BG with zcat stroke icon
-- Each card uses DIFFERENT subtle color (brand-subtle, success-subtle, info-subtle, warning-subtle)
+**GOOD — without icon (Recipe E):** when no natural icon exists, or when the card is simple enough that typography alone provides hierarchy.
+```
+Card BG (detached, 16px padding, FILL width, HUG height)
+├── VERTICAL auto-layout, gap: 4
+│   ├── Label (12px Regular, color/text/secondary)
+│   └── Value (24px SemiBold, color/text/primary)
+```
+
+- Icon BG: only when a meaningful icon exists (Users → person, Errors → alert). Do NOT force icons
+- Each card with icon BG uses DIFFERENT subtle color (brand-subtle, success-subtle, info-subtle, warning-subtle)
 - Value is the HERO — 24px SemiBold minimum
 - All cards in a row use FILL width
 - **HUG height — NEVER fixed pixel height**
@@ -290,6 +475,122 @@ If there are only 2-3 cards, pick from the above. NEVER use the same color for a
 See `rules-navigation-actions.md` for the full CTA hierarchy rules and common mistake examples.
 
 **Quick self-check:** Count the Fill buttons in each action bar / button group / footer on screen. If the count is > 1 → demote the less important ones.
+
+---
+
+## Screen Polish Patterns — Common Improvements by Area
+
+After building each screen, audit every area and actively improve anything that looks weak, flat, or generic. These patterns apply to ALL screen types. **Composition-only changes — NEVER break, detach, or rebuild components during polish.**
+
+### Stat Cards
+| Problem | Improvement |
+|---------|-------------|
+| Value text same size as label | Value = Headlines/SemiBold/24, label = Body/Regular/12 secondary |
+| Fixed pixel height on cards | Change to HUG — content determines height |
+| Cards different heights in a row | Parent row: `counterAxisAlignItems = "STRETCH"` |
+| All cards visually identical | Vary icon BG colors IF icons are present: brand-subtle, success-subtle, warning-subtle, danger-subtle |
+
+**Icon BG on stat cards — use judgment, not always:**
+- **YES icon BG:** when the stat represents a distinct category and an icon helps recognition (Total Users → person icon, Revenue → currency icon, Errors → alert icon)
+- **NO icon BG:** when the stat is a simple number without a natural icon, when there are many small stats in a compact row, or when the card already has enough visual weight from typography alone
+- **NEVER force icons** — if you can't find a meaningful icon for the stat, leave the card as value + label with proper typography hierarchy. A meaningless icon is worse than no icon
+
+### Container Content
+| Problem | Improvement |
+|---------|-------------|
+| Everything stacked vertically | Use two-column layout for related info sections (detail pages) |
+| Sections floating without grouping | Wrap in Card BG or bordered frame (1px `color/border/default`, 6px radius) |
+| Too much empty space | Check if sections can be reorganized or content density increased |
+| Content too cramped | Increase section gap (24px between sections, 16px within) |
+| No visual focal point | Make the most important section larger, more prominent, or positioned first |
+| Action bar has lonely right button | Add Search, heading text, or filter on the left |
+
+### Side Menu (Sidebar)
+| Problem | Improvement |
+|---------|-------------|
+| Menu items are plain text without icons | Ensure each nav item has an icon via clone+swap |
+| No active state on current page item | Set the active/selected state on the correct sidebar item |
+| Items not grouped logically | Use section group headers to separate navigation categories |
+| Too many items ungrouped | Group by function: main features, settings, administration |
+| Sidebar looks disconnected from content | Verify Divider between sidebar and content panel exists |
+
+### Tables
+| Problem | Improvement |
+|---------|-------------|
+| All columns use default types (AvatarName col 1, Badge col 2) | Swap every column to match its DATA — person=AvatarName, status=Badge, text=Text, dates=Date |
+| All badge colors identical | Map each status value to a semantic color (green/red/amber/blue/grey) |
+| Header text still shows defaults | Update every header to match the actual data column name |
+| Cell data still shows placeholder | Fill every cell with realistic data from sample-data.md |
+| Table not stretching to container width | Set `layoutSizingHorizontal = "FILL"` |
+
+### Sub Header
+| Problem | Improvement |
+|---------|-------------|
+| No active tab set | Set exactly ONE tab to Active state matching the visible content |
+| Tabs in container body instead of Sub Header | Move primary (whole-page) tabs to Sub Header |
+| Missing Help icon | Add Help button instance in Sub Header actions area |
+| Tab count doesn't match wireframe | COUNT wireframe tabs — if more than component supports, detach and add |
+
+### Popup/Dialog
+| Problem | Improvement |
+|---------|-------------|
+| Form fields not stretching | Set ALL form elements to `layoutSizingHorizontal = "FILL"` |
+| Header/body/footer different widths | ALL three sections: `layoutSizingHorizontal = "FILL"` |
+| Cancel button styled as primary (Fill) | Cancel is ALWAYS Outline/grey, never Fill/primary |
+| Stepper in body instead of header | Move Stepper to header area, below title, FILL width |
+
+### Buttons & CTAs
+| Problem | Improvement |
+|---------|-------------|
+| Multiple Fill (primary) buttons in same group | Demote all but the ONE most important to Outline or Ghost |
+| Buttons in a row use different Size variants | ALL buttons, dropdowns, text boxes in the same row MUST use the same Size |
+| Button label still says "Button Text" | Override nested TEXT node with the actual action label |
+| Cancel/secondary button styled as Fill | Cancel = Outline/grey or Ghost. Only the primary action is Fill |
+| Danger action (Delete, Remove) uses primary blue | Use Color: "Danger" (red) for destructive actions |
+| Button too small or too large for context | Match surrounding controls — form fields + buttons same Size, compact toolbars use Small |
+
+### Links & Interactive Text
+| Problem | Improvement |
+|---------|-------------|
+| Link text using hardcoded blue hex | Bind to `color/interactive/default` variable |
+| Link not visually distinct from body text | Use Link component or text with `color/interactive/default` color binding |
+| "View All", "See More" links with no destination | Remove if there's no target page, or replace with meaningful action |
+| Clear All / Reset link missing when filters active | Add as text link at the end of active filter chip row |
+
+### Three-Dot (Overflow) Menu
+| Problem | Improvement |
+|---------|-------------|
+| Three-dot button exists but no Dropdown Menu built | Build the Dropdown Menu component alongside it — detach to set real items |
+| Menu items have no icons | Swap each item's icon to match its action (edit, delete, copy, etc.) |
+| Menu positioned inside auto-layout parent | Position menu absolutely so parent can't resize or squash it |
+| Three-dot trigger not showing pressed state | Set trigger to Pressed state when menu is shown open |
+| Table rows missing three-dot actions | Set `Show Threedot = true` on Table AI if row actions exist |
+
+### Hover & Interaction States
+| Problem | Improvement |
+|---------|-------------|
+| Card has no hover state designed | If the card is clickable (navigates somewhere), use Card BG State: "Hover" variant for the hover frame |
+| Table row hover not visible | Table AI handles this internally — verify via screenshot |
+| Button states not set | Default state for idle, verify Color/State properties are correct |
+| Sidebar item missing active highlight | Set the current page's sidebar item to active/selected state |
+
+### General Layout
+| Problem | Improvement |
+|---------|-------------|
+| Any frame without auto-layout | Add auto-layout — `createAutoLayout()` not `createFrame()` |
+| Any card/container with fixed height | Change to HUG — `layoutSizingVertical = "HUG"` |
+| Any child wider than parent container | Set `layoutSizingHorizontal = "FILL"` |
+| Hardcoded hex color visible | Bind to zcat variable via `setBoundVariableForPaint` |
+| Default layer names (Frame 1, Rectangle 2) | Rename to semantic names (Stat Cards Row, Action Bar, etc.) |
+| Dropdown showing "Select List" placeholder | Fill with realistic selected value from sample-data.md |
+| Scroll or overflow on any section | Content exceeds container — check child widths, switch to FILL |
+| Layers overlapping each other | Auto-layout missing on parent frame — add it |
+
+### Polish Rules
+1. **Composition-only** — reorder sections, change column structure, adjust spacing/gaps, swap Card BG vs flat. NEVER detach, rebuild, or unbind components
+2. **Max 2 improvement rounds** per screen — if still failing after 2, build what you have and tell the user what's unresolved
+3. **Re-verify after EVERY improvement** — screenshot and confirm auto-layout intact, colors still bound, components not broken, no new overflow
+4. **Fix AND enhance** — don't just catch bugs, actively improve anything that looks generic or flat
 
 ---
 

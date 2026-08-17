@@ -1299,13 +1299,51 @@ if (issues.length === 0) {
 zcat components, rebind hardcoded colors to variables, restore Container fills.
 **If only WARN issues:** fix them if possible, but proceed if they are cosmetic.
 
-### 4g. Screenshot and Quick Review
+### 4g. Screen Polish & Verify (MANDATORY — before showing to user)
 
-After validation passes:
+After validation script passes, run a comprehensive visual audit + improvement pass. This step catches bugs, fixes missing content, AND actively improves anything that looks weak or generic — all before the user ever sees the screen.
 
-1. Call `get_screenshot` on the built screen to capture it
+**Read `references/decision-rules/rules-design-composition.md` "Screen Polish Patterns" and "Card Composition Recipes" for the full improvement reference.**
+
+**The loop:**
+```
+Screenshot built screen
+    ↓
+Audit (structural + component + completeness + design quality)
+    ↓
+Found issues? ──YES──→ Fix bugs + Enhance composition
+    ↓                      ↓
+    NO                 Re-screenshot & Re-verify
+    ↓                      ↓
+    ↓              Still issues? ──YES──→ Fix again (max 2 rounds)
+    ↓                      ↓
+    ↓                      NO
+    ↓                      ↓
+Show to user ←─────────────┘
+```
+
+**What to audit (inch by inch):**
+
+1. **Structural:** auto-layout on every frame? HUG height on every card? FILL horizontal on containers? No overflow/scroll? No overlapping layers?
+2. **Components:** all colors variable-bound? Button sizes consistent in groups? ONE Fill button per group? Cancel=Outline? Badge colors semantic? Table columns match data? Active tab set? Sidebar active state? Three-dot menus have dropdown? Link colors bound? Hover states set?
+3. **Completeness:** COUNT every tab, button, field, column, section from wireframe against built screen. Missing = add. Every dropdown filled with real data? No placeholder text anywhere?
+4. **Design quality:** looks like production, not wireframe-with-components? Card recipe matches content? (stat=Recipe A/E, feature grid=Recipe B, settings=Recipe C, info=Recipe D). Spacing rhythm correct? Layout balanced? Density appropriate for screen type?
+
+**Two types of fixes in the same pass:**
+- **Bug fixes:** bind unbound colors, fix HUG heights, add missing elements, correct variants, fix overflow, set active states, fix button sizes, add missing three-dot menus
+- **Enhancements (composition-only):** reorder sections, adjust spacing, add icon BGs where meaningful (not forced), balance action bars, improve typography hierarchy. NEVER detach/rebuild/unbind components
+
+**After every fix → re-verify:** auto-layout intact? Colors still bound? Components not broken? No new overflow?
+
+**Max 2 improvement rounds.** After 2, show what you have and tell user what's unresolved.
+
+### 4h. Show to User
+
+After polish passes:
+
+1. Call `get_screenshot` on the polished screen
 2. Show the screenshot to the user
-3. Ask: "Here's **[Screen Name]** in Figma. Any quick fixes needed?"
+3. Briefly summarize: "Built [Screen Name] — [N] components, design decisions applied. [Any compromises noted]"
 4. If fixes requested: make targeted edits via `use_figma` (don't rebuild from scratch)
 5. Re-screenshot after fixes
 

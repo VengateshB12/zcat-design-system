@@ -587,48 +587,90 @@ For EACH page:
    - Set text to the content listed in the spec
    - Use 2-3 use_figma scripts max
 
---- AUTONOMOUS VERIFICATION LOOP (user does NOT see this) ---
+--- SCREEN POLISH & VERIFY (autonomous — user does NOT see this) ---
 
 CRITICAL: Do NOT assume your build looks good. Agents consistently rate their
 own output too highly. Be HARSH. If something looks even slightly off, it IS
-off and must be fixed. A real designer would never ship a screen with uneven
-spacing, missing icons, flat unstyled sections, or cramped layouts.
+off and must be fixed. This is a COMPREHENSIVE pass — catch bugs, fix missing
+content, AND actively improve anything that looks weak or generic.
+
+Read `references/decision-rules/rules-design-composition.md` "Screen Polish
+Patterns" section for the full improvement reference table.
 
 4. SCREENSHOT → Take screenshot of built page
 
-5. VERIFY AGAINST SPEC → Two-part check:
+5. AUDIT — Check EVERY area of the screen inch by inch:
 
-   PART A — Spec Checklist (mechanical):
-   - Every element listed in the spec present?
-   - Every component used correctly (right key, right properties)?
-   - Every color bound to a variable (ZERO hardcoded hex)?
-   - Every icon is a zcat stroke icon?
-   - Spacing matches design uniforms?
-   - No duplicate information?
+   PART A — Structural Integrity:
+   - Every frame/card/container uses auto-layout? (no absolute positioning)
+   - All cards use HUG height? (no fixed pixel heights anywhere)
+   - All containers use FILL horizontal? No child wider than parent?
+   - No broken auto-layout chains? No scroll/overflow issues?
+   - No overlapping layers?
 
-   PART B — Visual Quality (subjective — be BRUTAL):
-   - Does this look like a PRODUCTION app or a student project?
-   - Would a real designer approve this? If not, what's wrong?
-   - Compare screenshot against the "Me-" reference — does it match the
-     quality level? Same visual weight, same polish, same spacing rhythm?
-   - Is the layout balanced? No lonely elements, no cramped sections,
-     no walls of text without visual breaks?
-   - Do stat cards have icon BGs? Do sections have proper headings?
-   - Does it look like a wireframe with components swapped in? (BAD)
-     Or does it look like a designed, polished screen? (GOOD)
-   - Are elements properly aligned? Consistent padding? Even gaps?
-   - Would you be EMBARRASSED to show this to a designer? Fix it.
+   PART B — Component Correctness:
+   - Every UI element uses a zcat component? (no manual controls)
+   - All colors bound to variables? (ZERO raw hex — fills, strokes, text)
+   - All text uses zcat text styles?
+   - Button sizes consistent within each group/row?
+   - Button variants correct? (ONE Fill primary per group, rest Outline/Ghost)
+   - Cancel buttons Outline/grey? Danger actions use Color: "Danger"?
+   - Badge colors semantic and different per status value?
+   - Table AI columns match data types? (not left as defaults)
+   - Active tab state set correctly? Sidebar active state correct?
+   - Three-dot menus have Dropdown Menu built alongside?
+   - Link text bound to `color/interactive/default`?
+   - Hover/interaction states set where applicable?
 
-6. FIX → Fix every failure. For Part A, re-read the spec for correct values.
-   For Part B, re-read the "Me-" reference and match its quality.
-   Do NOT say "looks good enough" — if it's not production quality, fix it.
+   PART C — Wireframe Completeness (inch by inch):
+   - COUNT every tab, button, field, column, menu item, section from wireframe
+   - Compare against built screen — list anything missing
+   - If component limit hit — detached to add remaining items?
+   - Every dropdown shows realistic selected value? (no placeholder text)
+   - Every text input filled with real data?
+   - Sub Header tab count matches wireframe exactly?
+   - Sidebar items match wireframe navigation?
 
-7. RE-SCREENSHOT → Screenshot again
+   PART D — Design Quality (actively improve, not just check):
+   - Does it look like a PRODUCTION app or a wireframe with components?
+   - Compare against "Me-" reference — same quality, same polish?
+   - Stat cards: use judgment on icon BGs — only when a meaningful icon
+     exists for the metric. Not every card needs an icon
+   - Cards/sections earning their place? (no empty wrappers, no loose content)
+   - Typography hierarchy clear? (headings, body, labels distinct)
+   - Spacing rhythm right? (24px sections, 16px within, 12px heading-to-content)
+   - Layout balanced? (action bars have left + right elements)
+   - Density appropriate? (dashboard=balanced, table=dense, empty=spacious)
+   - Side menu well-organized? (icons, grouping, active state)
+   - Container content well-spaced? (not cramped, not empty)
 
-8. RE-VERIFY → Check BOTH parts again. Repeat 6-7 until ALL pass (max 3 cycles).
-   If still failing after 3 cycles, STOP and tell user what's unresolved.
+6. FIX & ENHANCE → Two types of changes in the same pass:
 
---- END AUTONOMOUS LOOP ---
+   Bug fixes: bind unbound colors, fix HUG heights, add missing elements,
+   correct component variants, fix overflow issues, set active states,
+   fix button sizes, bind link colors, add missing three-dot menus.
+
+   Enhancements (COMPOSITION-ONLY — never break components):
+   - Reorder sections for better hierarchy
+   - Change column structure (1-col → 2-col)
+   - Adjust spacing/gaps between sections
+   - Swap Card BG vs flat vs bordered grouping
+   - Add icon BGs to stat cards WHERE MEANINGFUL (not forced)
+   - Balance action bars (add Search/heading on empty side)
+   - Improve typography hierarchy
+   - Fill empty dropdowns/inputs with realistic data
+   - NEVER detach, rebuild, or unbind components during polish
+
+7. RE-SCREENSHOT → Screenshot again after fixes/enhancements
+
+8. RE-VERIFY → Confirm ALL four parts pass. Specifically check:
+   - Auto-layout still intact after changes?
+   - Colors still variable-bound? Components not broken?
+   - No new overflow or scroll issues?
+   - Enhancement improved design without breaking anything?
+   Repeat 6-8 for max 2 rounds. After 2, tell user what's unresolved.
+
+--- END SCREEN POLISH & VERIFY ---
 
 9. SHOW FINAL → Show verified screenshot to user with brief summary:
    - "Built [Page Name] matching [Me-reference] pattern"

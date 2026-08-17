@@ -22,6 +22,27 @@ references/
   products/generic/layout-templates.json — Generic layout templates for non-Catalyst products
 ```
 
+## Design Philosophy
+
+**Components are building material, not the design.** The agent must think: "How should this screen be designed?" THEN "Which zcat components implement that design?" — never the reverse. The existence of a component must never dictate the composition.
+
+**Consistency does not mean every screen looks the same.** Consistency comes from using the same design language (tokens, components, typography, spacing). Creativity comes from composing that language differently according to the content, user task, and information hierarchy. The final output must feel like a designer intentionally designed it, not like an AI assembled components according to a checklist.
+
+**Screen Polish & Verify is mandatory.** After building each screen and before showing it to the user, run the comprehensive audit + improvement loop: check structural integrity, component correctness, wireframe completeness (inch by inch), and design quality. Fix bugs AND actively improve anything that looks weak, flat, or generic. Max 2 rounds. See `rules-design-composition.md` "Screen Polish Patterns" and "Card Composition Recipes" for the full reference.
+
+### Priority Hierarchy (when rules conflict)
+
+1. User's explicit requirement
+2. Current zcat component/library source of truth
+3. Product information architecture (what content exists)
+4. Catalyst layout constraints
+5. Accessibility/usability
+6. Design-system visual rules (tokens, variables, text styles)
+7. Creative composition rules
+8. Template/reference conventions
+
+When a lower rule conflicts with a higher one, follow the higher rule. Do not blindly follow a template if it makes the current screen worse.
+
 ## Trigger
 
 When the user asks to create, design, or build any UI screen, page, or flow — OR types "/zcat" or "zcat" — you MUST read and follow the complete workflow in `.claude/skills/zcat.md` before doing anything else.
@@ -120,7 +141,7 @@ This applies to prompts like:
 - Master-detail = Side Menu pattern — when a wireframe shows list-on-left + detail-on-right (e.g., schema table list → column view), ALWAYS use Side Menu / master-detail layout (Recipe 4 in zcat.md). NEVER copy the wireframe's flat two-panel layout
 - Fill ALL dropdown/input content — EVERY dropdown must show a realistic selected value from sample-data.md. NEVER leave default placeholder text like "Select List" or "Enter Label Text"
 - ZERO hardcoded hex colors — EVERY fill, stroke, and text color MUST be bound to a zcat variable using `figma.variables.setBoundVariableForPaint`. NEVER use `[{type: 'SOLID', color: {r:0, g:0, b:0}}]` directly — that creates raw hex. NEVER set `node.fills = [solidPaint]` without binding. Even black text (#000000) must be bound to `color/text/primary`. Even white backgrounds (#FFFFFF) must be bound to `color/bg/surface`. If the Selection Colors panel shows ANY raw hex value, those are bugs. This is the #1 cause of dark mode breakage — every unbound color fails in dark mode
-- Self-critique before showing — NEVER assume your design looks good. Screenshot and verify: (a) every element uses a zcat component, (b) all colors variable-bound, (c) stat cards have icon BGs, (d) no wireframe-copy flat layouts, (e) all dropdowns filled, (f) no duplicate info. Fix failures before showing
+- Screen Polish & Verify before showing — NEVER assume your design looks good. Run the full audit + improvement loop (step 4g in zcat.md) before showing any screen: (a) structural integrity (auto-layout, HUG heights, FILL widths, no overflow), (b) component correctness (colors bound, button sizes consistent, badge colors semantic, active states set, three-dot menus built, link colors bound), (c) wireframe completeness inch by inch (COUNT every element), (d) design quality (card recipe matches content — not every card needs icons, spacing rhythm correct, layout balanced). Fix bugs AND enhance composition (max 2 rounds). See rules-design-composition.md "Screen Polish Patterns" and "Card Composition Recipes"
 - Think and decide, then inform — for ambiguous design choices, make the decision yourself and tell the user in your summary. Do NOT ask about every small choice
 - NEVER skip components — the library has 79 components covering virtually every UI pattern. Common skips: General Details (for key-value info), Code Block (for code/SQL), Key Value Pair (for metadata), Attention Box (for warnings), Timeline (for decorative timelines), Container Header (for section headings), Avatar (for user icons), Tooltip (for hover info), Breadcrumbs (for navigation), Progress Bar (for progress), Chip (for tags/filters). If a wireframe shows ANY of these patterns, search and use the component
 - Empty state pages — ALWAYS use the Empty State component (`03321dc06395aa6b94783d0289637de8ddc82de0`, type `component`). NEVER manually build empty state UI. It has boolean properties: Show Illustration, Show Heading, Show Description, Show Primary Button, Show Outline Button. NO Container Header, NO search/filters, NO duplicate CTAs. Sub Header stays simple (title + Help instance). Container padding = 0 all sides, itemSpacing = 0
