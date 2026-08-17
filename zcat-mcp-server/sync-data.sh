@@ -29,6 +29,8 @@ FILES=(
   "references/products/catalyst/layout-info.md|catalyst-layout.md"
   "references/products/generic/layout-templates.json|generic-layouts.json"
   ".claude/skills/zcat.md|workflow.md"
+  "references/design-analysis-workflow.md|design-analysis-workflow.md"
+  "references/screenshot-design-patterns.md|screenshot-design-patterns.md"
 )
 
 mkdir -p "$DEST"

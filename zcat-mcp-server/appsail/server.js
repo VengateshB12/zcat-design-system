@@ -103,6 +103,8 @@ Call zcat_get_workflow first and follow it.</code></pre>
     <li><code>zcat_get_decision_rules</code> &mdash; which component to pick</li>
     <li><code>zcat_get_sample_data</code> &mdash; realistic content</li>
     <li><code>zcat_get_layout</code> &mdash; page layouts</li>
+    <li><code>zcat_get_design_workflow</code> &mdash; pre-build analysis &amp; spec workflow</li>
+    <li><code>zcat_get_screenshot_patterns</code> &mdash; production UI patterns</li>
     <li><code>zcat_get_wireframe_styles</code> &mdash; wireframe CSS</li>
   </ul>
 
@@ -529,6 +531,62 @@ function buildServer() {
   );
 
   server.registerTool(
+    "zcat_get_design_workflow",
+    {
+      title: "Get design analysis workflow",
+      description:
+        "Pre-build analysis workflow: scan wireframes, write page specs, build " +
+        "with autonomous verification. Covers wireframe interpretation rules, " +
+        "spec file template, design uniforms, and the verify/fix loop.",
+      inputSchema: {
+        section: z
+          .string()
+          .optional()
+          .describe("Optional filter, e.g. 'wireframe', 'spec', 'phase 2', 'verify'"),
+      },
+    },
+    async ({ section }) => {
+      const doc = readText("design-analysis-workflow.md");
+      if (!section) return asText(doc);
+
+      const wanted = section.trim().toLowerCase();
+      const blocks = doc
+        .split(/\n(?=#{2,3} )/)
+        .filter((b) => b.toLowerCase().includes(wanted));
+
+      return asText(blocks.length ? blocks.join("\n\n") : doc);
+    }
+  );
+
+  server.registerTool(
+    "zcat_get_screenshot_patterns",
+    {
+      title: "Get screenshot design patterns",
+      description:
+        "Production Catalyst UI patterns extracted from screenshots. Maps page " +
+        "types to specific screenshots and describes exact layout patterns " +
+        "(stat cards, action bars, tables, master-detail, etc.).",
+      inputSchema: {
+        pageType: z
+          .string()
+          .optional()
+          .describe("Optional page type filter, e.g. 'list', 'detail', 'popup', 'dashboard'"),
+      },
+    },
+    async ({ pageType }) => {
+      const doc = readText("screenshot-design-patterns.md");
+      if (!pageType) return asText(doc);
+
+      const wanted = pageType.trim().toLowerCase();
+      const blocks = doc
+        .split(/\n(?=#{2,3} )/)
+        .filter((b) => b.toLowerCase().includes(wanted));
+
+      return asText(blocks.length ? blocks.join("\n\n") : doc);
+    }
+  );
+
+  server.registerTool(
     "zcat_get_wireframe_styles",
     {
       title: "Get wireframe CSS",
@@ -655,7 +713,7 @@ app.delete("/mcp", notAllowed);
 setImmediate(() => {
   try {
     manifest();
-    ["workflow.md", "design-tokens.md", "decision-rules.md", "sample-data.md"].forEach(readText);
+    ["workflow.md", "design-tokens.md", "decision-rules.md", "sample-data.md", "design-analysis-workflow.md", "screenshot-design-patterns.md"].forEach(readText);
     mcpReady = true;
     console.log(`zcat-mcp ready — ${manifest().components.length} components loaded`);
   } catch (err) {
