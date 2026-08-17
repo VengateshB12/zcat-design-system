@@ -620,6 +620,22 @@ Table AI is zero-detach — configure via `setProperties({ "Style": "Stretch" })
 
 **Default:** Stretch for single-context list pages. Boxy for detail/multi-section pages.
 
+**CRITICAL: Table AI MUST be responsive.** The table must fill the Container width — set `layoutSizingHorizontal = "FILL"` on the table instance after appending it to the Container. A table that doesn't stretch to the Container edges is a broken layout.
+
+**Table AI column type selection — match data, not wireframe icons:**
+
+| Column Data | CORRECT Column Type | WRONG (agent mistake) |
+|-------------|--------------------|-----------------------|
+| Person name, user, owner | AvatarName | Text (loses the avatar) |
+| Database name, service name | Text or IconText | AvatarName (person icon on a database name is wrong) |
+| Status (Available, Stopped, Error) | Badge | Text (loses color-coded status) |
+| Date/time value | Date | Text (loses date formatting) |
+| Region, compute class, storage size | Text | AvatarName (avatar icon on "us-east-1" is absurd) |
+| Connections "45/200" | Text | AvatarName |
+| Row actions | Threedot | Button (usually too heavy) |
+
+**NEVER use AvatarName for non-person data.** AvatarName shows a person icon/avatar next to text — it is ONLY for user names, owner names, assignees, or entities that represent a person. Using AvatarName for database names, regions, storage sizes, or connection counts is WRONG and makes the table look unprofessional. If the wireframe shows random icons next to every column, IGNORE those icons and pick the correct column type based on the DATA.
+
 **Table AI properties (confirmed):**
 - `Style`: "Stretch" or "Boxy"
 - `Columns`: "3", "4", "5", "6", "7", "8"
@@ -911,16 +927,31 @@ Two components exist for label:value displays — pick by scope:
 
 **Popup close action is ALWAYS in the FOOTER, NEVER in the header:**
 - The Popup component does NOT have an X close button in the header
-- Close/Cancel is a Ghost or Outline button in the footer, next to the primary action button
+- Close/Cancel is a Ghost button in the footer — NEVER add a manual X icon in the popup header
 - NEVER add a manual X close icon in the popup header — this is not the zcat pattern
-- Footer layout: Cancel (Ghost, left-aligned) + Back (Outline, right) + Continue/Create (Fill, right)
+
+**Popup footer layout — depends on whether it has a Stepper:**
+
+**Simple form (no stepper):**
+```
+Footer: Cancel (Ghost, LEFT) ———————— Create (Fill, RIGHT)
+```
+
+**Wizard with stepper:**
+```
+Footer: Back (Outline, LEFT) ———————— Cancel (Ghost, RIGHT) + Continue (Fill, RIGHT)
+```
+- Back goes LEFT because it navigates backward in the wizard
+- Cancel + Continue/Create go RIGHT together
+- On the first step: no Back button, just Cancel (left) + Continue (right)
+- On the last step: Back (left) + Cancel + Create (right)
 
 **BAD (agent keeps doing this):**
 ```
 Popup
-├── Header: "Create Database" + ✕ close button  ← WRONG
+├── Header: "Create Database" + ✕ close button  ← WRONG: no X in header
 ├── Content...
-└── Footer: Back + Continue
+└── Footer: Back + Continue  ← WRONG: missing Cancel, wrong position
 ```
 
 **GOOD (zcat Popup pattern — simple form):**
@@ -929,7 +960,7 @@ Popup
 ├── Header: "Popup Heading" (title only, NO close button)
 ├── Description text (optional)
 ├── Content (form fields, selections, etc.)
-└── Footer: Cancel (Ghost, left) + Back (Outline, right) + Create (Fill, right)
+└── Footer: Cancel (Ghost, left) ——————— Create (Fill, right)
 ```
 
 **GOOD (zcat Popup pattern — wizard with stepper):**
@@ -939,7 +970,7 @@ Popup
 │   ├── Title "Create Database"
 │   └── Stepper component (responsive, FILL width) ← Stepper is ALWAYS in the header
 ├── Content (step-specific form fields — changes per step)
-└── Footer: Cancel (Ghost, left) + Back (Outline, right) + Continue (Fill, right)
+└── Footer: Back (Outline, left) ——————— Cancel (Ghost, right) + Continue (Fill, right)
 ```
 
 **Stepper/Tabs in Popup header rules:**
@@ -947,6 +978,12 @@ Popup
 - Stepper must be responsive (layoutSizingHorizontal = FILL) to span the full popup width
 - Only the current step's content appears in the content area below
 - The Stepper component must be used — NEVER draw circles + lines manually
+
+**Popup body and component sizing:**
+- Popup body width should be appropriate for the content (500-700px for wizard flows)
+- ALL components inside the Popup (Text Box, Dropdown, Radio Button, etc.) MUST be responsive — use layoutSizingHorizontal = FILL so they stretch to fill the popup body width
+- NEVER leave form components at fixed narrow widths inside a wider popup — they look broken and unprofessional
+- Form field labels go ABOVE the field, not beside it (inside popups)
 
 **Other Popup rules:**
 - ALWAYS use the Popup component — NEVER build a manual modal frame
