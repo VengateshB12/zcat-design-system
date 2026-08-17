@@ -18,15 +18,28 @@
 
 ### Simple Form (no stepper)
 ```
-Footer: Cancel (Ghost, LEFT) ———————— Create (Fill, RIGHT)
+Footer: Cancel (Outline/Grey secondary, LEFT) ———————— Create (Fill, RIGHT)
 ```
+Cancel is ALWAYS a grey secondary button (Outline variant), NEVER Fill (primary blue). Cancel in primary blue makes a dismiss action look like the main action — dangerous and confusing.
 
 ### Wizard with Stepper
 ```
-Footer: Back (Outline, LEFT) ———————— Cancel (Ghost, RIGHT) + Continue (Fill, RIGHT)
+Footer: Back (Outline, LEFT) ———————— Cancel (Outline/Grey, RIGHT) + Continue (Fill, RIGHT)
 ```
 - First step: no Back, just Cancel (left) + Continue (right)
-- Last step: Back (left) + Cancel + Create (right)
+- Last step: Back (left) + Cancel + Create/Submit (right)
+
+### CRITICAL: Cancel Button Variant
+
+**Cancel is ALWAYS Outline variant (grey secondary).** NEVER use Fill (primary blue) for Cancel.
+
+| Button | Variant | Why |
+|--------|---------|-----|
+| Create / Save / Submit / Continue / Mark As Resolved | **Fill** (primary blue) | This is the action the user came to do |
+| Cancel / Close / Dismiss | **Outline** (grey secondary) | This dismisses — it must NOT compete with the primary action |
+| Back (in wizard) | **Outline** (grey secondary) | Navigation, not primary action |
+
+**If Cancel is blue/Fill, it looks like a second primary action — the user can't tell which button does what at a glance.**
 
 ### Correct Structure
 ```
@@ -38,18 +51,87 @@ Popup
 └── Footer: buttons per pattern above
 ```
 
-### Stepper/Tabs in Popup Header
-- ALWAYS in header area, directly below title — NEVER in content body
-- Stepper must be responsive (`layoutSizingHorizontal = FILL`)
-- Use Stepper component — NEVER draw circles + lines manually
+---
 
-### Popup Sizing & Responsiveness
+## THE #1 POPUP MISTAKE: Header, Body, Footer Width Mismatch
+
+**ALL three sections (Header, Body, Footer) MUST stretch to the FULL popup width.**
+
+### The Rule
+
+After importing and detaching the Popup component, verify:
+1. **Header frame:** `layoutSizingHorizontal = "FILL"` — stretches to popup width
+2. **Body/Content frame:** `layoutSizingHorizontal = "FILL"` — stretches to popup width
+3. **Footer frame:** `layoutSizingHorizontal = "FILL"` — stretches to popup width
+4. **Popup itself:** VERTICAL auto-layout with consistent padding (typically 24px left/right, 20px top/bottom)
+
+### Common Width Mistakes
+
+| Problem | What it looks like | Fix |
+|---------|-------------------|-----|
+| Body narrower than header | Form fields don't reach edges, wasted space on sides | Set body `layoutSizingHorizontal = "FILL"` |
+| Footer narrower than body | Buttons float in center, don't align with content | Set footer `layoutSizingHorizontal = "FILL"` |
+| Stepper narrower than header | Stepper steps cramped in center of wide popup | Set stepper `layoutSizingHorizontal = "FILL"` |
+| Form fields fixed width | Narrow inputs inside a wide popup body | Set EVERY input `layoutSizingHorizontal = "FILL"` |
+
+**Self-check after building any popup:** Screenshot it. Do ALL sections (header, stepper, body, footer) reach the same left and right edges? If not → fix the FILL sizing.
+
+---
+
+## Stepper in Popup — Placement and Sizing
+
+### Placement: ALWAYS in Header Area
+
+The Stepper component goes **directly below the popup title**, inside the header area. NEVER place it in the content body.
+
+```
+Popup
+├── Header area
+│   ├── Title text ("Create Item")
+│   └── Stepper (FILL width) ← HERE, not in body
+├── Body / Content
+│   └── Form fields for current step
+└── Footer
+    └── Back + Cancel + Continue buttons
+```
+
+### Sizing: FILL Width
+
+- Stepper `layoutSizingHorizontal = "FILL"` — stretches to full popup width
+- This ensures step labels are evenly spaced across the popup
+- NEVER leave the stepper at a fixed narrow width — it will look cramped in a wide popup
+
+### Use the Stepper Component — NEVER Draw Manually
+
+- Use the Stepper component from zcat — NEVER draw numbered circles + connecting lines manually
+- The component handles spacing, numbering, active/completed states
+- If more steps are needed than the component supports, detach and duplicate step instances
+
+### Step States
+
+| Step | State |
+|------|-------|
+| Current step | Active (brand color, filled circle) |
+| Completed steps | Completed (checkmark or filled) |
+| Future steps | Default (grey, outline circle) |
+
+---
+
+## Tables Inside Popups — ALWAYS Boxy
+
+If a popup contains a Table AI, it MUST use **Boxy** style. A popup body has padding on all sides and contains multiple elements — the table is one section among many. Stretch style removes side padding and goes edge-to-edge, which breaks the popup's internal layout.
+
+---
+
+## Popup Sizing & Responsiveness
+
 - Default 548px wide, 500-700px for wizard flows
 - ALL components inside Popup (Text Box, Dropdown, Radio Button) MUST use `layoutSizingHorizontal = FILL`
 - NEVER leave narrow fixed-width controls in a wide popup
 - Form labels go ABOVE fields (inside popups)
 
 ### Required Layers
+
 1. **Popup Blur** (key `825e3c4aa551ccd56ec61d6f5059dda1e92abbc5`) — backdrop, sized to full page (1582×860)
 2. **Popup** component — the actual dialog
 
@@ -57,17 +139,40 @@ NEVER create manual frames with hardcoded black/opacity for overlay.
 
 ---
 
+## Footer Button Layout — Alignment Rules
+
+### Simple Form Footer
+```
+Footer (HORIZONTAL auto-layout, FILL width, padding 16px)
+├── Cancel button (Outline variant, grey secondary, LEFT aligned)
+├── Spacer (FILL width) — pushes primary to right
+└── Create/Save button (Fill variant, primary blue, RIGHT aligned)
+```
+
+### Wizard Footer (with Back)
+```
+Footer (HORIZONTAL auto-layout, FILL width, padding 16px)
+├── Back button (Outline variant, LEFT aligned)
+├── Spacer (FILL width)
+├── Cancel button (Outline variant, grey secondary)
+└── Continue button (Fill variant, primary blue, RIGHT aligned)
+```
+
+**CRITICAL:** Footer buttons MUST be at the edges. Cancel/Back on LEFT, primary action on RIGHT. NEVER center all buttons together. Cancel is NEVER Fill — it must be grey/Outline to visually separate it from the primary action.
+
+---
+
 ## Grouping Fields Inside Modal/Form
 
-**Bordered sub-panel (neutral Card BG) + sub-heading when:** 3+ fields configure one conceptual thing (alert trigger logic: conditions, criteria, frequency).
+**Bordered sub-panel (neutral Card BG) + sub-heading when:** 3+ fields configure one conceptual thing (conditions, criteria, frequency).
 
-**Plain sub-heading, no border, when:** Single field or repeatable list (e.g., "Notify Emails" + "+" Icon Button to add more).
+**Plain sub-heading, no border, when:** Single field or repeatable list (e.g., email list + "+" Icon Button to add more).
 
 **Default:** Ungrouped for primary identity fields (name, type). Bordered sub-panel for configuration clusters. Plain sub-heading for single/repeatable fields.
 
-**Optional/rarely-needed fields:** Collapse behind "Show Advanced Settings" / "Hide Advanced Settings" link with chevron, collapsed by default. Not the full Accordion component — just a text link toggle.
+**Optional/rarely-needed fields:** Collapse behind "Show Advanced Settings" / "Hide Advanced Settings" link with chevron, collapsed by default.
 
-**Secondary tabs inside grouped panel:** When tabs switch sub-views of one group (e.g., "Params | Headers" for a webhook), they sit inside that group's bordered panel, scoped to it.
+**Secondary tabs inside grouped panel:** When tabs switch sub-views of one group (e.g., "Params | Headers"), they sit inside that group's bordered panel, scoped to it.
 
 ---
 

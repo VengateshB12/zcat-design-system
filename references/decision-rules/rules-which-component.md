@@ -28,8 +28,8 @@
 | Warnings/alerts | Attention Box | Draws a colored box with icon |
 | Loading indicator | Loader | Draws spinning circles |
 | User icon | Avatar | Draws a colored circle with initials |
-| Key-value info | General Details or Key Value Pair | Stacks label+value as plain text |
-| Code/SQL editor | Code Block | Draws a plain text frame |
+| Key-value info (read-only) | General Details | Stacks label+value as plain text OR uses Key Value Pair (editable) |
+| **Code/SQL/query editor** | **Code Block / Code Editor** | **Draws a plain text frame with monospace font** |
 | Section heading | Container Header | Writes bold text manually |
 | Progress indicator | Progress Bar | Draws rectangles for progress |
 | Breadcrumb trail | Breadcrumbs | Writes "Home > Page > Sub" as text |
@@ -41,8 +41,76 @@
 | Accordion/expandable | Accordion | Draws a section with chevron |
 | Tab navigation | Tabs (in Sub Header or as component) | Draws underlined text buttons |
 | Empty/first-time page | Empty State | Manually builds illustration + text + buttons |
+| **Master-detail (list→detail)** | **Side Menu pattern (Recipe 4)** | **Draws a flat two-panel layout** |
 
-**For Tables: ALWAYS use Table AI** (key `f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07`). Table AI is zero-detach — configure via setProperties(). NEVER use legacy Table (`954cd82ff912bd312206e7f2776a75d80049ede0`).
+---
+
+## Code / SQL / Query Editor — ALWAYS Use Code Block Component
+
+**ANY screen that shows code, SQL queries, JSON, API responses, logs, or monospace text MUST use the Code Block / Code Editor component.**
+
+### When to Use
+
+- SQL console / query editor
+- Code snippets or previews
+- JSON/XML/YAML displays
+- API request/response bodies
+- Log viewers
+- Terminal output
+- Configuration file content
+- Connection strings (when shown as copyable code)
+
+### NEVER
+
+- Draw a plain text frame with monospace font for code content
+- Use a Text Box component for code (it's a single-line input, not a code editor)
+- Build a bordered rectangle with plain text inside for query display
+
+### Structure
+
+```
+Code Editor section
+├── Action bar (Container Header or manual)
+│   ├── Left: dropdown (schema selector, language, etc.)
+│   └── Right: action buttons (Run, Save, etc.) — ONE primary max
+├── Code Block component (FILL width, content inside)
+│   └── Code text with proper formatting
+└── Results section (if applicable)
+    ├── Status badge ("5 rows · 24 ms")
+    └── Table AI for query results
+```
+
+---
+
+## Master-Detail Layout — ALWAYS Use Side Menu Pattern
+
+**When a wireframe shows a list on the LEFT that drives a detail view on the RIGHT, ALWAYS use the Side Menu / master-detail pattern (Recipe 4 in zcat.md).**
+
+### When to Use
+
+- Table/schema list → column details
+- Settings categories → settings panel
+- File/folder tree → file content
+- Message list → message detail
+- Any "click item on left, see details on right" pattern
+
+### NEVER
+
+- Copy the wireframe's flat two-panel layout manually
+- Build two side-by-side frames without the Side Menu component
+- Use a plain table on the left without selection highlighting
+
+### Structure
+
+```
+Container (Side Menu pattern)
+├── Left panel (sidebar list with selection highlighting)
+│   ├── Search (optional)
+│   └── Selectable list items
+└── Right panel (detail view, changes based on selection)
+    ├── Detail header with actions
+    └── Detail content (table, form, info)
+```
 
 ---
 
@@ -52,8 +120,8 @@
 
 ### Never Drop Features Due to Component Limits
 
-- If Tab supports max 5 but wireframe shows 7 → **detach and add remaining tabs** with same styling
-- If Table has 11 column types but you need 13 → add manual columns matching Table's cell styling
+- If Sub Header supports 5 tabs but wireframe shows 7 → **detach and add remaining tabs** with same styling
+- If Table has 8 column slots but you need 10 → add manual columns matching Table's cell styling
 - If Dropdown Menu has max 5 items but you need 8 → detach and add more items
 - **The component is a starting point, not a ceiling.** Detach and extend when limits are hit
 - **Surface the decision:** Tell the user when you detach to extend
@@ -62,9 +130,9 @@
 
 Before the first `use_figma` call, enumerate every feature from the wireframe:
 - All sidebar menu items (name each one)
-- All tabs (name each one)
+- All tabs (name each one, COUNT them)
 - All table columns (name each one)
-- All action buttons and menus (name each one)
+- All action buttons and menus (name each one, decide CTA hierarchy)
 - All form fields (name each one)
 - All sections, cards, and panels
 
@@ -73,3 +141,11 @@ Cross-check this list against your build plan. If anything is missing, add it be
 ### After Building — Completeness Check
 
 Compare the built screen against the wireframe feature list. Every item must be present. If something was omitted, add it before showing the screen to the user.
+
+---
+
+## For Tables: ALWAYS Use Table AI
+
+Key `f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07`. Zero-detach — configure via setProperties(). NEVER use legacy Table (`954cd82ff912bd312206e7f2776a75d80049ede0`).
+
+See `rules-table-columns.md` for column type selection, AvatarName rules, and Badge color rules.

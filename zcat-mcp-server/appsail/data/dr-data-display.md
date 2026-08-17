@@ -1,5 +1,74 @@
 # Data Display Rules
 
+## THE #1 DISPLAY MISTAKE: Editable Form vs Read-Only Display
+
+**If the wireframe shows DATA VALUES (not empty inputs), it is a READ-ONLY display, NOT an editable form.**
+
+### How to Tell the Difference
+
+| Wireframe shows | It means | Use |
+|-----------------|----------|-----|
+| Label + actual value text (e.g., "Host: some-server.example.com") | READ-ONLY display | General Details component |
+| Empty input field with placeholder ("Enter value...") | EDITABLE form input | Text Box component |
+| Value + Copy button/icon | READ-ONLY with copy action | General Details or manual bordered field + Copy icon |
+| Value + Edit button/link | READ-ONLY, click-to-edit | General Details + edit link, NOT pre-filled form |
+
+### Any Section Showing Label:Value Pairs with Real Data
+
+This applies to ANY product — server configs, API credentials, account settings, billing info, service endpoints, integration details. If you see real values in the wireframe:
+
+**CORRECT:** General Details component (key `6dd180e6490c68971c8c9b5cc963349b711a5e5d`, type `component`). Import → detach → customize rows. Label on LEFT, value on RIGHT. Wrap in Card BG or bordered frame.
+
+**WRONG:** Text Box inputs, Dropdown selects, or any editable control. That turns a read-only info display into an editable form — completely wrong interaction model.
+
+**The rule:** Real values in fields → read-only (General Details). Empty fields with placeholders → editable form (Text Box / Dropdown).
+
+---
+
+## WARNING: Key Value Pair Component Renders with Editable Inputs
+
+**Key Value Pair** (key `2d82f5c0a6c24ab0370c320d0044cc8346666077`) renders with a text input + dropdown ("Select List") — it is an EDITABLE component, NOT a read-only display. **Do NOT use it for read-only data.**
+
+### Component Decision Table
+
+| Display type | Use | NOT |
+|-------------|-----|-----|
+| Read-only info section (config, metadata, credentials) | **General Details** (detach for custom rows) | Key Value Pair (renders as form) |
+| Read-only copyable fields | General Details or manual bordered frames + Copy icon | Text Box (editable input) |
+| Editable form with label + input | Key Value Pair OR Text Box with label | General Details (read-only) |
+| Inline metadata (1-3 facts) | Manual label + value text | — |
+
+**CRITICAL: Label:Value alignment is ALWAYS horizontal** for read-only displays. Label LEFT, value RIGHT, same row. NEVER stack vertically.
+
+---
+
+## Activity Feed / Event List Pattern
+
+When ANY screen shows a list of events, logs, or activity with timestamps:
+
+**Each item MUST have a colored status dot.** The dot color indicates the event type:
+
+| Event type | Dot color |
+|------------|-----------|
+| Success / completion (completed, deployed, enabled) | Green |
+| Info / change (modified, created, updated, promoted) | Blue |
+| Warning / degradation (degraded, expiring, throttled) | Amber |
+| Historical / neutral (archived, scheduled) | Grey |
+| Error / failure (failed, crashed, timed out) | Red |
+
+**Build as:** VERTICAL auto-layout inside a Card BG, each item is a HORIZONTAL row:
+```
+Row (HORIZONTAL, gap: 12, center-aligned)
+├── Status dot (8×8 circle, fill: semantic color variable)
+├── VERTICAL auto-layout, gap: 2
+│   ├── Event text (Body/Regular/14, color/text/primary)
+│   └── Timestamp (Body/Regular/12, color/text/placeholder)
+```
+
+**NEVER drop the status dots.** They communicate event severity. An activity feed without dots is just a plain text list and looks unfinished.
+
+---
+
 ## Table vs Cards vs List vs Side Menu
 
 **Use Table when:** Data has 4+ comparable columns, users need to scan/sort/filter, data is uniform, bulk actions needed.
@@ -8,7 +77,7 @@
 
 **Use List when:** Items are simple (one primary line + optional secondary), space is constrained, items scanned sequentially.
 
-**Use Side Menu (inside Container) when:** Selecting an item updates a detail view elsewhere — master-detail pattern. 8+ items with short labels. Example: Data Store → Tables list driving schema view.
+**Use Side Menu (inside Container) when:** Selecting an item updates a detail view elsewhere — master-detail pattern. 8+ items with short labels.
 
 **Default:** Table for 4+ columns. Cards for ≤3 attributes with visual emphasis. List for simple items. Side Menu when selection drives a detail view.
 
@@ -22,13 +91,33 @@
 
 1. **Stat tile / info card** — **neutral** Card BG. When the value already carries semantic color (green success rate, red error count), a colored background competes with that signal. Let the card be neutral; let the value's color do the signaling.
 
-2. **Catalog / directory card** (e.g., Connections grid — Google, MailChimp, DropBox) — **themed** Card BG, one color per item. These are browsable identities; distinct tint per item helps differentiate.
+2. **Catalog / directory card** (browsable items in a grid) — **themed** Card BG, one color per item. Distinct tint helps differentiate.
 
-3. **Selectable option tile** (e.g., Import wizard data-source picker) — **neutral** tile. The icon carries brand color, not the card. Add selection state (border highlight) when chosen.
+3. **Selectable option tile** (wizard step picker) — **neutral** tile. The icon carries brand color, not the card. Add selection state (border highlight) when chosen.
 
 ---
 
-## Card Grid Layout (Applications / Catalog)
+## Two-Column Card Row Height — Use STRETCH, Not Fixed
+
+When two or more cards sit side by side:
+
+**CORRECT:** Parent row uses `counterAxisAlignItems = "STRETCH"`. Both cards grow to match the tallest one's content height naturally.
+
+**WRONG approaches:**
+- Setting the parent row to HUG → cards collapse to minimum height, shorter card looks broken
+- Setting a FIXED pixel height (e.g., 320px) on the row → arbitrary, breaks when content changes
+
+```
+Row (HORIZONTAL auto-layout, gap: 16px)
+  counterAxisAlignItems = "STRETCH"  ← CORRECT
+  layoutSizingHorizontal = "FILL"
+├── Left Card (FILL width, HUG height) — stretches via parent STRETCH
+└── Right Card (FILL width, HUG height) — stretches via parent STRETCH
+```
+
+---
+
+## Card Grid Layout (Catalog / Directory Pages)
 
 **Container structure:**
 ```
@@ -46,7 +135,7 @@ Card frame (FILL width, Card BG fills, 16px padding, 6px radius)
 │   └── Stroke icon (18x18, centered)
 ├── Badge (top-RIGHT, positioned absolutely)
 ├── Title (Body/SemiBold/16, color/text/primary)
-├── Subtitle (Body/Regular/14, color/text/secondary) — "Production · Java"
+├── Subtitle (Body/Regular/14, color/text/secondary)
 └── Timestamp (Body/Regular/12, color/text/placeholder)
 ```
 
@@ -56,35 +145,16 @@ Card frame (FILL width, Card BG fills, 16px padding, 6px radius)
 
 ## List Item Selection: Highlight vs Checkbox
 
-**Highlight-only (NO checkboxes) when:** Single-select — clicking shows detail. No batch operations. This is the standard for almost all Catalyst sidebar lists.
+**Highlight-only (NO checkboxes) when:** Single-select — clicking shows detail. No batch operations.
 
 **Checkboxes when (rare):** Batch operations on multiple items. Position at leading edge. Add "Select All" at top.
-
-**Default:** Highlight-only. Do NOT add checkboxes unless wireframe/PRD explicitly shows batch operations.
-
----
-
-## Description List vs Key-Value Pairs
-
-**MANDATORY: Use components, not manual text.**
-
-| Component | Key | Type | Use when |
-|-----------|-----|------|----------|
-| **General Details** | `6dd180e6490c68971c8c9b5cc963349b711a5e5d` | component | Pre-built section block with heading + multiple KV rows. Import, detach, customize |
-| **Key Value Pair** | `2d82f5c0a6c24ab0370c320d0044cc8346666077` | component_set | Individual KV rows to arrange yourself. Layout=Horizontal |
-
-**CRITICAL: Label:Value alignment is ALWAYS horizontal.** Label LEFT, value RIGHT, same row. NEVER stack vertically.
-
-**General Details (preferred):** For sections of 3-8 related read-only fields (Connection: HOST, PORT, DATABASE).
-
-**Key Value Pair individually:** For 1-3 quick facts alongside other content (in a stat card, card header).
 
 ---
 
 ## KPI/Stats Cards vs Inline Metrics
 
-**KPI/Stats Cards when:** Metrics are the hero content of dashboard/overview. 3-6 key metrics to highlight. Users glance at these first.
+**KPI/Stats Cards when:** Metrics are the hero content of dashboard/overview. 3-6 key metrics to highlight.
 
-**Inline Metrics when:** Metrics provide context within a section ("12 tasks due today"). 1-2 secondary metrics.
+**Inline Metrics when:** Metrics provide context within a section. 1-2 secondary metrics.
 
 **Default:** KPI Cards for dashboard headers. Inline for contextual data within sections.

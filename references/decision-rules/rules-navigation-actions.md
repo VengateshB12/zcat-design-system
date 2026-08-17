@@ -1,5 +1,83 @@
 # Navigation, Actions & Structure
 
+## THE #1 TAB MISTAKE: Sub Header Has a Tab Limit — DETACH to Add More
+
+**The Sub Header component supports a LIMITED number of tabs (typically 5).** If the wireframe shows MORE tabs than the component supports:
+
+1. Import the Sub Header as normal
+2. **DETACH it** (Sub Header is on the detach whitelist — but ONLY for adding tabs, not for restyling)
+3. Find the existing tab instances inside the detached frame
+4. **Duplicate** the last tab instance to create additional tabs
+5. Update the text on each duplicated tab
+6. Ensure ALL tabs from the wireframe are present — NEVER drop tabs to fit the component limit
+
+**The component is a starting point, not a ceiling.** If a wireframe shows 7 tabs and the component only holds 5, you MUST add the remaining 2 by detaching. NEVER silently drop features.
+
+**CRITICAL:** Count the tabs in the wireframe BEFORE building. Compare to what the component supports. Plan the detach in advance.
+
+---
+
+## CTA Hierarchy — ONE Primary Per Action Group (THE #1 BUTTON MISTAKE)
+
+**Every action group (action bar, footer, toolbar) MUST have AT MOST ONE primary (Fill) button.**
+
+### The Rule
+
+| Button count | Pattern |
+|-------------|---------|
+| 1 action | Fill (primary) |
+| 2 actions | Fill (primary) + Ghost or Outline (secondary) |
+| 3 actions | Fill (primary) + Outline (secondary) + Ghost (tertiary) |
+| 4+ actions | Fill (primary) + Outline (secondary) + Ghost (tertiary) + overflow menu for the rest |
+
+### How to Decide Which Action is Primary
+
+Pick the ONE action that is:
+- The most common user action on this screen
+- The action with the most consequence (create, submit, save)
+- The action the user came to this page to do
+
+Everything else is secondary (Outline) or tertiary (Ghost).
+
+### Common Mistakes
+
+| Screen type | WRONG | CORRECT |
+|-------------|-------|---------|
+| Query editor | Save Query (Fill) + History (Fill) + Run (Fill) + Export (Fill) — 4 primaries | Run (Fill) + Save Query (Outline) + History (Ghost) + Export (Ghost) |
+| Backup list | Restore (Fill) + Create Backup (Fill) — 2 primaries | Create Backup (Fill) + Restore (Outline) |
+| Settings page | Save (Fill) + Reset (Fill) — 2 primaries | Save (Fill) + Reset (Ghost) |
+| User list | Add User (Fill) + Import (Fill) — 2 primaries | Add User (Fill) + Import (Outline) |
+
+**Self-check:** After placing buttons, count the Fill buttons in each action group. If more than ONE → demote the less important ones to Outline or Ghost.
+
+---
+
+## Empty State Button Labels — NEVER Duplicate
+
+**When an empty state has two buttons (primary Fill + secondary Outline), they MUST have DIFFERENT labels and different actions.**
+
+### The Rule
+
+The primary button = the main action to resolve the empty state.
+The secondary button = an alternative or less common path.
+
+**WRONG:** "Create Item" (Outline) + "Create Item" (Fill) — identical labels, confusing.
+
+**CORRECT examples:**
+| Empty state | Primary (Fill) | Secondary (Outline) |
+|-------------|---------------|---------------------|
+| No backups | Create Backup | Enable Auto-Backup |
+| No users | Add User | Import Users |
+| No projects | Create Project | Browse Templates |
+| No connections | Add Connection | Learn More |
+| No data | Upload Data | Connect Source |
+
+**If there is genuinely only ONE action**, use the Empty State component with `Show Outline Button = false`. Don't invent a second button with the same label.
+
+**ALSO:** The Empty State component (key `03321dc06395aa6b94783d0289637de8ddc82de0`) has boolean properties: Show Illustration, Show Heading, Show Description, Show Primary Button, Show Outline Button. Use them — don't manually build empty states.
+
+---
+
 ## Tabs vs Sidebar Nav vs Accordion
 
 **Tabs:** 2-7 peer sections, frequent switching, one viewed at a time, short labels.
@@ -14,8 +92,8 @@
 
 Detach to add real content inside open panels. Keep the shell styling (padding, gaps, colors, radius).
 
-**Three content shapes** (from Catalyst AppSail Configuration):
-1. **Table with mini action bar** — Search + "Add Variable" link, then Table below (Stretch pattern scoped to accordion)
+**Three content shapes:**
+1. **Table with mini action bar** — Search + action link, then Table below (Stretch pattern scoped to accordion)
 2. **Single editable value** — description + "Edit" link + bordered/monospace box
 3. **Key Value Pair rows** — sub-heading + "Edit" link + stacked label:value rows
 

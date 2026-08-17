@@ -4,6 +4,14 @@ Pre-build analysis phase that MUST complete before any Figma build starts. This 
 
 **When to use:** Every time the user provides wireframes, screenshots, PRDs, or any multi-screen design task. Skip ONLY for single-component tweaks or quick fixes to existing screens.
 
+## ABSOLUTE RULE: Spec Files BEFORE Building — ZERO Exceptions
+
+**You MUST write ALL page spec MD files BEFORE calling use_figma even once.** This is not optional. This is not "nice to have." Skipping specs is the root cause of every major build failure: wrong column types, wrong component choices, editable forms instead of read-only displays, missing features, inconsistent designs across screens.
+
+**If you catch yourself about to call use_figma without having written spec files → STOP. Go back to Phase 2. Write the specs. THEN build.**
+
+The spec file forces you to think through every decision BEFORE committing tokens to Figma. A bad spec wastes minutes to fix. A bad build wastes the entire token budget.
+
 ---
 
 ## Design Reference Sources (MUST consult before designing)
@@ -87,6 +95,30 @@ The agent must think from FOUR perspectives when reading a wireframe:
 - Exact layout/positioning (redesign with proper patterns)
 - Visual styling (apply zcat design system)
 - Icon choices (wireframe icons are placeholders)
+- Column icons/avatars (match column type to DATA, not wireframe icons)
+
+### CRITICAL: Read-Only Display vs Editable Form
+
+**The #1 wireframe misinterpretation:** agent sees a section with labels + values and builds it as an EDITABLE FORM (Text Box + Dropdown + ± buttons) instead of a READ-ONLY DISPLAY (General Details / Key Value Pair + Copy buttons).
+
+**How to tell the difference:**
+- Wireframe shows ACTUAL DATA VALUES (HOST: orders-prod.zcatalyst.com) → **READ-ONLY display** → use General Details or Key Value Pair component with optional Copy Icon Button
+- Wireframe shows EMPTY INPUT FIELDS with placeholders ("Enter host...") → **EDITABLE form** → use Text Box, Dropdown components
+- Wireframe shows values + "Copy" button → READ-ONLY with copy action, NOT a form
+- Wireframe shows values + "Edit" link → READ-ONLY, click-to-edit pattern, NOT a pre-filled form
+
+**Connection sections, metadata panels, config summaries, and detail sections are almost ALWAYS read-only displays.** Only form creation flows (Create, Add New, Edit modal) use editable inputs.
+
+### CRITICAL: Activity Feeds Need Status Dots
+
+When a wireframe shows a list of events/activities with timestamps, EACH item MUST have a colored status dot:
+- Green: success/completion (backup completed, deployed)
+- Blue: info/change (promoted, modified, created)
+- Amber: warning/degradation
+- Grey: historical/neutral
+- Red: error/failure
+
+An activity feed without colored dots is just a plain text list — it looks unfinished and loses the event-type signal. Build dots as 8×8 circles with semantic color fills.
 - Typography (apply zcat text styles)
 - Spacing (apply zcat spacing scale)
 - Tab/section placement (apply Catalyst layout rules — primary tabs in Sub Header, etc.)
@@ -306,7 +338,14 @@ Pattern source: [Me- reference]
 ## Sub Header
 - Detail pages: back nav "< [item name]" + tabs + Help + three-dot
 - List pages: feature name + Help (no tabs unless multiple top-level views)
-- NEVER detach Sub Header
+- Tab count: [N tabs from wireframe] — if > component limit, detach and duplicate tab instances
+- CTA in Sub Header: ONLY when tabs exist AND action applies to all tabs (e.g., Connect, Help)
+
+## Button CTA Hierarchy (per action group)
+- Primary (Fill): [the ONE most important action]
+- Secondary (Outline): [less important actions]
+- Tertiary (Ghost): [cancel, dismiss, navigation]
+- NEVER more than ONE Fill button per action bar/footer/toolbar
 
 ## Typography
 - Section heading: Body/SemiBold/16, color/text/primary
@@ -428,39 +467,76 @@ For EVERY page and popup identified in Phase 1, write a complete build spec file
   - Import: importComponentSetByKeyAsync
   - Properties: { Style: "Boxy", Columns: "5", Show Pagination: false, Show Threedot: true }
   - layoutSizingHorizontal: FILL
-  - Column setup (MUST justify each type — "why this type for this data?"):
-    Col 1: Text — header "Replica Name" — WHY: entity name, not a person → Text
+  - Style: [Stretch/Boxy] — WHY: [is this a list page (Stretch) or inside a detail/popup (Boxy)?]
+  - Column setup (MUST justify each type — ask the decision questions for EVERY column):
+    Col 1: Text — header "Replica Name"
+           PERSON'S FACE test: NO (replicas don't have faces) → Text, NOT AvatarName
            data: replica-east-1, replica-west-2, ...
-    Col 2: Text — header "Region" — WHY: location string → Text
+    Col 2: Text — header "Region"
+           PERSON'S FACE test: NO → Text
            data: us-east-1, us-west-2, ...
-    Col 3: Text — header "Replication Lag" — WHY: numeric metric → Text
+    Col 3: Text — header "Replication Lag"
+           FINITE STATUS SET test: NO (open-ended numeric) → Text, NOT Badge
            data: 12ms, 8ms, ...
-    Col 4: Text — header "Instance Class" — WHY: config value → Text
+    Col 4: Text — header "Instance Class"
            data: db.r6g.large, db.r6g.xlarge, ...
-    Col 5: Badge — header "Status" — WHY: status category → Badge
+    Col 5: Badge — header "Status"
+           FINITE STATUS SET test: YES (3 values, each has meaning) → Badge
            Badge color mapping:
              "Available" → Green (success)
              "Syncing" → Amber (warning/in-progress)
              "Error" → Red (failure)
       Swap to: importComponentByKeyAsync("f54ff134...")
+  - VERIFY: Are column types different from Table AI defaults (AvatarName col 1, Badge col 2)?
+    If they match defaults → you probably forgot to swap columns
   - Text update approach: find TEXT nodes, load font, set characters. DO NOT DETACH
 
 ## Validation Checklist (verify after build)
-- [ ] Sub Header: [N] tabs present, correct text, ACTIVE TAB correctly set
+
+### Features & Content
+- [ ] Sub Header: ALL [N] tabs from wireframe present (COUNT them — if component had a limit, was it detached to add more?)
+- [ ] Sub Header: ACTIVE TAB correctly set (exactly one tab active, matching visible content)
 - [ ] Sidebar: all [N] items present, correct group, active item highlighted
 - [ ] Stat cards: [N] cards, each with icon BG (DIFFERENT colors) + value + label, HUG height
 - [ ] [Section name]: all [N] fields present with correct labels and values
-- [ ] Table: [N] columns, correct headers, correct data in cells
-- [ ] Table columns: AvatarName ONLY on person columns, Badge ONLY on status columns
-- [ ] Badge colors: DIFFERENT color per status meaning (green/red/amber/blue/grey)
-- [ ] Card height: HUG (auto-layout) — NOT fixed pixel height
-- [ ] Tab active state: exactly ONE tab active, matches visible content
-- [ ] Colors: ZERO hardcoded hex — all bound to variables
+- [ ] No features dropped from wireframe
+
+### Tables
+- [ ] Table: [N] columns, correct headers, correct data in cells (data aligned to its column header — no cross-contamination)
+- [ ] Table columns: AvatarName ONLY on person columns — ask "Is this about a PERSON?" for each column
+- [ ] Table columns: Badge ONLY on status/category columns — ask "Is this a STATUS?" for each column
+- [ ] Badge colors: DIFFERENT color per status meaning (green/red/amber/blue/grey) — NEVER all same color
+
+### Buttons & CTAs
+- [ ] CTA hierarchy: AT MOST ONE Fill (primary) button per action group — count the Fill buttons
+- [ ] Empty state: buttons have DIFFERENT labels (if two shown)
+- [ ] Action bar balanced: right buttons have left-side element (Search/heading/filter)
+
+### Components
+- [ ] Code/SQL/query content uses Code Block component — NOT plain text frame
+- [ ] Read-only data uses General Details — NOT Text Box or Key Value Pair (editable inputs)
+- [ ] Master-detail layouts use Side Menu pattern — NOT flat two-panel
+- [ ] ALL cards/frames/containers use auto-layout — NO fixed pixel heights or widths
+- [ ] Card height: HUG — content determines size, NEVER hardcoded pixels
+- [ ] Grouping frames use `createAutoLayout()` — NOT `createFrame()` with absolute x/y
+- [ ] Width = FILL, Height = HUG on all content containers
+
+### Popup (if applicable)
+- [ ] Header, body, footer ALL stretch to full popup width (layoutSizingHorizontal = FILL)
+- [ ] Stepper in HEADER area (below title), FILL width — NOT in body
+- [ ] Footer: Cancel/Back LEFT, primary action RIGHT — NOT centered
+- [ ] Cancel button is Outline/grey — NEVER Fill/primary blue
+- [ ] ALL form elements FILL width — no narrow fixed controls in wide popup
+
+### Quality
+- [ ] Colors: ZERO hardcoded hex — EVERY fill, stroke, text color bound to zcat variable (check Selection Colors panel)
+- [ ] No raw `{r:0, g:0, b:0}` fills — even black text uses `color/text/primary` variable
+- [ ] No raw white backgrounds — use `color/bg/surface` variable
 - [ ] Icons: all zcat stroke icons — no emoji/unicode/shapes
-- [ ] Layout: matches [Me- reference] pattern
+- [ ] Layout: matches [Me- reference] pattern — NOT a wireframe copy
 - [ ] Spacing: matches design uniforms
 - [ ] No duplicate information
-- [ ] No irrelevant buttons
+- [ ] Multi-state pages: each state is a separate design frame
 ```
 
 **EVERY page and popup gets a spec file this detailed. Write them ALL during Phase 2.**
@@ -626,3 +702,39 @@ Show user ALL pages together:
 
 ### 10. Context Drift in Long Sessions
 **Fix:** Each page build starts by RE-READING its spec file. Fresh context every time. No reliance on conversation memory.
+
+### 11. Multiple Fill (Primary) Buttons in Same Action Group
+**Problem:** Agent makes every button Fill — "Save Query" (Fill) + "History" (Fill) + "Run" (Fill) + "Export CSV" (Fill). Four primaries fighting for attention.
+**Fix:** Spec file MUST name which ONE button is primary (Fill). All others are Outline or Ghost. Check: count Fill buttons per action bar — if > 1, demote.
+
+### 12. Sub Header Tabs Dropped to Fit Component Limit
+**Problem:** Wireframe shows 7 tabs, but agent only builds 5 because the Sub Header component has a limit.
+**Fix:** COUNT tabs in wireframe during Phase 1. If wireframe has more tabs than the component supports, plan the detach in the spec file. NEVER silently drop tabs.
+
+### 13. Code/SQL Content as Plain Text Frame
+**Problem:** Agent draws a bordered rectangle with monospace text for a SQL console instead of using Code Block / Code Editor component.
+**Fix:** Spec file MUST specify Code Block component for any code/SQL/query/JSON content. Agent searches for it before building.
+
+### 14. Empty State Duplicate Button Labels
+**Problem:** Both Outline and Fill buttons say "Create Backup" — same label, same action. Confusing and redundant.
+**Fix:** Spec file MUST list the TWO distinct actions (primary: "Create Backup", secondary: "Enable Auto-Backup"). If only one action exists, set `Show Outline Button = false`.
+
+### 15. Popup Section Width Mismatch
+**Problem:** Header, stepper, body, and footer have different widths — stepper cramped in center, body content narrow, footer buttons centered instead of edge-aligned.
+**Fix:** Spec file MUST specify `layoutSizingHorizontal = "FILL"` for EVERY section (header, stepper, body, footer). Agent screenshots popup after building and checks alignment.
+
+### 16. Table Data Cross-Contamination
+**Problem:** Data from one column leaks into another — ID column shows "$1,240.00", customer column shows "1040" as a badge, status column shows "Umbrella". Total data chaos.
+**Fix:** Agent MUST verify after building: screenshot the table, read each row left-to-right, confirm each cell's data matches its column header. If data is scrambled, the text updates were applied to wrong nodes.
+
+### 17. Wireframe Copy Disguised as "Creative Design"
+**Problem:** Agent copies the wireframe layout exactly, swaps text for components, and presents it as a "creative design." The result is a wireframe with component styling — not a polished UI.
+**Fix:** The spec file lists specific improvements over the wireframe (Phase 1.6). Verification Part B checks against "Me-" reference quality. If the build looks like the wireframe with components dropped in, it fails.
+
+### 18. Fixed Pixel Heights and Widths on Cards/Containers
+**Problem:** Agent sets `resize(width, 100)` or `height = 200` on cards, section wrappers, and content containers. Cards end up at H:100 (too small) or H:500 (too large with wasted space). All cards same fixed height regardless of content.
+**Fix:** ALL cards/frames/containers use auto-layout with HUG height. `counterAxisSizingMode = "AUTO"`, `layoutSizingVertical = "HUG"`. Content determines size. Cards in a row match via parent `counterAxisAlignItems = "STRETCH"`. If something looks wrong, fix the CONTENT, not the container size.
+
+### 19. Hardcoded Hex Colors Instead of Variable Bindings
+**Problem:** Agent writes `node.fills = [{type: 'SOLID', color: {r:0, g:0, b:0}}]` for text or backgrounds — raw hex that breaks dark mode. Selection Colors panel shows "000000" or "FFFFFF" instead of variable names. Even text that "looks correct" in light mode is wrong if not variable-bound.
+**Fix:** EVERY fill, stroke, and text color MUST use `figma.variables.setBoundVariableForPaint`. Black text = `color/text/primary`, white bg = `color/bg/surface`, grey border = `color/border/default`. Agent MUST screenshot and check the Selection Colors panel — any raw hex value is a bug.

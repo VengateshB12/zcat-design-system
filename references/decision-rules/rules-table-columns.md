@@ -4,90 +4,125 @@
 
 **ALWAYS use Table AI** (key `f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07`), NEVER legacy Table. Zero-detach — configure via `setProperties()`.
 
-**Stretch:** Container's content is a list page (action bar + table, nothing else). One context, table is the whole point.
+**Stretch:** Container's content is a list page (action bar + table, nothing else). The table IS the whole point — fills edge to edge with no side padding.
 
-**Boxy:** Page has multiple sections besides the table — detail view with info card, stats, and table of related records.
+**Boxy:** Page has multiple sections besides the table — detail view with info card, stats, and table of related records. Table has padding/spacing on all 4 sides.
 
 **Default:** Stretch for single-context list pages. Boxy for detail/multi-section pages.
+
+### Table Inside Popup — ALWAYS Boxy
+
+**Tables inside popups MUST use Boxy style.** A popup body contains multiple elements (title, description, chips, table, footer) — the table is ONE section among many, surrounded by padding on all sides. This is exactly what Boxy is for.
+
+**NEVER use Stretch inside a popup** — Stretch removes side padding and goes edge-to-edge, which breaks the popup's internal spacing.
+
+### Table Style Decision
+
+| Context | Style | Why |
+|---------|-------|-----|
+| List page (table is the main content) | **Stretch** | Table fills the entire container edge-to-edge |
+| Detail page (table + stat cards + info sections) | **Boxy** | Table is one section among many |
+| Popup/dialog (table inside a modal) | **Boxy** | Table has padding, surrounded by other content |
+| Accordion panel (table inside expandable) | **Boxy** | Table is nested content |
+| Side panel / drawer | **Boxy** | Table is one section in constrained space |
 
 **CRITICAL: Table AI MUST be responsive** — `layoutSizingHorizontal = "FILL"`. A non-stretching table is a broken layout.
 
 ---
 
-## THE #1 TABLE MISTAKE: AvatarName on Every Column
+## ROOT CAUSE: Table AI Default Column Types Are WRONG for Your Data
 
-**This is the single most common table build failure.** Agents set AvatarName as the column type for EVERY column — IDs, amounts, dates, status — putting a person avatar icon next to data that has nothing to do with people. This looks absurd and unprofessional.
+**Table AI ships with DEFAULT column types: Column 1 = AvatarName, Column 2 = Badge.** If you import Table AI and DON'T swap the column types, EVERY table will have:
+- Column 1: person avatar + 2 text lines (even on rule names, database names, API keys)
+- Column 2: blue badge pills (even on identifiers, events, api_names)
 
-### AvatarName Rules (ZERO EXCEPTIONS)
+**This is why EVERY table the agent builds looks identical.** The agent imports Table AI, fills in text, and ships the DEFAULTS.
 
-**AvatarName is ONLY for columns that represent a PERSON:**
-- Customer name, user name, owner, assignee, created by, modified by
-- Email address (when shown as a primary identifier)
-- Team member, contact person
+### THE FIX: You MUST Swap Column Types for EVERY Column
 
-**AvatarName is NEVER for:**
-- IDs, invoice numbers, order numbers, ticket numbers
-- Amounts, prices, quantities, percentages
-- Dates, timestamps
-- Status values (paid, active, pending)
-- Database names, service names, project names, file names
-- Regions, locations, IP addresses
-- Any non-person entity
+After importing Table AI, you MUST:
+1. Decide the correct column type for EACH column based on its DATA
+2. Import the correct column type component
+3. Swap each column using instance swap (`Col 1`, `Col 2`, etc.)
+4. NEVER leave the default AvatarName/Badge if the data doesn't match
 
-**BEFORE setting ANY column type, ask: "Is this column about a PERSON?"**
-- YES → AvatarName
-- NO → use the correct type from the table below
+**If you find yourself with AvatarName on column 1 and Badge on column 2, you probably forgot to swap columns.**
 
-### Column Type Decision Table
+---
 
-**Match by DATA TYPE, not by wireframe appearance. Ignore wireframe icons.**
+## Column Type Decision — Ask These Questions for EVERY Column
 
-| Data in this column | Column Type | Why | WRONG type (agent mistake) |
-|---------------------|-------------|-----|---------------------------|
-| Person name / email / owner | **AvatarName** | Avatar + name + subtitle — ONLY for people | Text (loses avatar) |
-| Company / customer / org name | **Text** | Plain text — companies are NOT people | AvatarName (person icon on company), Badge (pill around name) |
-| ID / code / invoice number | **Text** | Plain text, no icon | AvatarName (avatar on ID), Badge (pill on ID) |
-| Amount / price / currency | **Text** | "$1,240.00" is a value | AvatarName, Badge |
-| Status (paid, active, error) | **Badge** | Color-coded label — see Badge Color Rules | Text (loses color signal) |
-| Date / timestamp | **Date** | Formatted date display | Text, Badge (pill on date) |
-| Description / notes | **Text** | Multi-line text content | — |
-| Region / location / type | **Text** | Plain categorical text | AvatarName |
-| Count / quantity / metric | **Text** | Numeric values | AvatarName |
-| Entity name + icon (database, function) | **IconText** | Icon + text for non-person entities | AvatarName |
-| Row actions (edit, delete) | **Threedot** | Three-dot overflow menu | Button |
-| Row selection | **Checkbox** | Multi-select for bulk actions | — |
-| Execution state (running, stopped) | **ExecutionStatus** | Dot indicator + text | Badge, Text |
+### Question 1: "Would a PERSON'S FACE make sense next to this data?"
 
-### Badge is ONLY for Status — NEVER for Names, IDs, Amounts, or Dates
+| Data | Person's face? | Type |
+|------|---------------|------|
+| "John Smith" (user name) | YES — it's a person | **AvatarName** |
+| "Notify Internal" (rule name) | NO — rules don't have faces | **Text** |
+| "orders-prod" (database name) | NO — databases don't have faces | **IconText** |
+| "CRMCustomModPub1" (publisher ID) | NO — system identifiers don't have faces | **Text** |
+| "INV-1042" (invoice number) | NO — numbers don't have faces | **Text** |
 
-**Badge renders every value as a colored pill.** This is correct for status values ("Paid" in a green pill, "Failed" in a red pill) but WRONG for:
-- Customer names — "Initech" in a blue pill looks like a status tag, not a name
-- IDs — "1040" in a pill looks like a filter chip, not a record identifier
-- Amounts — "$2,410.00" in a pill looks absurd
-- Dates — "2026-08-09" in a pill makes no sense
+**If NO → do NOT use AvatarName.** Use Text or IconText.
 
-**Rule: Before setting any column to Badge, ask "Is this column a STATUS or CATEGORY?"**
-- YES (paid/pending, active/inactive, high/medium/low) → Badge with semantic colors
-- NO (it's a name, ID, amount, date, description) → Text or the appropriate type above
+### Question 2: "Does this column have a FINITE SET of values (< 10) where each value means something DIFFERENT?"
 
-### Why This Matters Visually
+| Data | Finite meaningful set? | Type |
+|------|----------------------|------|
+| "Active", "Inactive", "Pending" (status) | YES — 3 values, each means something | **Badge** with semantic colors |
+| "Custom Module" (same value in every row) | NO — same value everywhere = zero info | **Text** (Badge adds nothing when all values are identical) |
+| "CustomModule1_approved" (event identifier) | NO — these are unique identifiers, not categories | **Text** |
+| "$1,240.00" (amount) | NO — open-ended numeric values | **Text** |
+| "2026-08-10" (date) | NO — unique per row | **Date** |
+| "us-east-1" (region) | MAYBE — if 3-5 regions, could be Badge; if many, use Text | **Text** or **Badge** depending on count |
 
-AvatarName renders as: **avatar circle + primary text + subtitle text (2 lines)**. When you set EVERY column to AvatarName, EVERY column shows an avatar icon and 2 rows of text — the ID column shows an avatar next to "1042" with "Acme Corp" below it, the amount column shows an avatar next to "$1,240.00" with "paid" below it. This looks broken because:
-- Non-person data has a person avatar icon next to it
-- Every cell has 2 text lines when most columns need only 1
-- The table wastes vertical space with unnecessary subtitle rows
-- Data from different columns leaks into wrong rows (the wireframe may show 2 lines per cell as a LAYOUT choice, but the agent copies it literally by using AvatarName for every column)
+**If NO → do NOT use Badge.** Use Text or the appropriate type.
 
-**The correct result:** Only the person column (customer, owner, assignee) has an avatar and 2 lines. All other columns (ID, amount, status, date) are single-line with no avatar.
+### Question 3: "When ALL values in a column are the SAME, should I use Badge?"
 
-### Self-Check After Setting Column Types
+**NO.** If every row shows "Custom Module" in a blue pill, Badge adds ZERO information — it's visual noise. When a column has only one distinct value across all rows, use **Text**. Badge is for columns where values VARY and each variation carries semantic meaning.
 
-After configuring Table AI columns, verify EACH column:
-1. Is AvatarName used? → Is that column genuinely about a person? If NO → change to Text/Badge/Date
-2. Does any non-person column show an avatar icon or 2 text lines? → WRONG — change column type
-3. Is Badge used? → Does it have the correct semantic color per status value? (see Badge Color Rules)
-4. Are all badges the same color? → WRONG — each status meaning gets its own color
-5. Is Text used for a status column? → Change to Badge (you're losing the color signal)
+### Question 4: "Does this non-person entity need an icon?"
+
+| Entity type | Has a natural icon? | Type |
+|-------------|-------------------|------|
+| Database/table | YES (database icon) | **IconText** |
+| Function/service | YES (function/code icon) | **IconText** |
+| File/document | YES (file type icon) | **IconText** |
+| Rule/config name | NO (rules are abstract) | **Text** |
+| Publisher ID | NO (system identifier) | **Text** |
+| API key name | NO (string identifier) | **Text** |
+
+---
+
+## Two-Line Cells: When Line 2 is WRONG
+
+AvatarName forces 2 text lines on every cell. This is WRONG when:
+
+| Line 2 content | Problem | Fix |
+|----------------|---------|-----|
+| SAME as line 1 ("Notify Internal" / "Notify Internal") | Duplicate text, looks broken | Change to **Text** (1 line) |
+| Data from another column ("CRMCustomModPub1" / "Redis 7.2") | Cross-column data leak | Change to **Text** |
+| Meaningless filler | Wasted space | Change to **Text** |
+| Empty/blank | Wasted row height | Change to **Text** |
+
+**Line 2 is CORRECT only when:**
+- Person name + their email/role ("John Smith" / "john@company.com")
+- Entity name + genuine subtitle ("orders-prod" / "Aurora MySQL 3.0") — and ONLY with IconText or AvatarName when appropriate
+
+---
+
+## Complete Column Type Reference
+
+| Data kind | Column Type | Renders as | When to use |
+|-----------|-------------|------------|-------------|
+| **Person** (user, owner, assignee, contact) | **AvatarName** | Avatar circle + name + subtitle | ONLY for human beings |
+| **Entity with icon** (database, function, file, service) | **IconText** | Icon + text | Non-person items that have a natural icon |
+| **Plain text** (name, label, ID, code, amount, region, publisher, event, target) | **Text** | Single-line text | DEFAULT for most columns — when in doubt, use Text |
+| **Status/category** (finite set, < 10 values, each value has semantic meaning, values VARY across rows) | **Badge** | Colored pill | ONLY when values vary AND each value means something different |
+| **Date/timestamp** | **Date** | Formatted date | Any date or time value |
+| **Operational state** (running, stopped, deploying) | **ExecutionStatus** | Colored dot + text | Live system state |
+| **Row actions** | **Threedot** | Three-dot overflow menu | Actions per row |
+| **Row selection** | **Checkbox** | Checkbox | Bulk selection |
 
 ---
 
@@ -103,16 +138,50 @@ After configuring Table AI columns, verify EACH column:
 | Info / processing / in progress / provisioning / draft | **Blue** | "Processing", "In Progress", "Provisioning", "Draft", "Queued" |
 | Neutral / unknown / N/A / archived / inactive | **Grey** | "Archived", "Inactive", "N/A", "Unknown", "Paused" |
 
-**NEVER use the same badge color for different status meanings.** If a table has "Paid" (green), "Pending" (amber), and "Overdue" (red) in the same column, each row's badge MUST reflect the correct color for its status value.
+**NEVER use the same badge color for ALL rows.** If a table has "Active" on every row, they're ALL green — that's fine (same status = same color). But if a column has "Paid", "Pending", AND "Overdue", each gets its OWN color.
 
-**The page build spec MUST list the badge color for EVERY unique status value** that appears in sample data. Example:
-```
-Status column (Badge type):
-  - "Paid" → Green
-  - "Pending" → Amber  
-  - "Overdue" → Red
-  - "Draft" → Blue
-```
+**When ALL values in a Badge column are identical** (e.g., every row says "Active"), consider whether Badge is even needed — if every row has the same status, that status is not distinguishing information and might be better as plain Text, or filtered out entirely.
+
+---
+
+## Table Variety — Every Table MUST Look Different
+
+**The test: show 5 tables side by side — can you tell them apart instantly?**
+
+### CORRECT: Each table matches its data
+
+| Page | Col 1 | Col 2 | Col 3 | Col 4 | Col 5 |
+|------|-------|-------|-------|-------|-------|
+| Users | AvatarName (person) | Text (role) | Date (joined) | Badge (status) | Threedot |
+| Rules | Text (rule name) | Text (event) | Text (publisher) | Text (target) | Threedot |
+| Invoices | Text (invoice #) | AvatarName (customer) | Text (amount) | Badge (status) | Threedot |
+| Databases | IconText (db name) | Text (engine) | Text (size) | Badge (status) | Threedot |
+| Publishers | Text (publisher name) | Text (type) | Badge (status) | — | Threedot |
+
+### WRONG: Every table looks identical (DEFAULT COLUMN TYPES not swapped)
+
+| Page | Col 1 | Col 2 | Col 3 | Col 4 | Col 5 |
+|------|-------|-------|-------|-------|-------|
+| Users | AvatarName | Badge | Text | Text | Threedot |
+| Rules | AvatarName | Badge | Text | Text | Threedot |
+| Invoices | AvatarName | Badge | Text | Text | Threedot |
+| Databases | AvatarName | Badge | Text | Text | Threedot |
+| Publishers | AvatarName | Badge | Text | Text | Threedot |
+
+**If your tables all look like the WRONG example, you forgot to swap column types from the defaults.**
+
+---
+
+## Self-Check After Building Any Table
+
+Run through EVERY column and verify:
+
+1. **Column 1 is AvatarName?** → Is this column about a PERSON? Would a face icon make sense? If NO → swap to Text or IconText
+2. **Column 2 is Badge?** → Is this a STATUS column with varying semantic values? If NO → swap to Text
+3. **Any column has Badge?** → Do the values VARY across rows? Does each value have a DIFFERENT meaning? Are the colors DIFFERENT per value? If all same color → fix colors or change to Text
+4. **AvatarName has 2 text lines?** → Is line 2 different from line 1? Is it meaningful? If line 2 = line 1 → swap to Text
+5. **Status column exists but is plain Text?** → Swap to Badge with semantic colors (you're losing the color signal)
+6. **Data aligned correctly?** → Read each row left to right — does each cell match its column header?
 
 ---
 
