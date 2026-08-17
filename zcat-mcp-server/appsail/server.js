@@ -338,6 +338,7 @@ function buildServer() {
             const matched = words.filter(w => haystack.includes(w));
             if (matched.length > 0) score = 10 + (matched.length / words.length) * 20;
           }
+          if (c.deprecated) score = Math.max(0, score - 30);
           return { c, score };
         })
         .filter((r) => r.score > 0)
@@ -359,6 +360,7 @@ function buildServer() {
             componentKey: km ? km.componentKey : null,
             type: km ? km.type : (c.figma && c.figma.status) || "manual",
             importMethod: importMethod(km ? km.type : null),
+            ...(c.deprecated ? { deprecated: true, deprecatedBy: c.deprecatedBy } : {}),
           };
         })
       );

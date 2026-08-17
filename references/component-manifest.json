@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedDate": "2026-08-11",
+  "generatedDate": "2026-08-17",
   "figmaFileKey": "ugOZk4O0g6XpviEBSN24mF",
   "libraryKey": "lk-6b302ab265d1e80fb5a2a876b2f9ecef1c2795c5fa5e168b3dadaaf3ab1aab4fbf0dab1bd19e7010bf498e184a6bd6ebb5c8b1e1bf780bb4d8db2a6267a82b5f",
   "systemName": "ZCat-AI Understandable",
@@ -553,7 +553,9 @@
       "componentKey": "954cd82ff912bd312206e7f2776a75d80049ede0",
       "searchQuery": "Table",
       "type": "component_set",
-      "variants": "Type (Default, Compact). Includes header row, sortable columns, row hover states, and multi-select checkboxes. LEGACY — prefer Table AI for new builds."
+      "variants": "Type (Default, Compact). Includes header row, sortable columns, row hover states, and multi-select checkboxes. LEGACY — prefer Table AI for new builds.",
+      "deprecated": true,
+      "deprecatedBy": "Table AI"
     },
     "Table AI": {
       "figmaName": "Table AI",
@@ -4505,7 +4507,7 @@
       "name": "Breadcrumbs",
       "category": "molecule",
       "subcategory": "navigation",
-      "description": "Hierarchical navigation trail with separator icons.",
+      "description": "Breadcrumb navigation showing the current page hierarchy. Clickable parent links separated by chevron dividers, with the current page as non-linked text.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "180a3024a23a3db44ecef1238aa366d1c8bbe8b4",
@@ -4527,7 +4529,20 @@
         "Flat navigation structures",
         "When sidebar shows hierarchy"
       ],
-      "properties": [],
+      "properties": [
+        {
+          "name": "Levels",
+          "type": "variant",
+          "values": [
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "default": "3",
+          "notes": "Number of breadcrumb levels to display"
+        }
+      ],
       "buildNotes": "Place above the page content area, typically at the top of Container. Gap below breadcrumbs to content: 12-16px.",
       "related": [
         "Tabs",
@@ -4538,7 +4553,7 @@
       "name": "Table",
       "category": "organism",
       "subcategory": "data",
-      "description": "Data table with sortable columns, row selection, and configurable cells. Stretch variant for full-width list pages, Boxy variant for bordered-cell detail views.",
+      "description": "LEGACY — prefer Table AI for all new builds. Data table with sortable columns, row selection, and configurable cells. Stretch variant for full-width list pages, Boxy variant for bordered-cell detail views.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "954cd82ff912bd312206e7f2776a75d80049ede0",
@@ -4582,7 +4597,9 @@
         "Pagination",
         "Table Multi Select",
         "Container Header"
-      ]
+      ],
+      "deprecated": true,
+      "deprecatedBy": "Table AI"
     },
     {
       "name": "Table AI",
@@ -4598,6 +4615,7 @@
         "page": "✅ Tables"
       },
       "searchAliases": [
+        "table",
         "data table",
         "table ai",
         "data grid",
@@ -5003,7 +5021,7 @@
       "name": "Stepper",
       "category": "molecule",
       "subcategory": "navigation",
-      "description": "Multi-step process indicator with completed/active/pending states.",
+      "description": "Multi-step process indicator with numbered circles connected by lines. Shows completed, active, and pending step states with labels.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "2c2cd669431492f516b4c9a2a4fde585cfd74116",
@@ -5041,7 +5059,7 @@
       "name": "Pagination",
       "category": "molecule",
       "subcategory": "navigation",
-      "description": "Page navigation with prev/next buttons and page numbers.",
+      "description": "Page navigation control with page numbers, previous/next arrows, and optional page size selector.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "e2e8d2df4e0e1de88032ff157aeb1dd51b2d370b",
@@ -5655,7 +5673,7 @@
       "name": "Sidebar List Panel",
       "category": "molecule",
       "subcategory": "layout",
-      "description": "Pre-built sidebar list panel with title, search, and grouped menu items. For detail views with a sidebar navigation list.",
+      "description": "Pre-built sidebar list panel with collapsible sections, search field, and menu items. Contains _Menu Item child component.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "c042e030f9a1755279cd389302cf6f3f693f6707",
@@ -5689,7 +5707,7 @@
       "name": "General Details",
       "category": "molecule",
       "subcategory": "data-display",
-      "description": "Pre-built KV pair display block for detail/overview pages. Shows labeled information in a structured layout.",
+      "description": "Key-value pair display block for detail/overview pages. Shows a heading and multiple rows with label on left, value on right. Use for read-only info display.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "6dd180e6490c68971c8c9b5cc963349b711a5e5d",
@@ -5733,7 +5751,7 @@
       "name": "Header",
       "category": "layout",
       "subcategory": "catalyst",
-      "description": "Top header bar of the Catalyst layout. Contains project name, search, environment switcher, notifications, and user avatar. DO NOT MODIFY.",
+      "description": "Top header bar with logo, breadcrumbs, search, and user profile. Part of the Catalyst layout shell — do not modify.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "35b31035bfa83382c2e18e4424410137fd5a3df8",
@@ -5765,7 +5783,7 @@
       "name": "Sub Header",
       "category": "layout",
       "subcategory": "catalyst",
-      "description": "Page title bar below the Header. Contains back arrow, page title, action buttons (Help, Primary, Secondary, Outline), tabs, and three-dot overflow menu.",
+      "description": "Page title bar below the Header. Shows page title, action buttons, and contextual controls. Place primary tabs and page-level actions here first.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "36089314ed9d15ea16e1cf96bf4ad2ff46565ab5",
@@ -5798,7 +5816,7 @@
       "name": "ServiceMenu",
       "category": "layout",
       "subcategory": "catalyst",
-      "description": "64px left navigation rail with service icons (Slate, Serverless, Signals, Cloud Scale, etc.). DO NOT MODIFY.",
+      "description": "Service selector dropdown menu showing available Catalyst services. 64px left navigation rail with service icons.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "1e932fea3f51687880d87b5a467904acc60586d7",
@@ -6358,7 +6376,7 @@
       "name": "Popup Blur",
       "category": "atom",
       "subcategory": "overlays",
-      "description": "Bare backdrop rectangle for popup overlays. This is NOT a dialog — it is just the dimming/blur layer that goes behind a Popup dialog instance. It has no internal structure, no header, no buttons.",
+      "description": "Bare backdrop rectangle for popup overlays with blurred background. This is NOT a dialog — it is just the overlay layer. Always use this instead of manual frames with hardcoded black/opacity fills.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "825e3c4aa551ccd56ec61d6f5059dda1e92abbc5",
@@ -6395,7 +6413,7 @@
       "name": "Popup - Success",
       "category": "molecule",
       "subcategory": "overlays",
-      "description": "Success confirmation dialog with success icon, message, and action buttons.",
+      "description": "Success confirmation dialog with green status indicator, success message, and View Cluster button.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "74ca97fd6e2386682f65b60ae585015190027f3b",
@@ -6429,7 +6447,7 @@
       "name": "Popup - Error",
       "category": "molecule",
       "subcategory": "overlays",
-      "description": "Error dialog with error icon, message, and action buttons.",
+      "description": "Error dialog with red status indicator, error message, and View Logs and Retry action buttons.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "14b88c335a0fc25194bf88104f4cf400d8186114",
@@ -6464,7 +6482,7 @@
       "name": "Popup - Confirm Cluster",
       "category": "molecule",
       "subcategory": "overlays",
-      "description": "Destructive action confirmation dialog. Requires user to type a confirmation phrase before proceeding.",
+      "description": "Destructive action confirmation dialog with form fields (Name, Region, Tier) and Cancel/Confirm buttons.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "4f7899ddcafebc4db86fd043f79113f000e79aff",
@@ -6499,7 +6517,7 @@
       "name": "Popup - Provisioning",
       "category": "molecule",
       "subcategory": "overlays",
-      "description": "Provisioning/loading state dialog shown during long-running operations like deployment or resource creation.",
+      "description": "Provisioning state dialog shown while a cluster is being created. Displays loading spinner, progress message, estimated time, and Close/Go to Overview options.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "cdaa1e355568a6eae810571cdef153a791538eb2",
@@ -6534,7 +6552,7 @@
       "name": "Full Page Popup Header",
       "category": "molecule",
       "subcategory": "overlays",
-      "description": "Header bar for full-page popup overlays. Contains title, close button, and optional action buttons.",
+      "description": "Header bar for full-page popup/modal overlays with close button, title, and optional subtitle.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "c1995f32d539d54afe0ffdb3ea21eaf01c02f43c",
@@ -6569,7 +6587,7 @@
       "name": "Table Multi Select",
       "category": "molecule",
       "subcategory": "data",
-      "description": "Multi-select action bar that appears when multiple table rows are selected. Shows selected count and bulk action buttons.",
+      "description": "Floating action bar for bulk actions when multiple table rows are selected. Shows selected count and action buttons.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "ed95af8f3df5046f8cf6212bda5fc2cbfe910446",
@@ -6603,7 +6621,7 @@
       "name": "Three Dot Menu",
       "category": "atom",
       "subcategory": "buttons",
-      "description": "Three-dot overflow menu trigger button (vertical ellipsis). Opens a Dropdown Menu with additional actions.",
+      "description": "Three-dot vertical ellipsis overflow menu trigger button. Use for row-level or card-level overflow actions.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "a977f7f3121b5286e18021ef0cfdebb74adf6348",
@@ -6641,7 +6659,7 @@
       "name": "Product Tour",
       "category": "molecule",
       "subcategory": "overlays",
-      "description": "Onboarding tour tooltip/spotlight component for guiding users through features step by step.",
+      "description": "Onboarding tour tooltip that highlights UI elements with step-by-step guidance. Shows title, description, step counter, next/prev/skip buttons, and arrow pointer.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "22e2ee375f214ca348f0fe8c7b30e61b178a2b76",
@@ -6678,7 +6696,7 @@
       "name": "Carousal",
       "category": "molecule",
       "subcategory": "data-display",
-      "description": "Image/content carousel slider for cycling through multiple items.",
+      "description": "Carousel pagination dots indicator for cycling through multiple content panels or images.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "090c8c84b20a4f762b574e6c429c8d4d972b09a5",
@@ -6713,7 +6731,7 @@
       "name": "Timeline",
       "category": "molecule",
       "subcategory": "data-display",
-      "description": "Vertical timeline for displaying chronological events or history.",
+      "description": "Vertical timeline displaying chronological events. Each entry has timestamp, icon marker, title, and description connected by a vertical line. Use for activity logs, audit trails, deployment history.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "c5df2627f63b15e87e98b0146bb267922c659391",
@@ -7138,6 +7156,8 @@
       ]
     },
     "totalPending": 0,
-    "pendingNote": "All 80 components fully documented with buildNotes, searchAliases, whenToUse, whenNotToUse, and related. 62 have Figma-verified properties. 18 components need Phase 2 property verification via search_design_system (Breadcrumbs, Stepper, Pagination, Sidebar List Panel, Header, Sub Header, ServiceMenu, Popup Blur, Popup Success/Error/Confirm/Provisioning, Full Page Popup Header, Table Multi Select, Three Dot Menu, Product Tour, Carousal, Timeline)."
+    "pendingNote": "All 80 components fully documented. 63 have variant/boolean properties, 17 are simple components with no configurable properties (correctly empty). Phase 2 verification complete.",
+    "propertiesVerified": 80,
+    "lastVerifiedDate": "2026-08-17"
   }
 }
