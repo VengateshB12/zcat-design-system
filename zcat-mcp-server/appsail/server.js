@@ -375,7 +375,7 @@ function buildServer() {
       title: "Get full component detail",
       description:
         "Full spec for one component: properties, variants, tokens, when to " +
-        "use / not use, related components, and its Figma import key.",
+        "use / not use, related components, Figma import key, and setProperties() guidance.",
       inputSchema: {
         name: z.string().describe("Component name, e.g. 'Buttons', 'Table', 'Drop down'"),
       },
@@ -393,11 +393,43 @@ function buildServer() {
         return asText(`No zcat component named "${name}". Use zcat_search_components to find it.`);
       }
 
+      const props = (hit && hit.properties) || [];
+      const variantProps = props.filter((p) => p.type === "variant");
+      const booleanProps = props.filter((p) => p.type === "boolean");
+
+      const setPropsExample = variantProps.length
+        ? `instance.setProperties({${variantProps.map((p) => `"${p.name}": "${p.default || p.values[0]}"`).join(", ")}})`
+        : null;
+
       return asText({
         ...(hit || { name }),
         componentKey: km ? km.componentKey : null,
         importType: km ? km.type : null,
         importMethod: importMethod(km ? km.type : null),
+        _setPropertiesGuide: {
+          note:
+            "Property keys in setProperties() may have hash suffixes (e.g. " +
+            '"Show Sidemenu#13106:9"). If setProperties() throws "Unable to find variant", ' +
+            "inspect Object.keys(instance.componentProperties) to get actual keys. " +
+            "For component_set types, set ALL variant properties TOGETHER in one call — " +
+            "setting one variant property alone may produce an invalid combination.",
+          exampleCall: setPropsExample,
+          variantProperties: variantProps.length
+            ? variantProps.map((p) => ({
+                name: p.name,
+                values: p.values,
+                default: p.default || p.values[0],
+              }))
+            : null,
+          booleanProperties: booleanProps.length
+            ? booleanProps.map((p) => ({
+                name: p.name,
+                default: p.default != null ? p.default : true,
+              }))
+            : null,
+          discoverActualKeys:
+            "const keys = Object.keys(instance.componentProperties); return keys;",
+        },
       });
     }
   );
@@ -425,14 +457,31 @@ function buildServer() {
           .join(", ");
         return asText(`No key for "${name}".\n\nAvailable: ${available}`);
       }
+
+      const key = km.componentKey;
+      const exampleCode =
+        km.type === "component_set"
+          ? `const set = await figma.importComponentSetByKeyAsync('${key}');\nconst instance = set.defaultVariant.createInstance();\n// Discover actual property keys:\n// const keys = Object.keys(instance.componentProperties);`
+          : km.type === "component"
+            ? `const comp = await figma.importComponentByKeyAsync('${key}');\nconst instance = comp.createInstance();`
+            : null;
+
       return asText({
         name: km.key,
         figmaName: km.figmaName,
         componentKey: km.componentKey,
         type: km.type,
         importMethod: importMethod(km.type),
+        exampleCode,
         variants: km.variants || null,
         source: km._source || "primary",
+        _warnings: [
+          "Property keys may have hash suffixes — use Object.keys(instance.componentProperties) to discover actual keys",
+          "Scripts are ATOMIC — any uncaught error rolls back ALL mutations. Use try/catch around risky calls",
+          km.type === "component_set"
+            ? "Set ALL variant properties TOGETHER in one setProperties() call to avoid invalid combinations"
+            : null,
+        ].filter(Boolean),
       });
     }
   );
