@@ -4591,7 +4591,7 @@
           "default": "Default"
         }
       ],
-      "buildNotes": "Import as component_set. DETACH WHITELIST — Table MUST be detached to customize columns. FIRST PREFERENCE: ALWAYS use the Table component — it has 11 built-in column types that cover most schemas. COLUMN TYPES: Avatar & Name (icon+text+subtitle), Description (text), Id (short text), Status/Badge (colored badge), Region/Text (plain text), Storage/Metric (fraction text like '41/100 GB'), Number (numeric), Date (timestamp), Checkbox (selection), Threedot (actions menu), Sort header (sortable). WORKFLOW: (1) Import and detach. (2) Map wireframe columns to built-in column types. (3) Hide unused columns (.visible=false). (4) Relabel header and cell text. (5) Set col.minWidth=null on each visible column. (6) Hide avatars from non-Name columns. KNOWN ISSUES: (1) Every column frame has minWidth=250 locked — set col.minWidth=null. (2) Cell templates include avatar by default — hide for non-Name columns. (3) Hiding columns changes child count — re-query after visibility changes. FOR MANUAL BUILD (LAST RESORT ONLY): if the schema is fundamentally different from all column types above (e.g., permissions matrix, column-definition table), ASK the user before choosing manual build. Table frame and rows must use layoutSizingHorizontal=FILL. Always pair with Pagination below (gap 12-16px).",
+      "buildNotes": "DEPRECATED — DO NOT USE. Use Table AI instead (key f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07). Table AI is zero-detach and has the same column types built-in as instance swaps. There is no reason to use this legacy Table component.",
       "related": [
         "Table AI",
         "Pagination",
@@ -4757,7 +4757,7 @@
           "width": "48px FIXED"
         }
       ],
-      "buildNotes": "PREFERRED TABLE — use this instead of legacy Table for all new builds. ZERO-DETACH: configure entirely via setProperties(). WORKFLOW: (1) Import component_set. (2) Set Style (Stretch/Boxy), Columns count (3-8). (3) Toggle booleans: Show Checkbox, Show Threedot, Show Pagination. (4) Swap column types via instance swap properties (Col 1-8). (5) Update header and data cell text by traversing children. STRUCTURE: variant.children[0] = Table Frame (horizontal, contains all columns), variant.children[1] = Pagination. Inside Table Frame: children[0] = Checkbox col, children[1..N] = Col 1-N, children[last] = Threedot col. COLUMN SWAPPING: Each Col slot is an instance swap property. Find column type components by name on the Tables page (they are local/unpublished). TEXT EDITING: Header cells use Subtitle 2 style (12px SemiBold), data cells use Body 1 style (14px Regular), subtitles use Body 3 style (12px Regular). All text colors bound to TABLE/* variables. BOXY STYLE: Has 6px cornerRadius and 1px border on the variant wrapper with clipsContent=true. STRETCH STYLE: No border, no radius. PAGINATION: Bound to Show Pagination boolean. Uses the Pagination component internally.",
+      "buildNotes": "PREFERRED TABLE — use this instead of legacy Table for ALL new builds. ZERO-DETACH: configure entirely via setProperties(). NEVER DETACH Table AI. WORKFLOW: (1) Import component_set by key f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07. (2) Set Style (Stretch/Boxy), Columns count (3-8). (3) Toggle booleans: Show Checkbox, Show Threedot, Show Pagination. (4) Swap column types via instance swap: import the column type component by key, then setProperties({ \"Col N\": importedComponent.id }). Value MUST be component node ID, NOT key. (5) UPDATE TEXT CONTENT IN-PLACE: find TEXT nodes via table.findAll(n => n.type === \"TEXT\"), load font with await figma.loadFontAsync(node.fontName), then set node.characters. Navigate the tree: table instance → row frames → cell frames → TEXT nodes. Header row is first child, data rows follow. (6) Use realistic data from sample-data.md. COLUMN TYPES: AvatarName (098e8873, 280px), Badge (f54ff134, 200px), Date (5ea76720, 200px), Text (72d50704, 200px), ExecutionStatus (9c1f1f05, 200px), IconText (e877af2d, 200px), Button (abbc84ec, 200px), Icon (eb970147, 48px), Checkbox (825fd477, 44px), Threedot (ee1068af, 44px). If wireframe needs more than 8 columns, ask the user. If a column type does not exist for the data, ask the user.",
       "related": [
         "Table",
         "Pagination",
@@ -4847,7 +4847,7 @@
           "default": "Default"
         }
       ],
-      "buildNotes": "Place at the top of the Container content area, above the main content. Use full width (layoutSizingHorizontal = FILL). Gap to next content section: 16px.",
+      "buildNotes": "Place at the top of the Container content area, above the main content. Use full width (layoutSizingHorizontal = FILL). Gap to next content section: 16px. KNOWN ISSUE: internal text nodes may have width=1px with textAutoResize=HEIGHT, causing vertical text overflow on long content. For info banners with multi-line text, consider hand-building a frame with icon + text instead, binding all colors to zcat variables. Test with actual content length before finalizing.",
       "related": [
         "Alerts",
         "Helper Text"
@@ -6758,7 +6758,7 @@
         "Step-by-step process (use Stepper)"
       ],
       "properties": [],
-      "buildNotes": "Import as component (importComponentByKeyAsync → createInstance). Vertical layout with timeline markers and event descriptions.",
+      "buildNotes": "Import as component. DECORATIVE ONLY — contains colored dots and connecting vertical line but NO text nodes. For activity timelines with text (timestamps, titles, descriptions), build manually: vertical auto-layout frame with rows of [status dot + text column (title 14px SemiBold + timestamp 12px secondary)]. Bind dot fills to semantic color variables (color/bg/success, color/bg/error, etc.). Connect dots with a 2px vertical line frame bound to color/border/default.",
       "related": [
         "Stepper",
         "Table"

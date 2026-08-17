@@ -71,12 +71,12 @@ This applies to prompts like:
 - Use realistic sample data, never lorem ipsum
 - ALWAYS import the Layout component_set as STEP 1 for every Catalyst screen — NEVER manually assemble the layout from individual components (Header + Sidemenu + manual frames). This is the #1 source of broken builds
 - Build inside Catalyst layout Container without modifying the layout shell
-- Icons are stroke-only — bind stroke color to match parent text
+- Icons are stroke-only — bind stroke color to match parent text. Icons CANNOT be imported directly (internal component set). Clone from an existing component instance (e.g., Button Help variant → Icon Left child) and swapComponent() to the desired icon. NEVER use emoji (🚀, ⚡, 📁) or Unicode (▶, ✕, ▾, ●, ←) as icons
 - No odd numbers in spacing, font sizes, radius, padding
 - Minimum font size: 10px
 - Default radius: 6px
 - Same Size within a group — when buttons, dropdowns, and text boxes appear together in the same visual group (an action bar, a form row, a filter bar), they MUST all use the same Size variant (e.g. all "Default" or all "Small"). Never mix sizes within a group
-- Detach whitelist — ONLY detach Layout, Accordion, Accordion Bordered, Dropdown Menu (Menu List), Card BG, Container Header, Sidebar List Panel, and Table. For any other component, ask the user before detaching. Detaching is for inserting content, never for restyling the shell
+- Detach whitelist — ONLY detach Layout, Accordion, Accordion Bordered, Dropdown Menu (Menu List), Card BG, Container Header, Sidebar List Panel. For any other component, ask the user before detaching. Detaching is for inserting content, never for restyling the shell. Table AI is ZERO-DETACH — NEVER detach it
 - ALWAYS use Popup Blur component for popup/dialog overlays — NEVER create manual frames with hardcoded black/opacity fills. Popup Blur is a bare backdrop rectangle, NOT a dialog
 - Divider component is INTERNAL to Stepper — for general-purpose dividers, build manual 1px frames with fill bound to color/border/default variable
 - Screenshots and existing designs the user provides are REFERENCE ONLY — use them to understand patterns and layout intent, never to copy exact designs or as justification for detaching/manually recreating components that exist in zcat
@@ -86,6 +86,16 @@ This applies to prompts like:
 - Wireframes define features, not visual design — extract WHAT (data, actions, navigation, states) from wireframes, then apply design composition (visual hierarchy, section grouping, creative layouts, proper spacing rhythm). Don't copy wireframe layouts literally unless they match established patterns. See decision-rules.md "Design Composition" for full guidance
 - Design uniforms — cards, spacing, typography, alignment, and section grouping must be consistent across ALL screens in a product. Use the exact specs in decision-rules.md "Design Uniforms". Stat values 24px SemiBold, labels 12px secondary, cards 16px padding with 16px gap, sections grouped in Card BG or bordered frames, multi-column layouts for detail pages
 - Label:Value displays MUST be horizontal — for read-only info (connection details, metadata, config summaries), use General Details component (key `6dd180e6490c68971c8c9b5cc963349b711a5e5d`) or Key Value Pair component (key `2d82f5c0a6c24ab0370c320d0044cc8346666077`, Layout=Horizontal). Label on LEFT, value on RIGHT. NEVER stack label on top with value below
+- ALWAYS use Table AI (`f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07`) for ALL tables — NEVER use legacy Table (`954cd82ff912bd312206e7f2776a75d80049ede0`). Table AI is zero-detach: configure via setProperties(), swap column types via instance swap, update text in-place. NEVER detach Table AI
+- Button labels: override the nested TEXT node — Button has NO text component property. Find text node via `btn.findAll(n => n.type === 'TEXT')`, load font, set characters. There is no shortcut
+- Build before destroy — NEVER remove existing content before confirming replacement builds successfully. Build new content first, then swap. A failed script that already removed old content leaves a broken screen
+- NEVER create manual UI controls — no rectangles/circles/frames as buttons, inputs, badges, toggles. If you catch yourself doing this, STOP and search for the component. Only manual frames are structural layout containers
+- Container navigation — NEVER use `findOne(n => n.name === "Container")` from root — it matches inside nested instances. Find via Body frame's direct children loop
+- Shadow effects require `blendMode: "NORMAL"` in the effect object — omitting it throws
+- Components on EVERY screen — do NOT use components for screen 1 then hand-build later screens. EVERY screen uses the same component workflow. If you're writing `figma.createFrame()` for a button/input/badge on any screen, STOP and re-check the component checklist
+- Use stroke icons EVERYWHERE — wherever an icon is needed, use zcat stroke icons via clone+swap. Even if the exact icon doesn't exist, use the closest one and tell the user to swap manually. NEVER skip icons or use emoji/Unicode
+- Action bar balance — when a button is on the right, ALWAYS add a supporting element on the left (Search, heading, filter). NEVER leave a lonely right-aligned button. Think MORE than the wireframe
+- Design beyond wireframes — wireframes are MINIMUM requirements. Improve them: flat cards → Card BG with icon backgrounds + visual hierarchy, wireframe tabs in content → move primary tabs to Sub Header, plain lists → proper components with badges/icons, empty action bars → add Search/filters/headings. Final design must look polished, not a wireframe with components swapped in
 
 ## Figma API Pitfalls
 
@@ -121,8 +131,8 @@ Building a single screen should use ~8-12k tokens, not 20k+. Follow these rules:
 - NO page title inside Container — the Sub Header already shows it
 - Primary tabs ALWAYS go in Sub Header FIRST — NEVER place primary (whole-page) tabs in Container. Container tabs are ONLY for secondary/section-scoped tabs. This is the #1 tab placement mistake. See layout-info.md "Header Action & Tab Placement" for the full decision order
 - Page-level actions (Primary/Secondary button, three-dot overflow) go in the Sub Header FIRST — fall back to a Container action bar only when that placement isn't meaningful for the screen (see layout-info.md)
-- Table column variants — the Table component has multiple column types (Avatar & Name, Status/Badge, Plain Text, Checkbox, Threedot, etc.). ALWAYS map wireframe columns to existing Table column types before building manual columns. Detach the Table to customize, hide unused columns, and relabel — see decision-rules.md "Table Component vs Manual Table Build"
-- Table frames/rows must use `layoutSizingHorizontal = "FILL"`; flexible columns use FILL, fixed columns use small explicit widths
+- Table AI column types — Table AI has 10 swappable column types (AvatarName, Badge, Date, Text, ExecutionStatus, IconText, Button, Checkbox, Threedot, Icon). Map wireframe columns to these types via instance swap. NEVER detach Table AI — configure entirely via setProperties(). If a column type doesn't exist, ask the user
+- Table AI content updates — update header and cell text by finding TEXT nodes inside the instance and setting characters in-place. DO NOT DETACH to edit text. Navigate: table.children → rows → cells → TEXT nodes
 - Stretch table Container padding = 0, action bar frame gets 16px top + left + right padding (no bottom — table sits directly below). Boxy Container padding = 16px all sides
 - NEVER modify the layout shell (Header, spacing, borders, backgrounds)
 - PAUSE AND ASK on build problems — if a component doesn't import, properties throw, layout breaks, or the Table component doesn't match the schema, STOP and ask the user. NEVER continue burning tokens on a failing approach. One question costs nothing; rebuilding a broken screen wastes thousands of tokens
