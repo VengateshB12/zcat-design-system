@@ -2,9 +2,11 @@
 
 Components alone don't make a design good; how you compose them does.
 
-## Wireframe Interpretation
+## Wireframe Interpretation — NEVER Copy-Paste
 
-**Wireframes define WHAT appears on a screen, not HOW it should look.**
+**Wireframes define WHAT appears on a screen, not HOW it should look. NEVER replicate the wireframe layout.**
+
+The final design must look NOTHING like the wireframe visually. Same features, completely different presentation. If someone can place the wireframe and final design side by side and say "that's the same layout" — the agent FAILED.
 
 **Extract from wireframes:**
 - What data is shown (fields, columns, values)
@@ -14,12 +16,21 @@ Components alone don't make a design good; how you compose them does.
 - What sections the content is grouped into
 
 **Do NOT copy from wireframes:**
+- Exact layout or positioning — redesign from scratch with proper patterns
 - Exact spacing — wireframes use rough spacing, not final values
 - Visual hierarchy — wireframes are intentionally flat
 - Section styling — wireframes don't show cards, shadows, borders
 - Typography scale — wireframes often use uniform text sizing
 - Column icons/avatars — wireframes put random icons next to columns; match column type to DATA, not wireframe icons
 - Exact button styles — wireframes may show all buttons the same; apply CTA hierarchy (ONE primary per group)
+
+**Creatively compose BEYOND the wireframe:**
+- Use Card BG with shadows and elevation where it improves grouping
+- Apply multi-column layouts when content benefits from side-by-side
+- Use bordered frames, subtle backgrounds, spacing rhythm to create visual depth
+- Choose card recipes from the Card Composition Recipes section that best fit the CONTENT
+- Add visual elements the wireframe didn't have: icon backgrounds on stat cards, status dots on activity items, semantic badge colors, balanced action bars
+- If the wireframe is flat and basic, the design should be rich and polished — that's the whole point
 
 ### When to Follow vs Improve Wireframe Layout
 

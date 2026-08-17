@@ -79,7 +79,7 @@ Use `importComponentSetByKeyAsync` for `set` types, `importComponentByKeyAsync` 
 | Text Box | `411f52c2e02879cd0cd7a259933325c7cbc04b5c` | set | Size, State, Content=Placeholder/Filled, Has Label, Icon Left |
 | Drop down | `021a6653c106f277f2481ee722ed93d4137dc3a6` | set | Size, State, Content, Has Label, Icon Left |
 | Table AI | `f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07` | set | Style=Stretch/Boxy, Columns=3-8, Show Checkbox/Threedot/Pagination booleans, Col 1-8 instance swaps. ZERO-DETACH — configure entirely via setProperties(). See TABLE AI section below |
-| Badge | `158e4b6d656a62d4244efc4e5583794044328d3a` | set | Type=Primary/Secondary, Color=8 values, Size=Default/Small/Dot |
+| Badge | `158e4b6d656a62d4244efc4e5583794044328d3a` | set | Type=Secondary (default for tables, RARELY use Primary), Style=Subtle/Solid, Color=8 values, Size=sm/md |
 | Tag/Chip | `69274b61923231a45f559e59bed169c121d9bc45` | set | Color, Size, Removable="true"/"false" |
 | Checkbox | `f6f4ae2426b2e9d6c3ee7fc3727e06054b0f5d58` | set | Checked=Unchecked/Checked/Indeterminate, State, Show Label |
 | Toggle | `35016f9e4ebd41a83c952fa04c3c47a1f36d0ec4` | set | Size, State=Off/On, Show Label |
@@ -601,7 +601,7 @@ if (ddText) { await figma.loadFontAsync(ddText.fontName); ddText.characters = "A
 const badgeSet = await figma.importComponentSetByKeyAsync("158e4b6d656a62d4244efc4e5583794044328d3a");
 const badge = badgeSet.defaultVariant.createInstance();
 badge.setProperties({
-  "Style": "Subtle",     // "Solid" or "Subtle"
+  "Style": "Subtle",     // "Solid" or "Subtle" — ALWAYS use "Subtle" for table badges
   "Color": "Success",    // "Success", "Warning", "Error", "Info", "Neutral", "Brand"
   "Size": "sm",          // "sm" or "md" — NOTE lowercase, not "Small"
   "Type": "Count",       // "Count" (shows text) or "Dot" (dot only)
@@ -609,6 +609,10 @@ badge.setProperties({
   "Icon Left": false,
   "Icon Right": false
 });
+// BADGE TYPE IN TABLES: ALWAYS use Type="Secondary" (subtle/muted look).
+// Type="Primary" creates bold filled pills — too heavy for table cells.
+// Primary badges are ONLY for standalone emphasis (hero stats, alerts).
+// In tables, Secondary badges blend with the row while still showing status color.
 const badgeText = badge.findOne(n => n.type === "TEXT");
 if (badgeText) { await figma.loadFontAsync(badgeText.fontName); badgeText.characters = "Active"; }
 

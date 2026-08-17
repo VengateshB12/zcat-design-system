@@ -126,6 +126,17 @@ AvatarName forces 2 text lines on every cell. This is WRONG when:
 
 ---
 
+## Badge Type in Tables — ALWAYS Secondary
+
+**In table cells, ALWAYS use Badge Type="Secondary" (subtle/muted).** Type="Primary" creates bold filled pills that are too visually heavy for table rows — they compete with the data instead of supporting it.
+
+- **Tables:** Type="Secondary", Style="Subtle" — ALWAYS
+- **Outside tables (hero stats, standalone alerts, callouts):** Type="Primary" is acceptable but still RARE — use only for strong emphasis
+
+If every badge in a table looks like a bold colored pill, you're using Primary — switch to Secondary.
+
+---
+
 ## Badge Color Rules — MANDATORY Semantic Mapping
 
 **Badges MUST use different colors based on meaning. All badges the same color = broken design.**
