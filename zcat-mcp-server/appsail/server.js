@@ -266,15 +266,33 @@ function buildServer() {
     async ({ section }) => {
       const doc = readText("workflow.md");
       if (!section) {
+        /* Include h4. The filter used to stop at h3, which hid 11 of 37
+         * sections — among them FAIL LOUD, MANDATORY COMPONENT CHECKLIST,
+         * ICON PATTERN, COMPONENT GOTCHAS and SENIOR DESIGNER REVIEW. An
+         * agent told to "browse the TOC, then request a section" had no way
+         * to learn those existed. Indent by depth so the nesting is legible.
+         *
+         * NOTE: the splitter below stays at #{1,3}, so h4 content is returned
+         * as part of its parent h3 block. Matching is substring-on-block, so a
+         * query only returns blocks whose TEXT contains it: "icon pattern" and
+         * "gotchas" reach the 4e block, but "step 4" does NOT — 4e has no
+         * literal "step 4" in it. Ask for h4 sections by their own name, which
+         * is exactly why they now appear in this TOC. */
         const headings = doc
           .split("\n")
-          .filter((l) => /^#{1,3} /.test(l))
-          .map((l) => l.replace(/^#+\s*/, ""));
+          .filter((l) => /^#{1,4} /.test(l))
+          .map((l) => {
+            const depth = (l.match(/^#+/) || ["#"])[0].length;
+            return "  ".repeat(Math.max(0, depth - 2)) + "- " + l.replace(/^#+\s*/, "");
+          });
         return asText(
           "# zcat Build Workflow — Table of Contents\n\n" +
           "Call zcat_get_workflow with a `section` parameter to retrieve " +
-          "specific sections (e.g. 'hard rules', 'step 4', 'recipe').\n\n" +
-          headings.map((h) => `- ${h}`).join("\n")
+          "specific sections (e.g. 'hard rules', 'step 4', 'recipe', " +
+          "'icon pattern', 'gotchas', 'review'). Indented entries are " +
+          "subsections — asking for one returns its parent section, which " +
+          "includes it.\n\n" +
+          headings.join("\n")
         );
       }
 
