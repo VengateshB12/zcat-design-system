@@ -10,7 +10,7 @@ The `AI Automation/` folder is a source-of-truth reference system.
 This applies to ALL files including:
 - `CLAUDE.md`, `.cursorrules`, `.github/copilot-instructions.md`
 - `.claude/skills/zcat.md`, `.claude/settings.json`, `.claude/settings.local.json`
-- `references/component-manifest.json`, `references/decision-rules/` (11 split files), `references/design-tokens.md`
+- `references/component-manifest.json`, `references/decision-rules/` (11 split files), `references/design-tokens.md` (GENERATED live token dump — regenerate, never hand-edit), `references/icon-catalog.json`
 - `references/sample-data.md`, `references/wireframe-styles.css`
 - `references/products/**/*` (all product layout files)
 

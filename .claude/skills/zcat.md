@@ -158,6 +158,38 @@ Dead keys (do not resolve at all): `8f3943b8ca40…` `8fe1faec85e9…` `e38e2e4c
 
 Library variables and text styles are NOT local to your file. `figma.variables.getLocalVariablesAsync()` and `figma.getLocalTextStylesAsync()` both return **empty** — looking up by name against them silently yields nothing and leads to hardcoded hex and Inter Regular fallbacks. Always import by key.
 
+**CRITICAL — most library variables CANNOT be imported by a consuming file.**
+Verified empirically 2026-08-18: `importVariableByKeyAsync` throws
+`Variable with key "…" not found` for **423 of the 493** `Mode` colour variables. The
+library publishes only **5 namespaces** for direct binding:
+
+| Bindable ✅ | Count | Not bindable ⛔ |
+|---|---|---|
+| `BODY/*` | 16 | `BUTTONS/*` (87), `TABS/*` (28), `INPUT FIELDS/*` (26), `ATTENTION/*` (25), `BADGE/*` (22), `TABLE/*` (18), `STEPPER/*` (17), `PROFILE NAV/*` (19), `CHECK, RADIO, TOGGLE/*` (19), `ACCORDION/*` (14), `MENU LIST/*` (14), `CHIPS/*` (12), `DATE PICKER/*` (12), `LINK BOX/*` (12), `TIMELINE/*` (11), `SIDE MENU/*` (10), `SERVICE MENU/*` (9), `TOAST/*` (8), `LOADER/*` (7), `TOUR/*` (6), `PAGINATION/*` (6), `AVATAR/*` (5), `BREADCRUMBS/*` (5), `GRAPH/*` (5), `MAIN HEADER/*` (5), `POPUP/*` (4), `TOOLTIP/*` (4), `FULL PAGE POPUP HEADER/*` (4), `CAROUSEL/*` (3), `CODE BLOCK/*` (3), `SUB HEADERS/*` (3) |
+| `CARDS/*` | 22 | |
+| `OTHER SHADES/*` | 28 | |
+| `SHADOWS/*` | 2 | |
+| `BRANDING ICON/*` | 2 | |
+
+**Why:** component-scoped variables are internal — a component instance already carries
+its own bindings, so you get them for free by instancing. You only need bindable
+variables for elements **you author yourself**.
+
+For an authored element needing a component-ish colour, use the nearest bindable
+equivalent from `BODY` / `CARDS` / `OTHER SHADES`. Do NOT pass an internal key to
+`importVariableByKeyAsync` — it throws.
+
+**Known dead bindable key:** `CARDS/Bg Default/Dark Bg`
+(`ebc952158732732071d9351f482e0de41462616e`) does not resolve. Do not use it.
+
+**`_Global_Values` (`Spacing/S*`, `Radius/R*`, `Border/*`) is NOT bindable either** —
+verified failing. Use literal numbers from the spacing scale.
+
+**Text styles ARE bindable** via `importStyleByKeyAsync`.
+
+Full generated dump with keys and Light/Dark values, and per-namespace bindability:
+**`references/design-tokens.md`**.
+
 **This table is a verified SUBSET, not the whole system.** Live enumeration of the
 library (2026-08-18) found **710 variables across 5 collections** and **26 text styles**:
 
@@ -1785,7 +1817,8 @@ Read these files as needed (read ONLY the sections relevant to your screen type 
 | `references/design-analysis-workflow.md` | **Phase 0, ALWAYS for multi-screen tasks** | Full file — analysis templates, verification checklist, failure modes |
 | `references/component-manifest.json` | Only if a component isn't in the KEY TABLE above | Just its `componentKeyMap` entry or specific component |
 | `references/decision-rules.md` | Step 4b, ambiguous design choices | Only the relevant section (Table rules, Popup rules, etc.) |
-| `references/design-tokens.md` | Step 4e, custom variable binding | Only if you need variable IDs beyond the color list above |
+| `references/design-tokens.md` | Step 4e, any variable not in the table above | GENERATED live dump: all 493 `Mode` colour variables + 41 `Spacing/Radius/Border` + 26 text styles, with keys and Light/Dark values |
+| `references/icon-catalog.json` | Any icon | All 87 icon keys. Import directly by key |
 | `references/sample-data.md` | Step 4e | Get realistic data |
 | `references/wireframe-styles.css` | Step 4c | Wireframe styling |
 | `references/products/catalyst/layout-info.md` | Step 4e (Catalyst) | Layout node IDs — read once per session, not per screen |

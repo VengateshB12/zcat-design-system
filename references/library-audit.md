@@ -272,3 +272,31 @@ children to FIXED 36px.
 Mitigation added to 4f as **CHECK 10: INSTANCE LAYOUT DRIFT** — compares each instance's
 `itemSpacing`, padding and axis alignment against its main component and warns on
 differences. Treat every hit as "prove this override was intentional".
+
+### D. Only 70 of 493 colour variables are consumer-bindable (verified 2026-08-18)
+
+The regenerated `design-tokens.md` was validated by importing keys **from a consuming
+file**, not from the library. Result: `importVariableByKeyAsync` throws
+`Variable with key "…" not found` for **423 of 493** `Mode` variables.
+
+Bindable namespaces (5): `BODY` (16), `CARDS` (22), `OTHER SHADES` (28), `SHADOWS` (2),
+`BRANDING ICON` (2) — 70 keys, of which **69 import**. The one failure is
+`CARDS/Bg Default/Dark Bg` (`ebc952158732732071d9351f482e0de41462616e`), which exists in
+the library but does not resolve for consumers.
+
+Not bindable (31 namespaces, 423 variables): every component-scoped namespace —
+`BUTTONS`, `TABS`, `INPUT FIELDS`, `ATTENTION`, `BADGE`, `TABLE`, `STEPPER`, `TOOLTIP`,
+`POPUP`, `LOADER`, and the rest. Also the entire **`_Global_Values`** collection
+(`Spacing/S*`, `Radius/R*`, `Border/*`).
+
+This is coherent, not a defect: component internals stay bound inside the components, so
+instancing a component carries its colours automatically. Consumers only need bindable
+variables for elements they author themselves.
+
+**Consequence for audits:** verifying a key exists in the library is NOT sufficient. A key
+must be import-tested **from a consuming file**. Any future regeneration of
+`design-tokens.md` must repeat that test and re-mark the ✅/⛔ columns — otherwise the file
+hands agents keys that throw, which is the same silent-failure class this whole effort
+exists to remove.
+
+Text styles are bindable (`importStyleByKeyAsync`), sample-verified.

@@ -15,7 +15,11 @@ The workflow: user describes a screen (via wireframes, PRDs, screenshots, or tex
 references/
   component-manifest.json       — Structured catalog of all zcat components (names, keys, types, variants)
   decision-rules/               — Split decision rules by topic (11 files, ~4-6k each)
-  design-tokens.md              — Figma variable IDs for color/spacing/radius binding
+  design-tokens.md              — GENERATED from the live Figma variable collections:
+                                  493 colour vars (Mode, Light/Dark), 41 spacing/radius/border
+                                  vars (_Global_Values), 26 text styles — each with its import key.
+                                  Do NOT hand-edit; regenerate per library-audit.md.
+  icon-catalog.json             — all 87 icons with keys (import directly by key)
   sample-data.md                — Realistic data for populating screens (never use lorem ipsum)
   wireframe-styles.css          — CSS for rendering low-fi wireframes via show_widget
   products/catalyst/layout-info.md  — Catalyst page layout structure, node IDs, container rules

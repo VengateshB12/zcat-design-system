@@ -4,12 +4,16 @@
   "figmaFileKey": "ugOZk4O0g6XpviEBSN24mF",
   "libraryKey": "lk-6b302ab265d1e80fb5a2a876b2f9ecef1c2795c5fa5e168b3dadaaf3ab1aab4fbf0dab1bd19e7010bf498e184a6bd6ebb5c8b1e1bf780bb4d8db2a6267a82b5f",
   "systemName": "ZCat-AI Understandable",
-  "themeModes": [
-    "Orange-Light",
-    "Orange-Dark",
-    "Blue-Light",
-    "Blue-Dark"
-  ],
+  "themeModes": {
+    "Mode": [
+      "Light",
+      "Dark"
+    ],
+    "Theme": [
+      "Default - Royal Blue",
+      "Purple"
+    ]
+  },
   "hardRules": {
     "noOddNumbers": "All spacing, font sizes, border radius, padding, margins, gaps must be even numbers",
     "minimumFontSize": 10,
@@ -23,9 +27,9 @@
     "sameSizeInGroup": "When buttons, dropdowns, and text boxes appear together in the same visual group (action bar, form row, filter bar, modal footer), they MUST all use the same Size variant. Never mix sizes within a group.",
     "detachWhitelist": "Only detach Layout, Accordion, Accordion Bordered, Dropdown Menu, Card BG, Container Header, and Sidebar List Panel — for content insertion, never for restyling. For any other component, ask the user before detaching.",
     "screenshotsAreReference": "Screenshots and existing designs provided by the user are reference only — for understanding patterns and layout intent. Never copy exact designs from them, and never use them as justification for detaching or manually recreating components that exist in zcat.",
-    "manualFramesMustUseVariables": "When building manual frames, dividers, section separators, or any non-component element: ALL fills/strokes MUST be bound to zcat color variables (color/bg/*, color/border/*, color/text/*) via figma.variables.setBoundVariableForPaint. ALL spacing (padding, gap, itemSpacing) MUST use values from the spacing scale (0, 2, 4, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 56, 64, 80, 96, 128). ALL text MUST use one of the 19 defined text styles (Zoho Puvi for primary, Inter for secondary, Roboto Mono for code). Even numbers only. Minimum font size 10px. Never use raw hex colors or arbitrary spacing values on manual elements.",
+    "manualFramesMustUseVariables": "When building manual frames, dividers, section separators, or any non-component element: ALL fills/strokes MUST be bound to zcat color variables (CARDS/Bg Default/*, CARDS/Borders/*, BODY/Text/Static/*) via figma.variables.setBoundVariableForPaint. ALL spacing (padding, gap, itemSpacing) MUST use values from the spacing scale (0, 2, 4, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 56, 64, 80, 96, 128). ALL text MUST use one of the 26 defined text styles (Inter for primary, Zoho Puvi for secondary, Roboto Mono for code). Even numbers only. Minimum font size 10px. Never use raw hex colors or arbitrary spacing values on manual elements.",
     "autoLayoutEverywhere": "Every grouping frame, section wrapper, card, row, and container MUST use auto-layout (figma.createAutoLayout). NEVER use absolute positioning for grouped content. No fixed heights on cards or containers. Width = FILL, Height = HUG. Content determines size, not hardcoded pixels.",
-    "zeroHardcodedColors": "EVERY fill, stroke, and text color MUST be bound to a zcat variable using figma.variables.setBoundVariableForPaint. NEVER use raw hex fills like [{type:'SOLID', color:{r:0,g:0,b:0}}]. Even black text = color/text/primary, white bg = color/bg/surface. If Selection Colors panel shows ANY raw hex, those are bugs.",
+    "zeroHardcodedColors": "EVERY fill, stroke, and text color MUST be bound to a zcat variable using figma.variables.setBoundVariableForPaint. NEVER use raw hex fills like [{type:'SOLID', color:{r:0,g:0,b:0}}]. Even black text = BODY/Text/Static/Primary, white bg = CARDS/Bg Default/Primary. If Selection Colors panel shows ANY raw hex, those are bugs.",
     "scriptAtomicity": "Plugin API scripts are ATOMIC — if any line throws, ALL mutations in the script are rolled back. Never mix creation code with risky inspection. Wrap uncertain operations in try/catch. Split risky and safe work into separate scripts.",
     "propertyHashSuffixes": "setProperties() keys may have hash suffixes like 'Show Sidemenu#13106:9'. If setProperties() throws, inspect Object.keys(instance.componentProperties) to discover the actual keys. Set boolean properties BEFORE detaching — after detach they stop working.",
     "detachInvalidatesIds": "detachInstance() returns a NEW node with a NEW ID. All child node IDs change. Re-find children by name or structure AFTER detach, never use pre-detach IDs.",
@@ -43,366 +47,51 @@
   },
   "foundations": {
     "colors": {
-      "description": "3-tier color token architecture: Primitives (raw hex, no modes) -> Themes (semantic, 4 modes) -> Components. Components NEVER reference Primitives directly.",
-      "primitiveCount": 100,
-      "semanticTokenCount": 53,
-      "collections": {
-        "Primitives": {
-          "modes": 1,
-          "scales": [
-            "neutral (14 stops)",
-            "orange (11)",
-            "blue (10)",
-            "red (10)",
-            "green (10)",
-            "amber (10)",
-            "sky (10)",
-            "pink (10)",
-            "purple (10)",
-            "branding (2)",
-            "absolute (3)"
-          ]
-        },
-        "Themes": {
-          "modes": 4,
-          "modeNames": [
-            "Orange-Light",
-            "Orange-Dark",
-            "Blue-Light",
-            "Blue-Dark"
-          ],
-          "categories": {
-            "background": {
-              "prefix": "color/bg/",
-              "count": 17,
-              "tokens": [
-                "surface",
-                "raised",
-                "sunken",
-                "medium",
-                "overlay",
-                "inverse",
-                "brand-primary",
-                "brand-secondary",
-                "brand-subtle",
-                "success",
-                "success-subtle",
-                "warning",
-                "warning-subtle",
-                "error",
-                "error-subtle",
-                "info",
-                "info-subtle"
-              ]
-            },
-            "text": {
-              "prefix": "color/text/",
-              "count": 13,
-              "tokens": [
-                "primary",
-                "secondary",
-                "tertiary",
-                "placeholder",
-                "disabled",
-                "inverse",
-                "on-brand",
-                "link",
-                "link-hover",
-                "success",
-                "warning",
-                "error",
-                "info"
-              ]
-            },
-            "border": {
-              "prefix": "color/border/",
-              "count": 9,
-              "tokens": [
-                "default",
-                "strong",
-                "subtle",
-                "focus",
-                "brand",
-                "error",
-                "success",
-                "warning",
-                "disabled"
-              ]
-            },
-            "icon": {
-              "prefix": "color/icon/",
-              "count": 9,
-              "tokens": [
-                "primary",
-                "secondary",
-                "disabled",
-                "inverse",
-                "brand",
-                "error",
-                "success",
-                "warning",
-                "info"
-              ]
-            },
-            "interactive": {
-              "prefix": "color/interactive/",
-              "count": 5,
-              "tokens": [
-                "default",
-                "hover",
-                "pressed",
-                "selected",
-                "disabled"
-              ]
-            }
-          }
-        }
-      },
-      "wcagMinimum": "AA (text 4.5:1, UI elements 3:1)"
+      "description": "Colour variables are component-scoped (BUTTONS/*, CARDS/*, TABLE/*, INPUT FIELDS/*, BODY/*, ...). Import BY KEY; getLocalVariablesAsync() returns empty for library variables.",
+      "wcagMinimum": "AA (text 4.5:1, UI elements 3:1)",
+      "source": "references/design-tokens.md — GENERATED from the live Mode collection (493 colour variables). Runtime check: zcat_get_all_variables.",
+      "fabricatedNamesRemoved": "Names of the form color/bg/*, color/text/*, color/border/*, color/icon/* or color/interactive/* are FABRICATED: they never existed in the library and resolve to nothing. The live taxonomy is component-scoped — see references/design-tokens.md."
     },
     "typography": {
       "description": "19 text styles across 3 font families. All sizes even, minimum 10px. Font families switchable via variables.",
       "fontFamilies": [
         {
-          "name": "Zoho Puvi",
+          "name": "Inter",
           "role": "Primary",
-          "usage": "Headings, body, labels, UI text"
+          "usage": "All UI text — headings, body, labels"
         },
         {
-          "name": "Inter",
+          "name": "Zoho Puvi",
           "role": "Secondary",
-          "usage": "Alternative body text (user-switchable via variable)"
+          "usage": "Secondary mode of the Typography collection"
         },
         {
           "name": "Roboto Mono",
           "role": "Monospace",
-          "usage": "Code snippets, technical data, keyboard shortcuts"
+          "usage": "Code, technical data"
         }
       ],
-      "textStyles": [
-        {
-          "name": "Display/XL",
-          "size": 48,
-          "lineHeight": 56,
-          "weight": "Bold",
-          "font": "Zoho Puvi"
-        },
-        {
-          "name": "Display/LG",
-          "size": 40,
-          "lineHeight": 48,
-          "weight": "Bold",
-          "font": "Zoho Puvi"
-        },
-        {
-          "name": "Display/MD",
-          "size": 32,
-          "lineHeight": 40,
-          "weight": "Bold",
-          "font": "Zoho Puvi"
-        },
-        {
-          "name": "Heading/XL",
-          "size": 28,
-          "lineHeight": 36,
-          "weight": "SemiBold",
-          "font": "Zoho Puvi"
-        },
-        {
-          "name": "Heading/LG",
-          "size": 24,
-          "lineHeight": 32,
-          "weight": "SemiBold",
-          "font": "Zoho Puvi"
-        },
-        {
-          "name": "Heading/MD",
-          "size": 20,
-          "lineHeight": 28,
-          "weight": "SemiBold",
-          "font": "Zoho Puvi"
-        },
-        {
-          "name": "Heading/SM",
-          "size": 16,
-          "lineHeight": 24,
-          "weight": "SemiBold",
-          "font": "Zoho Puvi"
-        },
-        {
-          "name": "Heading/XS",
-          "size": 14,
-          "lineHeight": 20,
-          "weight": "SemiBold",
-          "font": "Zoho Puvi"
-        },
-        {
-          "name": "Body/LG",
-          "size": 16,
-          "lineHeight": 24,
-          "weight": "Regular",
-          "font": "Zoho Puvi"
-        },
-        {
-          "name": "Body/MD",
-          "size": 14,
-          "lineHeight": 20,
-          "weight": "Regular",
-          "font": "Zoho Puvi"
-        },
-        {
-          "name": "Body/SM",
-          "size": 12,
-          "lineHeight": 16,
-          "weight": "Regular",
-          "font": "Zoho Puvi"
-        },
-        {
-          "name": "Label/LG",
-          "size": 14,
-          "lineHeight": 20,
-          "weight": "Medium",
-          "font": "Zoho Puvi"
-        },
-        {
-          "name": "Label/MD",
-          "size": 12,
-          "lineHeight": 16,
-          "weight": "Medium",
-          "font": "Zoho Puvi"
-        },
-        {
-          "name": "Label/SM",
-          "size": 10,
-          "lineHeight": 14,
-          "weight": "Medium",
-          "font": "Zoho Puvi"
-        },
-        {
-          "name": "Caption",
-          "size": 10,
-          "lineHeight": 14,
-          "weight": "Regular",
-          "font": "Zoho Puvi"
-        },
-        {
-          "name": "Overline",
-          "size": 10,
-          "lineHeight": 14,
-          "weight": "SemiBold",
-          "font": "Zoho Puvi",
-          "transform": "UPPERCASE"
-        },
-        {
-          "name": "Code/LG",
-          "size": 14,
-          "lineHeight": 20,
-          "weight": "Regular",
-          "font": "Roboto Mono"
-        },
-        {
-          "name": "Code/MD",
-          "size": 12,
-          "lineHeight": 16,
-          "weight": "Regular",
-          "font": "Roboto Mono"
-        },
-        {
-          "name": "Code/SM",
-          "size": 10,
-          "lineHeight": 14,
-          "weight": "Regular",
-          "font": "Roboto Mono"
-        }
-      ]
+      "source": "references/design-tokens.md — 26 live text styles with keys."
     },
     "icons": {
       "description": "425 icon components, all stroke-only with colors bound to variables. Every component must use these icons via instance swap.",
-      "totalCount": 425,
-      "categories": [
-        {
-          "name": "System icons",
-          "count": 383,
-          "description": "UI actions, navigation, status indicators"
-        },
-        {
-          "name": "Product icons (default)",
-          "count": 15,
-          "description": "Zoho product logos, monochrome"
-        },
-        {
-          "name": "Product icons (colored)",
-          "count": 15,
-          "description": "Zoho product logos, brand colors preserved"
-        },
-        {
-          "name": "Other icons",
-          "count": 12,
-          "description": "Miscellaneous/special purpose"
-        }
-      ],
-      "sizes": [
-        {
-          "token": "size/icon/12",
-          "size": 12,
-          "context": "Inline with small text (Caption, Label/SM)"
-        },
-        {
-          "token": "size/icon/14",
-          "size": 14,
-          "context": "Inline with Body/SM, Label/MD, small buttons"
-        },
-        {
-          "token": "size/icon/16",
-          "size": 16,
-          "context": "Default - most UI elements"
-        },
-        {
-          "token": "size/icon/20",
-          "size": 20,
-          "context": "Headings, large buttons"
-        },
-        {
-          "token": "size/icon/24",
-          "size": 24,
-          "context": "Navigation, toolbar, standalone icons"
-        },
-        {
-          "token": "size/icon/32",
-          "size": 32,
-          "context": "Hero sections, empty states"
-        }
-      ],
-      "colorVariables": [
-        "color/icon/primary",
-        "color/icon/secondary",
-        "color/icon/disabled",
-        "color/icon/inverse",
-        "color/icon/brand",
-        "color/icon/error",
-        "color/icon/success",
-        "color/icon/warning",
-        "color/icon/info"
-      ],
       "rules": [
         "All stroke-only, never fill",
         "Bind stroke on VECTOR child, not frame wrapper",
         "Aspect ratio locked on all icon components",
         "No external icon libraries"
-      ]
+      ],
+      "totalCount": 87,
+      "source": "references/icon-catalog.json — 87 standalone components (74 at 16x16, 13 product logos at 20x20).",
+      "importMethod": "importComponentByKeyAsync(key) then createInstance(). Icons are NOT internal and do NOT require clone+swap.",
+      "defaultStrokeBinding": {
+        "name": "BODY/Icons/Static/Primary",
+        "key": "9a6e973050f37a6629a57920cca8ef3bbc40c021"
+      }
     },
     "spacing": {
       "description": "Token-driven spacing scale. All values even numbers.",
-      "tokens": [
-        "space/4",
-        "space/8",
-        "space/12",
-        "space/16",
-        "space/24",
-        "space/32",
-        "space/48",
-        "space/64"
-      ]
+      "source": "references/design-tokens.md — _Global_Values, real names are Spacing/S1..S120 (27 variables)."
     },
     "radius": {
       "default": 6,
@@ -414,7 +103,8 @@
         "modalsDialogs": 8,
         "tagsBadgesSmall": "2-4",
         "avatarsPills": 9999
-      }
+      },
+      "source": "references/design-tokens.md — _Global_Values, real names are Radius/R2..R20 and Radius/R-Full (8 variables)."
     },
     "elevation": {
       "levels": 5,
@@ -422,7 +112,7 @@
     }
   },
   "componentKeyMap": {
-    "_description": "Quick lookup: UI element → componentKey + import method. type=component_set → importComponentSetByKeyAsync (then .defaultVariant.createInstance). type=component → importComponentByKeyAsync (then .createInstance). status=manual → build with frames (use zcat color/spacing/text variables). Keys are from the PRIMARY source (ZCat-AI Understandable). Legacy keys are in legacySource.componentKeyMap.",
+    "_description": "Quick lookup: UI element → componentKey + import method. type=component_set → importComponentSetByKeyAsync (then .defaultVariant.createInstance). type=component → importComponentByKeyAsync (then .createInstance). status=manual → build with frames (use zcat colour, spacing and text-style variables). Keys are from the PRIMARY source (ZCat-AI Understandable). Legacy keys are in legacySource.componentKeyMap.",
     "Button": {
       "figmaName": "Buttons",
       "componentKey": "5819eb825dad40876f31545c93804195f11ea535",
@@ -941,7 +631,7 @@
     },
     "Overlay": {
       "status": "manual",
-      "notes": "Build as frame. Fill must use color/bg/overlay variable."
+      "notes": "Build as frame. Fill must use POPUP/Blur Layer/Bg variable."
     },
     "Spinner": {
       "status": "manual",
@@ -961,7 +651,7 @@
     },
     "Helper Text": {
       "status": "manual",
-      "notes": "Build as text layer. Must use zcat text styles and color/text/* variables."
+      "notes": "Build as text layer. Must use zcat text styles and BODY/Text/Static/* variables."
     },
     "Kbd": {
       "status": "manual",
@@ -985,7 +675,7 @@
     },
     "Progress Bar": {
       "status": "manual",
-      "notes": "Not in zcat library. Use zcat color variables (color/interactive/primary for fill, color/bg/sunken for track)."
+      "notes": "Not in zcat library. Use zcat color variables (BUTTONS/Fill/Background/Primary for fill, CARDS/Bg Default/Body Bg for track)."
     },
     "Progress Circle": {
       "status": "manual",
@@ -1093,8 +783,8 @@
         }
       ],
       "tokens": {
-        "fill": "color/bg/surface",
-        "border": "color/border/default (1px)",
+        "fill": "CARDS/Bg Default/Primary",
+        "border": "CARDS/Borders/Default (1px)",
         "radius": 6,
         "padding": 16
       },
@@ -1161,12 +851,12 @@
           "values": [
             "Any space/* token"
           ],
-          "default": "space/8"
+          "default": "Spacing/S8"
         }
       ],
       "tokens": {
-        "fill": "color/bg/surface",
-        "border": "color/border/default (1px)"
+        "fill": "CARDS/Bg Default/Primary",
+        "border": "CARDS/Borders/Default (1px)"
       },
       "related": [
         "Row",
@@ -1225,12 +915,12 @@
           "values": [
             "Any space/* token"
           ],
-          "default": "space/16"
+          "default": "Spacing/S16"
         }
       ],
       "tokens": {
-        "fill": "color/bg/surface",
-        "border": "color/border/default (1px)"
+        "fill": "CARDS/Bg Default/Primary",
+        "border": "CARDS/Borders/Default (1px)"
       },
       "related": [
         "Row",
@@ -1290,12 +980,12 @@
           "values": [
             "Any space/* token"
           ],
-          "default": "space/8"
+          "default": "Spacing/S8"
         }
       ],
       "tokens": {
-        "fill": "color/bg/surface",
-        "border": "color/border/default (1px)"
+        "fill": "CARDS/Bg Default/Primary",
+        "border": "CARDS/Borders/Default (1px)"
       },
       "related": [
         "Stack",
@@ -1353,12 +1043,12 @@
           "values": [
             "Any space/* token"
           ],
-          "default": "space/8"
+          "default": "Spacing/S8"
         }
       ],
       "tokens": {
-        "fill": "color/bg/surface",
-        "border": "color/border/default (1px)"
+        "fill": "CARDS/Bg Default/Primary",
+        "border": "CARDS/Borders/Default (1px)"
       },
       "related": [
         "Row",
@@ -1416,7 +1106,7 @@
         }
       ],
       "tokens": {
-        "fill": "color/bg/brand-subtle (visible in design, transparent in code)"
+        "fill": "bind to a zcat variable — see references/design-tokens.md (dev-visibility aid only; transparent in code)"
       },
       "related": [
         "Divider"
@@ -1437,7 +1127,7 @@
       "name": "Divider",
       "category": "layout",
       "subcategory": "primitives",
-      "description": "Line separator component. INTERNAL USE: consumed by the Stepper component. For general-purpose dividers in your designs, build a manual 1px frame with fill bound to color/border/default variable — do NOT import this Divider component.",
+      "description": "Line separator component. INTERNAL USE: consumed by the Stepper component. For general-purpose dividers in your designs, build a manual 1px frame with fill bound to CARDS/Borders/Default variable — do NOT import this Divider component.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "page": "Layout Primitives",
@@ -1468,13 +1158,13 @@
         }
       ],
       "tokens": {
-        "stroke": "color/border/default",
+        "stroke": "CARDS/Borders/Default",
         "strokeWeight": 1
       },
       "related": [
         "Spacer"
       ],
-      "buildNotes": "DO NOT USE for general dividers — this component is scoped internally to Stepper. For horizontal dividers: create a Frame, set height=1, layoutSizingHorizontal=FILL, fill bound to color/border/default. For vertical dividers: create a Frame, set width=1, layoutSizingVertical=FILL, fill bound to color/border/default. Always bind the fill to a zcat border variable.",
+      "buildNotes": "DO NOT USE for general dividers — this component is scoped internally to Stepper. For horizontal dividers: create a Frame, set height=1, layoutSizingHorizontal=FILL, fill bound to CARDS/Borders/Default. For vertical dividers: create a Frame, set width=1, layoutSizingVertical=FILL, fill bound to CARDS/Borders/Default. Always bind the fill to a zcat border variable.",
       "searchAliases": [
         "separator",
         "horizontal rule",
@@ -1541,8 +1231,8 @@
         }
       },
       "tokens": {
-        "fill": "color/bg/brand-subtle",
-        "border": "color/border/default (1px)"
+        "fill": "bind to a zcat variable — see references/design-tokens.md (dev-visibility aid only)",
+        "border": "CARDS/Borders/Default (1px)"
       },
       "related": [
         "Image"
@@ -1594,12 +1284,12 @@
         }
       ],
       "tokens": {
-        "fill": "color/bg/overlay (aliased to neutral/950 in ALL modes)"
+        "fill": "POPUP/Blur Layer/Bg (aliased to neutral/950 in ALL modes)"
       },
       "related": [
         "Spinner"
       ],
-      "buildNotes": "Manual build — not a Figma component. For popup/dialog overlays, use the Popup Blur component instead. Only use manual Overlay for custom cases not covered by Popup Blur. Create a full-page frame with semi-transparent black fill bound to color/bg/overlay.",
+      "buildNotes": "Manual build — not a Figma component. For popup/dialog overlays, use the Popup Blur component instead. Only use manual Overlay for custom cases not covered by Popup Blur. Create a full-page frame with semi-transparent black fill bound to POPUP/Blur Layer/Bg.",
       "searchAliases": [
         "backdrop",
         "modal background",
@@ -1792,15 +1482,15 @@
         }
       },
       "tokens": {
-        "fillDefault": "color/bg/sunken",
-        "fillDark": "color/bg/medium"
+        "fillDefault": "CARDS/Bg Default/Body Bg",
+        "fillDark": "LOADER/Content Loader/Primary"
       },
       "related": [
         "Skeleton",
         "Spinner",
         "Progress Bar"
       ],
-      "buildNotes": "Manual build — not a Figma component. Use for content loading placeholders. Create frames matching content dimensions with fills bound to color/bg/sunken. Apply alternating light/dark fills to simulate shimmer effect. Match the layout shape of the content being loaded.",
+      "buildNotes": "Manual build — not a Figma component. Use for content loading placeholders. Create frames matching content dimensions with fills bound to CARDS/Bg Default/Body Bg. Apply alternating light/dark fills to simulate shimmer effect. Match the layout shape of the content being loaded.",
       "searchAliases": [
         "skeleton loader",
         "content placeholder",
@@ -1895,15 +1585,15 @@
         }
       },
       "tokens": {
-        "fillDefault": "color/bg/sunken",
-        "fillDark": "color/bg/medium"
+        "fillDefault": "CARDS/Bg Default/Body Bg",
+        "fillDark": "LOADER/Content Loader/Primary"
       },
       "related": [
         "Shimmer",
         "Spinner",
         "Progress Bar"
       ],
-      "buildNotes": "Manual build — not a Figma component. Similar to Shimmer but for structural outlines. Create frames matching content structure (header bar, text lines, image boxes) with fills bound to color/bg/sunken. Use rounded corners matching the target component.",
+      "buildNotes": "Manual build — not a Figma component. Similar to Shimmer but for structural outlines. Create frames matching content structure (header bar, text lines, image boxes) with fills bound to CARDS/Bg Default/Body Bg. Use rounded corners matching the target component.",
       "searchAliases": [
         "skeleton screen",
         "wireframe loader",
@@ -2093,17 +1783,17 @@
         }
       },
       "tokens": {
-        "labelText": "color/text/primary",
-        "requiredAsterisk": "color/text/error",
-        "optionalText": "color/text/secondary",
-        "infoIcon": "color/icon/secondary",
-        "disabledAll": "color/text/disabled"
+        "labelText": "BODY/Text/Static/Primary",
+        "requiredAsterisk": "INPUT FIELDS/Text/Error Text",
+        "optionalText": "BODY/Text/Static/Secondary",
+        "infoIcon": "INPUT FIELDS/Icons/Label",
+        "disabledAll": "INPUT FIELDS/Text/Disable"
       },
       "related": [
         "Helper Text",
         "Text Input"
       ],
-      "buildNotes": "Manual build — not a Figma component. Create a text node with text style applied. Use Subtitle 2 (12px SemiBold) for form labels. Bind text fill to color/text/secondary for labels. ALWAYS pair with the corresponding input component below it in a vertical auto-layout with 4px gap.",
+      "buildNotes": "Manual build — not a Figma component. Create a text node with text style applied. Use Subtitle 2 (12px SemiBold) for form labels. Bind text fill to BODY/Text/Static/Secondary for labels. ALWAYS pair with the corresponding input component below it in a vertical auto-layout with 4px gap.",
       "searchAliases": [
         "form label",
         "field label",
@@ -2189,7 +1879,7 @@
         "Label",
         "Text Input"
       ],
-      "buildNotes": "Manual build — not a Figma component. Create a text node below the input with Body 3 style (12px Regular). Bind fill to color/text/secondary for hints, color/text/danger for errors. Place in the same vertical auto-layout as Label + Input with 4px gap.",
+      "buildNotes": "Manual build — not a Figma component. Create a text node below the input with Body 3 style (12px Regular). Bind fill to BODY/Text/Static/Secondary for hints, OTHER SHADES/Red/Red 1 for errors. Place in the same vertical auto-layout as Label + Input with 4px gap.",
       "searchAliases": [
         "hint text",
         "field hint",
@@ -2295,16 +1985,16 @@
         }
       },
       "stateColors": {
-        "Default": "color/text/link",
-        "Hover": "color/text/link-hover (underlined)",
-        "Pressed": "color/text/link-pressed (underlined)",
-        "Focused": "color/text/link (underlined, 2px focus ring)",
-        "Disabled": "color/text/link-disabled"
+        "Default": "BUTTONS/Link/Text & Icon/Default",
+        "Hover": "BUTTONS/Link/Text & Icon/Hover (underlined)",
+        "Pressed": "BUTTONS/Link/Text & Icon/Click (underlined)",
+        "Focused": "BUTTONS/Link/Text & Icon/Default (underlined, 2px focus ring)",
+        "Disabled": "BUTTONS/Link/Text & Icon/Disable"
       },
       "related": [
         "Button"
       ],
-      "buildNotes": "Import as component_set (key 937992145223c13dcefa819ba6513d1a291a5520). Set Size, State, and toggle Icon Left/Right booleans. Link text uses brand color (color/text/brand-primary). For breadcrumb-style links, use Breadcrumbs component instead.",
+      "buildNotes": "Import as component_set (key 937992145223c13dcefa819ba6513d1a291a5520). Set Size, State, and toggle Icon Left/Right booleans. Link text uses brand color (BODY/Text/Static/Theme). For breadcrumb-style links, use Breadcrumbs component instead.",
       "searchAliases": [
         "hyperlink",
         "anchor",
@@ -2369,16 +2059,16 @@
         }
       },
       "tokens": {
-        "background": "color/bg/raised",
-        "text": "color/text/primary",
-        "border": "color/border/default (1px all sides)",
-        "bottomShadow": "color/border/strong (1px bottom)"
+        "background": "CARDS/Bg Default/Secondary",
+        "text": "BODY/Text/Static/Primary",
+        "border": "CARDS/Borders/Default (1px all sides)",
+        "bottomShadow": "CARDS/Borders/Default (1px bottom)"
       },
       "related": [
         "Tooltip",
         "Badge"
       ],
-      "buildNotes": "Manual build — not a Figma component. Create a frame with 4px padding, 4px radius, 1px border (color/border/default), sunken background (color/bg/sunken). Use Roboto Mono font for the key text. Common for shortcut hints (Ctrl+S, Cmd+K).",
+      "buildNotes": "Manual build — not a Figma component. Create a frame with 4px padding, 4px radius, 1px border (CARDS/Borders/Default), sunken background (CARDS/Bg Default/Body Bg). Use Roboto Mono font for the key text. Common for shortcut hints (Ctrl+S, Cmd+K).",
       "searchAliases": [
         "keyboard shortcut",
         "key cap",
@@ -2466,11 +2156,11 @@
         }
       },
       "tokens": {
-        "background": "color/bg/tooltip (VariableID:201:2)",
+        "background": "TOOLTIP/Static/Background",
         "headingText": "white primitive",
         "bodyText": "white primitive",
         "iconStroke": "white primitive",
-        "linkText": "color/text/link",
+        "linkText": "BUTTONS/Link/Text & Icon/Default",
         "arrowFill": "same as background"
       },
       "textStyles": {
@@ -2673,32 +2363,32 @@
       },
       "colorVariables": {
         "Primary": {
-          "bg": "color/interactive/default",
-          "bgHover": "color/interactive/hover",
-          "bgPressed": "color/interactive/pressed",
-          "bgDisabled": "color/btn/brand/disabled",
-          "text": "color/text/on-brand"
+          "bg": "BUTTONS/Fill/Background/Primary",
+          "bgHover": "BUTTONS/Fill/Background/PrimaryHover",
+          "bgPressed": "BUTTONS/Fill/Background/PrimaryClick",
+          "bgDisabled": "BUTTONS/Fill/Background/PrimaryDisable",
+          "text": "BUTTONS/Fill/Text & Icon/Default"
         },
         "Danger": {
-          "bg": "color/btn/danger/default",
-          "bgHover": "color/btn/danger/hover",
-          "bgPressed": "color/btn/danger/pressed",
-          "bgDisabled": "color/btn/danger/disabled",
-          "text": "color/btn/danger/text"
+          "bg": "BUTTONS/Fill/Background/Danger",
+          "bgHover": "BUTTONS/Fill/Background/DangerHover",
+          "bgPressed": "BUTTONS/Fill/Background/DangerClick",
+          "bgDisabled": "BUTTONS/Fill/Background/DangerDisable",
+          "text": "BUTTONS/Fill/Text & Icon/Default"
         },
         "Success": {
-          "bg": "color/btn/success/default",
-          "bgHover": "color/btn/success/hover",
-          "bgPressed": "color/btn/success/pressed",
-          "bgDisabled": "color/btn/success/disabled",
-          "text": "color/btn/success/text"
+          "bg": "BUTTONS/Fill/Background/Success",
+          "bgHover": "BUTTONS/Fill/Background/SuccessHover",
+          "bgPressed": "BUTTONS/Fill/Background/SuccessClick",
+          "bgDisabled": "BUTTONS/Fill/Background/SuccessDisable",
+          "text": "BUTTONS/Fill/Text & Icon/Default"
         },
         "Neutral": {
-          "bg": "color/btn/neutral/bg",
-          "bgHover": "color/btn/neutral/bg-hover",
-          "bgPressed": "color/btn/neutral/bg-pressed",
-          "bgDisabled": "color/btn/neutral/bg-disabled",
-          "text": "color/text/primary"
+          "bg": "BUTTONS/Grey/Backgrounds/Default",
+          "bgHover": "BUTTONS/Grey/Backgrounds/Hover",
+          "bgPressed": "BUTTONS/Grey/Backgrounds/Click",
+          "bgDisabled": "BUTTONS/Grey/Backgrounds/Disable",
+          "text": "BODY/Text/Static/Primary"
         }
       },
       "related": [
@@ -3148,24 +2838,24 @@
       },
       "stateColors": {
         "Default": {
-          "fieldBg": "color/bg/surface",
-          "border": "color/border/strong"
+          "fieldBg": "CARDS/Bg Default/Primary",
+          "border": "INPUT FIELDS/Borders/Default"
         },
         "Hover": {
-          "fieldBg": "color/bg/sunken",
-          "border": "color/border/hover"
+          "fieldBg": "CARDS/Bg Default/Body Bg",
+          "border": "INPUT FIELDS/Borders/Hover"
         },
         "Pressed": {
-          "fieldBg": "color/bg/sunken",
-          "border": "color/border/hover"
+          "fieldBg": "CARDS/Bg Default/Body Bg",
+          "border": "INPUT FIELDS/Borders/Active"
         },
         "Active": {
-          "fieldBg": "color/bg/sunken",
-          "border": "color/text/primary (black)"
+          "fieldBg": "CARDS/Bg Default/Body Bg",
+          "border": "BODY/Text/Static/Primary (black)"
         },
         "Error": {
-          "fieldBg": "color/bg/error-subtle",
-          "border": "color/border/error"
+          "fieldBg": "INPUT FIELDS/Background/Error",
+          "border": "INPUT FIELDS/Borders/Error"
         }
       },
       "composedComponents": {
@@ -3531,7 +3221,7 @@
         "Label",
         "Helper Text"
       ],
-      "buildNotes": "NOT a separate component — build manually using a frame styled like Text Box but taller (min-height 80px). Use same color variables as Text Input (color/border/default for border, color/bg/surface for fill). Apply Body 1 text style. Set primaryAxisSizingMode=\"AUTO\" to grow with content.",
+      "buildNotes": "NOT a separate component — build manually using a frame styled like Text Box but taller (min-height 80px). Use same color variables as Text Input (CARDS/Borders/Default for border, CARDS/Bg Default/Primary for fill). Apply Body 1 text style. Set primaryAxisSizingMode=\"AUTO\" to grow with content.",
       "searchAliases": [
         "multiline input",
         "text area",
@@ -4324,7 +4014,7 @@
         "Avatar",
         "Aspect Ratio"
       ],
-      "buildNotes": "Manual build — not a Figma component. Create a frame with clipsContent=true and appropriate aspect ratio. Use fills with image paint type or placeholder rectangle with color/bg/sunken fill. Set cornerRadius to match context (6px default, 0 for full-bleed).",
+      "buildNotes": "Manual build — not a Figma component. Create a frame with clipsContent=true and appropriate aspect ratio. Use fills with image paint type or placeholder rectangle with CARDS/Bg Default/Body Bg fill. Set cornerRadius to match context (6px default, 0 for full-bleed).",
       "searchAliases": [
         "picture",
         "photo",
@@ -4427,7 +4117,7 @@
         "Progress Circle",
         "Spinner"
       ],
-      "buildNotes": "Manual build — not a Figma component. Create two nested frames: outer track (full width, 4px height, color/bg/sunken fill) and inner fill (percentage width, color/bg/brand-primary fill). Set corner radius 2px on both. For labeled progress, add percentage text above with Body 3 style.",
+      "buildNotes": "Manual build — not a Figma component. Create two nested frames: outer track (full width, 4px height, CARDS/Bg Default/Body Bg fill) and inner fill (percentage width, BUTTONS/Fill/Background/Primary fill). Set corner radius 2px on both. For labeled progress, add percentage text above with Body 3 style.",
       "searchAliases": [
         "loading bar",
         "progress indicator",
@@ -4517,7 +4207,7 @@
         "Progress Bar",
         "Spinner"
       ],
-      "buildNotes": "Manual build — not a Figma component. Create using vector arcs or ellipse with stroke. Track: full circle stroke with color/border/default. Fill: partial arc stroke with color/bg/brand-primary. For loading states, prefer the Loader component instead.",
+      "buildNotes": "Manual build — not a Figma component. Create using vector arcs or ellipse with stroke. Track: full circle stroke with CARDS/Borders/Default. Fill: partial arc stroke with BUTTONS/Fill/Background/Primary. For loading states, prefer the Loader component instead.",
       "searchAliases": [
         "circular progress",
         "donut chart",
@@ -4603,7 +4293,7 @@
         "Toggle",
         "Progress Bar"
       ],
-      "buildNotes": "Manual build — not a Figma component. Create a horizontal auto-layout with 5 star icons (4px gap). Use filled star icon with color/bg/warning fill for selected, and outline star with color/border/default stroke for unselected. Each star is 16-20px.",
+      "buildNotes": "Manual build — not a Figma component. Create a horizontal auto-layout with 5 star icons (4px gap). Use filled star icon with OTHER SHADES/Orange/Orange 1 fill for selected, and outline star with CARDS/Borders/Default stroke for unselected. Each star is 16-20px.",
       "searchAliases": [
         "star rating",
         "review stars",
@@ -5141,7 +4831,7 @@
           "default": "Default"
         }
       ],
-      "buildNotes": "Detach whitelist component — detach to insert custom content inside. IMPORTANT: the variant property is 'State' (Default/Hover/Selected/Disabled), NOT 'Color' (White/Grey/Bordered/Elevated) as older descriptions claim. setProperties({Color: 'White'}) will THROW. Use State=Default for standard white cards. For dashboard card grid pages, Container fill should use color/bg/sunken variable and each section wrapped in Card BG (State=Default). For side-by-side cards, wrap in a horizontal auto-layout frame with gap 16px and children using FILL width.",
+      "buildNotes": "Detach whitelist component — detach to insert custom content inside. IMPORTANT: the variant property is 'State' (Default/Hover/Selected/Disabled), NOT 'Color' (White/Grey/Bordered/Elevated) as older descriptions claim. setProperties({Color: 'White'}) will THROW. Use State=Default for standard white cards. For dashboard card grid pages, Container fill should use CARDS/Bg Default/Body Bg variable and each section wrapped in Card BG (State=Default). For side-by-side cards, wrap in a horizontal auto-layout frame with gap 16px and children using FILL width.",
       "related": [
         "General Details",
         "Key Value Pair"
@@ -7150,7 +6840,7 @@
         "Step-by-step process (use Stepper)"
       ],
       "properties": [],
-      "buildNotes": "Import as component. DECORATIVE ONLY — contains colored dots and connecting vertical line but NO text nodes. For activity timelines with text (timestamps, titles, descriptions), build manually: vertical auto-layout frame with rows of [status dot + text column (title 14px SemiBold + timestamp 12px secondary)]. Bind dot fills to semantic color variables (color/bg/success, color/bg/error, etc.). Connect dots with a 2px vertical line frame bound to color/border/default.",
+      "buildNotes": "Import as component. DECORATIVE ONLY — contains colored dots and connecting vertical line but NO text nodes. For activity timelines with text (timestamps, titles, descriptions), build manually: vertical auto-layout frame with rows of [status dot + text column (title 14px SemiBold + timestamp 12px secondary)]. Bind dot fills to semantic color variables (OTHER SHADES/Green/Green 1, OTHER SHADES/Red/Red 1, etc.). Connect dots with a 2px vertical line frame bound to CARDS/Borders/Default.",
       "related": [
         "Stepper",
         "Table"
@@ -7597,7 +7287,8 @@
         "spec": "12/20 Roboto Mono Semi Bold"
       }
     },
-    "typographyRoles": "Headings/emphasised values MUST use a Semi Bold style (Headlines/H5, Body/Subtitle 1-3). A larger Regular size is NOT hierarchy. All-Regular authored text fails validation."
+    "typographyRoles": "Headings/emphasised values MUST use a Semi Bold style (Headlines/H5, Body/Subtitle 1-3). A larger Regular size is NOT hierarchy. All-Regular authored text fails validation.",
+    "tokenReference": "references/design-tokens.md (GENERATED — 493 colour + 41 value variables + 26 text styles). Do not hand-edit; regenerate per library-audit.md."
   },
   "nestedLegacyChildren": {
     "warning": "Some CURRENT components nest LEGACY children, so the valid enum depends on CONTEXT, not on the parent's generation.",

@@ -254,7 +254,7 @@ NEVER build a manual frame for the action bar. ALWAYS use Container Header.
 
 - **Available width:** 1259px — **WIDTH IS FIXED, NEVER EXCEED IT**
 - **Available height:** 736px (can expand vertically if content is longer — height is flexible)
-- **Background:** The Container MUST keep its background fill bound to `color/bg/surface` variable — NEVER clear or remove Container fills
+- **Background:** The Container MUST keep its background fill bound to `BODY/Background/Static/Container Bg` variable — NEVER clear or remove Container fills
 - **Border radius:** 6px (Container has rounded corners)
 - **Padding:** 14px from Body frame edges
 - **Container auto-layout (all page types):**
@@ -296,7 +296,7 @@ NEVER build a manual frame for the action bar. ALWAYS use Container Header.
 
 **TITLE RULE:** The Sub Header already displays the page/feature name. NEVER add a duplicate title heading inside the Container.
 
-**RULE:** NEVER remove or clear the Container's background fill. The Container's `color/bg/surface` fill is what gives it the white card appearance on the sunken/gray Body background. If you clear it, the content area loses its visual boundary.
+**RULE:** NEVER remove or clear the Container's background fill. The Container's `BODY/Background/Static/Container Bg` fill is what gives it the white card appearance on the sunken/gray Body background. If you clear it, the content area loses its visual boundary.
 
 ---
 
@@ -378,7 +378,7 @@ For each new Catalyst screen without left navigation:
 
 - **Available width:** 1489px — **WIDTH IS FIXED, NEVER EXCEED IT**
 - **Available height:** 736px (can expand vertically)
-- **Background:** Container MUST keep its background fill bound to `color/bg/surface` variable
+- **Background:** Container MUST keep its background fill bound to `BODY/Background/Static/Container Bg` variable
 - **Border radius:** 6px
 - **Padding:** 14px from Body frame edges
 - **Recommended content padding:** Same rules as Default layout (Stretch: Container 0, action bar 16px top/left/right; Boxy: Container 16px all sides)
