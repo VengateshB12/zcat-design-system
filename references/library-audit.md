@@ -325,3 +325,33 @@ shape as finding D: existence in the library does not imply availability to cons
 Guidance was therefore changed from "pass the legacy enum" to "read
 `Color.variantOptions` off the instance's owning set and branch", which is correct before,
 during and after propagation, plus a semantic-to-legacy fallback map.
+
+### E-2. Publish confirmed; the probe that distinguishes publish from acceptance
+
+After the library was published, the consuming file still resolved the legacy badge set and
+still threw on `Color: "Success"`. That alone does not say whether the publish failed or the
+file simply had not accepted the update — two very different problems.
+
+**The probe that separates them:** import the published PARENT fresh by key and inspect what
+it nests.
+
+```js
+const set = await figma.importComponentSetByKeyAsync("f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07");
+const inst = set.defaultVariant.createInstance();   // pulls the CURRENTLY PUBLISHED version
+// ...resolve the nested Badges owner and read Color.variantOptions...
+inst.remove();
+```
+
+Result: the fresh import nested `43e36112…` and accepted `Color: "Success"`. So the publish
+worked, and only pre-existing instances lag. Fix per file: Assets → Updates available →
+Update all.
+
+**Why `_Table_Col_Badge` itself cannot be probed:** a leading `_` makes a component PRIVATE in
+Figma. It is never published as its own library asset, which is why
+`importComponentByKeyAsync("f54ff134…")` returns "not found" while the component plainly
+exists. Private children travel only inside their published parent — so always probe the
+published parent, never the private child.
+
+**Caution when accepting the update:** `Green`/`Red`/`Orange` do not exist in the new enum, so
+Figma may fall back to a default and silently restyle badges on existing screens. Screenshot
+after updating.
