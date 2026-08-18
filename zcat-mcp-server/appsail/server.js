@@ -100,6 +100,8 @@ Call zcat_get_workflow first and follow it.</code></pre>
     <li><code>zcat_get_component</code> &mdash; full spec</li>
     <li><code>zcat_get_component_key</code> &mdash; Figma key + import method</li>
     <li><code>zcat_get_design_tokens</code> &mdash; variable IDs</li>
+    <li><code>zcat_get_all_variables</code> &mdash; every colour variable + key, with bindability</li>
+    <li><code>zcat_search_icons</code> &mdash; find an icon, get its key (all 87)</li>
     <li><code>zcat_get_decision_rules</code> &mdash; which component to pick (topic-routed, ~4-6k per query)</li>
     <li><code>zcat_get_sample_data</code> &mdash; realistic content</li>
     <li><code>zcat_get_layout</code> &mdash; page layouts</li>
@@ -720,6 +722,251 @@ function buildServer() {
     async () => asText(readText("library-audit.md"))
   );
 
+  /* ---------------------------------------------------------------- *
+   * Icons
+   *
+   * Icons were previously the most expensive thing to find — 6+ calls,
+   * and the old guidance wrongly said they could not be imported by key.
+   * All 87 are standalone published components; this returns the key and
+   * the exact import call in one shot.
+   * ---------------------------------------------------------------- */
+  const iconCatalog = () => readJson("icon-catalog.json");
+
+  function allIcons() {
+    const cat = iconCatalog();
+    const out = [];
+    for (const [name, meta] of Object.entries(cat.icons16px || {})) {
+      out.push({ name, key: meta.key, size: "16x16", aliases: meta.aliases || [] });
+    }
+    for (const [name, key] of Object.entries(cat.productLogos20px || {})) {
+      out.push({ name, key, size: "20x20", aliases: ["product logo", "service icon"] });
+    }
+    return out;
+  }
+
+  server.registerTool(
+    "zcat_search_icons",
+    {
+      title: "Search zcat icons",
+      description:
+        "Find a zcat icon by keyword and get its component key plus the exact " +
+        "import call. All 87 icons are standalone published components — import " +
+        "DIRECTLY with importComponentByKeyAsync(key). Do NOT clone an icon from a " +
+        "Button and swapComponent(); that older guidance was wrong. Use this " +
+        "instead of guessing an icon name or skipping icons entirely. Pass no " +
+        "query to browse every icon name.",
+      inputSchema: {
+        query: z
+          .string()
+          .optional()
+          .describe("What the icon is for, e.g. 'delete', 'trend up', 'settings', 'deploy'"),
+        limit: z.number().int().min(1).max(87).optional().describe("Max results (default 8)"),
+      },
+    },
+    async ({ query, limit = 8 } = {}) => {
+      const icons = allIcons();
+      const cat = iconCatalog();
+      const meta = cat._meta || {};
+
+      if (!query || !query.trim()) {
+        return asText({
+          count: icons.length,
+          importMethod: "await figma.importComponentByKeyAsync(key) then comp.createInstance()",
+          rules: meta.rules,
+          resizeNote: meta.resizing,
+          defaultStrokeBinding: (meta.structure || {}).defaultStrokeBinding,
+          icons16px: icons.filter((i) => i.size === "16x16").map((i) => i.name).sort(),
+          productLogos20px: icons.filter((i) => i.size === "20x20").map((i) => i.name).sort(),
+          hint: "Call again with a query to get keys for specific icons.",
+        });
+      }
+
+      const q = query.trim().toLowerCase();
+      const words = q.split(/\s+/).filter(Boolean);
+      const scored = icons
+        .map((i) => {
+          const name = i.name.toLowerCase();
+          const hay = (i.name + " " + i.aliases.join(" ")).toLowerCase();
+          let score = 0;
+          if (name === q) score = 100;
+          else if (i.aliases.some((a) => a.toLowerCase() === q)) score = 90;
+          else if (name.startsWith(q)) score = 75;
+          else if (name.includes(q)) score = 60;
+          else if (i.aliases.some((a) => a.toLowerCase().includes(q))) score = 50;
+          else {
+            /* Match on WORD boundaries, not raw substring: a bare `hay.includes(w)`
+             * makes the query word "row" match "ar-row-", so "delete row" ranked
+             * Arrow Down above Delete. */
+            const hayWords = hay.split(/[^a-z0-9]+/).filter(Boolean);
+            let exact = 0;
+            let partial = 0;
+            for (const w of words) {
+              if (hayWords.includes(w)) exact++;
+              else if (w.length >= 4 && hayWords.some((hw) => hw.startsWith(w))) partial++;
+            }
+            if (exact || partial) {
+              score = 15 + ((exact + partial * 0.4) / words.length) * 30;
+            }
+          }
+          return { i, score };
+        })
+        .filter((r) => r.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, limit);
+
+      if (!scored.length) {
+        return asText(
+          `No zcat icon matches "${query}". Call zcat_search_icons with no query to ` +
+            `browse all 87 names, then pick the closest — never substitute an emoji or ` +
+            `a Unicode glyph.`
+        );
+      }
+
+      return asText({
+        matches: scored.map(({ i, score }) => ({
+          name: i.name,
+          componentKey: i.key,
+          size: i.size,
+          aliases: i.aliases,
+          confidence: score >= 60 ? "high" : score >= 28 ? "medium" : "low",
+        })),
+        importMethod: "await figma.importComponentByKeyAsync(key) then comp.createInstance()",
+        resize: "icon.resize(n, n) — set BOTH axes; one axis alone collapses the icon",
+        strokeNote:
+          "Stroke ships already bound to BODY/Icons/Static/Primary — rebind only to " +
+          "change the colour role (e.g. BODY/Icons/Static/Secondary).",
+      });
+    }
+  );
+
+  /* ---------------------------------------------------------------- *
+   * Variables
+   *
+   * Parsed from the GENERATED design-tokens.md so the tool cannot drift
+   * from the file. Critically, it reports bindability: 423 of the 493
+   * Mode variables cannot be imported by a consuming file at all, and
+   * handing those keys to an agent produces a throw.
+   * ---------------------------------------------------------------- */
+  const BINDABLE_NS = new Set(["BODY", "CARDS", "SHADOWS", "BRANDING ICON", "OTHER SHADES"]);
+  const DEAD_KEYS = new Set(["ebc952158732732071d9351f482e0de41462616e"]);
+
+  function parseVariables() {
+    const doc = readText("design-tokens.md");
+    const groups = [];
+    let current = null;
+    let inMode = false;
+    for (const line of doc.split("\n")) {
+      /* Only the "Mode collection" section holds colour variables. Without this
+       * gate, the `## Text styles` heading never closes the last `###` group and
+       * its 5-column rows get absorbed into it. */
+      const h2 = line.match(/^## (.+)/);
+      if (h2) {
+        inMode = /`Mode`\s+collection/.test(h2[1]);
+        current = null;
+        continue;
+      }
+      if (!inMode) continue;
+      const head = line.match(/^### (.+?)\s+\((\d+)\)/);
+      if (head) {
+        const ns = head[1].trim();
+        current = {
+          namespace: ns,
+          declaredCount: Number(head[2]),
+          bindable: BINDABLE_NS.has(ns),
+          variables: [],
+        };
+        groups.push(current);
+        continue;
+      }
+      if (!current) continue;
+      const row = line.match(/^\|\s*`([^`]+)`\s*\|\s*`([0-9a-f]{40})`\s*\|\s*([^|]*)\|\s*([^|]*)\|/);
+      if (row) {
+        const v = { name: row[1], key: row[2] };
+        const light = row[3].replace(/[`\s]/g, "");
+        const dark = row[4].replace(/[`*\s]/g, "").replace(/←.*$/, "");
+        if (light) v.light = light;
+        if (dark && !/does/i.test(dark)) v.dark = dark;
+        if (DEAD_KEYS.has(v.key)) v.warning = "does NOT resolve for consumers — do not use";
+        current.variables.push(v);
+      }
+    }
+    return groups.filter((g) => g.variables.length);
+  }
+
+  server.registerTool(
+    "zcat_get_all_variables",
+    {
+      title: "Get all zcat colour variables with keys",
+      description:
+        "Every zcat colour variable with its import key and resolved Light/Dark " +
+        "value, grouped by namespace. Use this instead of reverse-engineering " +
+        "variable names from bound fills, and never invent a name — anything of " +
+        "the form color/bg/*, color/text/* or color/btn/* is fabricated. IMPORTANT: " +
+        "only 5 namespaces (BODY, CARDS, SHADOWS, BRANDING ICON, OTHER SHADES) can " +
+        "be imported by a consuming file; the other 423 variables are internal to " +
+        "components and importVariableByKeyAsync THROWS for them. Defaults to " +
+        "returning only the bindable ones.",
+      inputSchema: {
+        namespace: z
+          .string()
+          .optional()
+          .describe("Filter to one namespace, e.g. 'CARDS', 'BUTTONS', 'TABLE'"),
+        query: z.string().optional().describe("Substring match on the variable name"),
+        includeInternal: z
+          .boolean()
+          .optional()
+          .describe(
+            "Include the 423 non-bindable component-internal variables (reference only). Default false."
+          ),
+      },
+    },
+    async ({ namespace, query, includeInternal = false } = {}) => {
+      let groups = parseVariables();
+
+      if (namespace) {
+        const ns = namespace.trim().toLowerCase();
+        groups = groups.filter((g) => g.namespace.toLowerCase().includes(ns));
+      } else if (!includeInternal) {
+        groups = groups.filter((g) => g.bindable);
+      }
+
+      if (query) {
+        const q = query.trim().toLowerCase();
+        groups = groups
+          .map((g) => ({ ...g, variables: g.variables.filter((v) => v.name.toLowerCase().includes(q)) }))
+          .filter((g) => g.variables.length);
+      }
+
+      if (!groups.length) {
+        return asText(
+          `No zcat variable matches that filter. Bindable namespaces are: ` +
+            `${[...BINDABLE_NS].join(", ")}. Pass includeInternal:true to also see ` +
+            `component-internal variables (reference only — they cannot be imported).`
+        );
+      }
+
+      const total = groups.reduce((n, g) => n + g.variables.length, 0);
+      return asText({
+        returned: total,
+        namespaces: groups.length,
+        bindableNamespaces: [...BINDABLE_NS],
+        importMethod:
+          "await figma.variables.importVariableByKeyAsync(key) — THROW if it returns null; " +
+          "then figma.variables.setBoundVariableForPaint({type:'SOLID',color:{r:0,g:0,b:0}}, 'color', v)",
+        warnings: [
+          "Light/Dark values are reference only — never hardcode them. Bind the variable.",
+          "Variables in namespaces marked bindable:false CANNOT be imported — importVariableByKeyAsync throws.",
+          "Spacing/S*, Radius/R* and Border/* (_Global_Values) are NOT bindable either — use literal numbers.",
+          "getLocalVariablesAsync() returns EMPTY for library variables. Always import by key.",
+        ],
+        groups,
+        ...(includeInternal || namespace
+          ? {}
+          : { note: "Showing bindable variables only. Pass includeInternal:true for the other 423 (reference only)." }),
+      });
+    }
+  );
+
   server.registerTool(
     "zcat_get_wireframe_styles",
     {
@@ -783,6 +1030,11 @@ function buildServer() {
         "  the componentKey and the correct import call. `component_set` and `component`",
         "  need different APIs and using the wrong one fails.",
         "- `zcat_get_design_tokens` — every colour binds to a variable, never a raw hex",
+        "- `zcat_get_all_variables` — the variable key you need, and whether it can even be",
+        "  bound: only BODY/CARDS/SHADOWS/BRANDING ICON/OTHER SHADES are importable by a",
+        "  consuming file. The other 423 throw.",
+        "- `zcat_search_icons` — icon keys. Import directly by key; never use an emoji or a",
+        "  Unicode glyph as an icon.",
         "- `zcat_get_decision_rules` — when more than one component could work",
         "- `zcat_get_layout` — page structure for the target product",
         "- `zcat_get_sample_data` — realistic content, never lorem ipsum",

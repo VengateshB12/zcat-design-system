@@ -28,6 +28,7 @@ This is not a stylistic preference — it is the specific defect that corrupted 
 | File Upload | `Type (Drag & Drop, Button, Compact)` | `Type (Single Upload, Multiple File)` |
 | Card | `Color (White, Grey, Bordered, Elevated)` | `State (Default, Hover, Selected, Disabled)` — no Color property |
 | Check Box | `State (…, Focused)` | `State (Default, Hover, Disabled)` |
+| Divider | `State (Completed, Active, Upcoming, Error)` | `State (Default, Active, Completed, Disabled)` — no Upcoming, no Error |
 
 Transcribing descriptions is how `Amber`, `Pill`, `Count`, `Layout`, and `Has Label` entered our docs as if they were real values. If a future sync reads descriptions again, the same corruption returns.
 
@@ -190,3 +191,112 @@ return "no drift";
 - Live text styles are prefixed `✅` — e.g. `✅ Body/Subtitle 1`, `✅ Headlines/H5`
 
 Full verified key lists live in the COMPONENT KEY TABLE and the ZCAT VARIABLES AND TEXT STYLES tables in `.claude/skills/zcat.md`.
+
+---
+
+## Second-pass findings (2026-08-18, session 2)
+
+### A. Icons ARE importable by key — the old rule was wrong
+
+`zcat.md` rule 23 previously asserted that the Icon component set is internal and that
+both `importComponentByKeyAsync` and `importComponentSetByKeyAsync` FAIL for icons, so
+icons had to be cloned from a Button and `swapComponent()`-ed.
+
+Verified false. Enumerating page `✅ Icons` in the library file gives **87 standalone
+`COMPONENT`s, zero `COMPONENT_SET`s**. Every one imports directly by key. Four were
+instance-tested (Arrow Up, X, Edit Line, Delete): all `COMPONENT`, 16x16, not variants,
+no parent set, one stroke-only `VECTOR:Icon`, zero filled nodes, stroke **already bound**
+to `BODY/Icons/Static/Primary`.
+
+Full catalog with keys, sizes and search aliases: **`references/icon-catalog.json`**
+(74 UI icons at 16x16 + 13 product logos at 20x20).
+
+The clone+swap mechanism is still correct for one narrow case: `INSTANCE_SWAP` icon
+*slots* inside components (e.g. Link's `Change Icon Left`), which take a main-component
+reference rather than a key.
+
+### B. The fabricated `color/*` variable taxonomy is still widespread
+
+The earlier cleanup covered `references/decision-rules/` only (verified 0 occurrences).
+The fake flat taxonomy survives elsewhere. Counts at time of writing:
+
+| File | Occurrences | Status |
+|---|---|---|
+| `references/design-tokens.md` | 111 | **NOT yet fixed** — this is the designated token reference |
+| `references/component-manifest.json` | 99 (+21 "Zoho Puvi") | **NOT yet fixed** |
+| `references/design-analysis-workflow.md` | 20 | **NOT yet fixed** |
+| `.claude/skills/zcat.md` | 12 | fixed in session 2 |
+| `references/decision-rules/` | 0 | clean |
+
+**64 distinct fabricated names** (`color/bg/surface`, `color/text/primary`,
+`color/interactive/pressed`, `color/icon/brand`, …). This is NOT a find-and-replace:
+many have no real counterpart, so each site needs a decision.
+
+Live truth (enumerated 2026-08-18): **710 variables in 5 collections**, **26 text styles**.
+
+| Collection | Modes | Variables |
+|---|---|---|
+| `Mode` | Light, Dark | 493 — bind to this layer |
+| `_Global_Colors` | Hex Code | 111 — raw ramp, never bind directly |
+| `Typography` | Primary (Inter), Secondary (Zoho Puvi) | 55 |
+| `_Global_Values` | Mode 1 | 41 — `Spacing/S*`, `Radius/R*`, `Border/*` |
+| `Theme` | Default - Royal Blue, Purple | 10 |
+
+The real colour taxonomy is **component-scoped** (`BUTTONS/*` 87, `TABS/*` 28,
+`INPUT FIELDS/*` 26, `ATTENTION/*` 25, `BADGE/*` 22, `CARDS/*` 22, `TABLE/*` 18,
+`BODY/*` 16, …), not a flat `color/*` tree.
+
+Note: "Zoho Puvi" is **not** fake — it is the real *Secondary* typography mode. The
+manifest has the roles inverted; Inter is **Primary**.
+
+We also never documented that real `Spacing/S*`, `Radius/R*` and `Border/*` variables
+exist — current docs specify raw numbers for spacing and radius.
+
+**Recommended fix:** regenerate `design-tokens.md` from a live dump of the `Mode`
+collection (name + key + resolved Light/Dark values, grouped by component namespace),
+and delete the manifest's invented token section rather than editing it. This dump is
+also exactly what the planned `zcat_get_all_variables` MCP tool must serve.
+
+### C. New defect class — silent instance LAYOUT drift
+
+`Double field` in the T3 test screen had `itemSpacing` overridden from the component's
+`-1` to `2`, splitting a deliberately shared 1px border seam into a visible 2px gap.
+Colours stayed bound, text kept its styles, variants were valid — so **every 4f check
+passed while the render was wrong**. Same failure shape as the original corruption:
+validation confirms a broken screen.
+
+Two more from the same component: enabling `Label` on both nested children produced two
+labels overflowing a frame that still reported `h=36`, because the variant pins both
+children to FIXED 36px.
+
+Mitigation added to 4f as **CHECK 10: INSTANCE LAYOUT DRIFT** — compares each instance's
+`itemSpacing`, padding and axis alignment against its main component and warns on
+differences. Treat every hit as "prove this override was intentional".
+
+### D. Only 70 of 493 colour variables are consumer-bindable (verified 2026-08-18)
+
+The regenerated `design-tokens.md` was validated by importing keys **from a consuming
+file**, not from the library. Result: `importVariableByKeyAsync` throws
+`Variable with key "…" not found` for **423 of 493** `Mode` variables.
+
+Bindable namespaces (5): `BODY` (16), `CARDS` (22), `OTHER SHADES` (28), `SHADOWS` (2),
+`BRANDING ICON` (2) — 70 keys, of which **69 import**. The one failure is
+`CARDS/Bg Default/Dark Bg` (`ebc952158732732071d9351f482e0de41462616e`), which exists in
+the library but does not resolve for consumers.
+
+Not bindable (31 namespaces, 423 variables): every component-scoped namespace —
+`BUTTONS`, `TABS`, `INPUT FIELDS`, `ATTENTION`, `BADGE`, `TABLE`, `STEPPER`, `TOOLTIP`,
+`POPUP`, `LOADER`, and the rest. Also the entire **`_Global_Values`** collection
+(`Spacing/S*`, `Radius/R*`, `Border/*`).
+
+This is coherent, not a defect: component internals stay bound inside the components, so
+instancing a component carries its colours automatically. Consumers only need bindable
+variables for elements they author themselves.
+
+**Consequence for audits:** verifying a key exists in the library is NOT sufficient. A key
+must be import-tested **from a consuming file**. Any future regeneration of
+`design-tokens.md` must repeat that test and re-mark the ✅/⛔ columns — otherwise the file
+hands agents keys that throw, which is the same silent-failure class this whole effort
+exists to remove.
+
+Text styles are bindable (`importStyleByKeyAsync`), sample-verified.

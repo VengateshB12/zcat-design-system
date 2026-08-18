@@ -35,6 +35,7 @@ FILES=(
   "references/decision-rules/rules-spacing-layout.md|dr-spacing-layout.md"
   "references/decision-rules/rules-build-reference.md|dr-build-reference.md"
   "references/design-tokens.md|design-tokens.md"
+  "references/icon-catalog.json|icon-catalog.json"
   "references/sample-data.md|sample-data.md"
   "references/wireframe-styles.css|wireframe-styles.css"
   "references/products/catalyst/layout-info.md|catalyst-layout.md"
@@ -77,5 +78,11 @@ fi
 # Fail loudly rather than shipping a manifest the server cannot parse.
 node -e "JSON.parse(require('fs').readFileSync('$DEST/component-manifest.json','utf8'))" \
   || { echo "component-manifest.json is not valid JSON" >&2; exit 1; }
+
+node -e "JSON.parse(require('fs').readFileSync('$DEST/icon-catalog.json','utf8'))" \
+  || { echo "icon-catalog.json is not valid JSON" >&2; exit 1; }
+
+node -e "JSON.parse(require('fs').readFileSync('$DEST/generic-layouts.json','utf8'))" \
+  || { echo "generic-layouts.json is not valid JSON" >&2; exit 1; }
 
 echo "$changed file(s) updated, data in sync."

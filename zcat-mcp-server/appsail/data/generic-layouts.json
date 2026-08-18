@@ -12,15 +12,15 @@
           "layout": "VERTICAL",
           "width": 1440,
           "height": 900,
-          "background": "color/bg/sunken"
+          "background": "CARDS/Bg Default/Body Bg"
         },
         "topbar": {
           "height": 48,
           "layout": "HORIZONTAL",
           "alignment": "SPACE_BETWEEN",
           "padding": [0, 16],
-          "background": "color/bg/surface",
-          "borderBottom": "color/border/subtle"
+          "background": "CARDS/Bg Default/Primary",
+          "borderBottom": "BODY/Border/Static/Border"
         },
         "body": {
           "layout": "HORIZONTAL",
@@ -31,8 +31,8 @@
           "layout": "VERTICAL",
           "padding": [16, 12],
           "gap": 4,
-          "background": "color/bg/surface",
-          "borderRight": "color/border/subtle",
+          "background": "CARDS/Bg Default/Primary",
+          "borderRight": "BODY/Border/Static/Border",
           "optional": true
         },
         "main": {
@@ -91,10 +91,10 @@
         "lg": { "width": 640 }
       },
       "structure": {
-        "overlay": { "background": "color/bg/overlay", "opacity": 0.6 },
+        "overlay": { "background": "POPUP/Blur Layer/Bg", "opacity": 0.6 },
         "container": {
           "radius": 8,
-          "background": "color/bg/raised",
+          "background": "CARDS/Bg Default/Secondary",
           "shadow": "elevation/3",
           "layout": "VERTICAL",
           "padding": [0, 0]
@@ -103,7 +103,7 @@
           "layout": "HORIZONTAL",
           "alignment": "SPACE_BETWEEN",
           "padding": [16, 20],
-          "borderBottom": "color/border/subtle"
+          "borderBottom": "BODY/Border/Static/Border"
         },
         "modal-body": {
           "layout": "VERTICAL",
@@ -115,7 +115,7 @@
           "alignment": "END",
           "padding": [16, 20],
           "gap": 8,
-          "borderTop": "color/border/subtle"
+          "borderTop": "BODY/Border/Static/Border"
         }
       }
     },
@@ -125,7 +125,7 @@
       "description": "Full-screen overlay for complex creation flows and multi-step wizards.",
       "viewport": { "width": 1440, "height": 900 },
       "structure": {
-        "overlay": { "background": "color/bg/surface" },
+        "overlay": { "background": "CARDS/Bg Default/Primary" },
         "container": {
           "width": "100%",
           "maxWidth": 960,
@@ -137,7 +137,7 @@
           "alignment": "SPACE_BETWEEN",
           "height": 56,
           "padding": [0, 24],
-          "borderBottom": "color/border/subtle"
+          "borderBottom": "BODY/Border/Static/Border"
         },
         "step-indicator": {
           "layout": "HORIZONTAL",
@@ -157,7 +157,7 @@
           "layout": "HORIZONTAL",
           "alignment": "SPACE_BETWEEN",
           "padding": [16, 24],
-          "borderTop": "color/border/subtle"
+          "borderTop": "BODY/Border/Static/Border"
         }
       }
     },

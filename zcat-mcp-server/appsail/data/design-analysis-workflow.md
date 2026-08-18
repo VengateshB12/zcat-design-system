@@ -404,18 +404,21 @@ Pattern source: [Me- reference]
 - NEVER more than ONE Fill button per action bar/footer/toolbar
 
 ## Typography
-- Section heading: Body/SemiBold/16, color/text/primary
-- Stat value: Headlines/SemiBold/24, color/text/primary
-- Stat label: Body/Regular/12, color/text/secondary
-- Body text: Body/Regular/14, color/text/primary
-- Caption: Body/Regular/12, color/text/placeholder
+- Section heading: `✅ Headlines/H6` (16/20 Semi Bold), BODY/Text/Static/Primary
+- Stat value: `✅ Headlines/H3` (24/30 Semi Bold), BODY/Text/Static/Primary
+- Stat label: `✅ Body/Body 3` (12/16 Regular), BODY/Text/Static/Secondary
+- Body text: `✅ Body/Body 1` (14/20 Regular), BODY/Text/Static/Primary
+- Caption: `✅ Body/Body 3` (12/16 Regular), INPUT FIELDS/Text/Place Holder
 - ALL text uses zcat text styles — ZERO manual font settings
 
 ## Colors
 - ALL fills/strokes bound to zcat variables — ZERO hardcoded hex
-- Backgrounds: color/bg/surface, color/bg/raised, color/bg/sunken
-- Text: color/text/primary, color/text/secondary, color/text/placeholder
-- Borders: color/border/default, color/border/subtle
+> Names below are live zcat variables. Full list with keys and Light/Dark values:
+> `references/design-tokens.md` (GENERATED). Import BY KEY — never bind by name.
+
+- Backgrounds: CARDS/Bg Default/Primary, CARDS/Bg Default/Secondary, CARDS/Bg Default/Body Bg
+- Text: BODY/Text/Static/Primary, BODY/Text/Static/Secondary, INPUT FIELDS/Text/Place Holder
+- Borders: CARDS/Borders/Default, BODY/Border/Static/Border
 
 ## Spacing
 - Card gap (horizontal row): 16px
@@ -530,7 +533,7 @@ cards, and change column layouts if it improves the design. Functional coverage
      - [describe exact contents with same detail level]
 
 ### Child 3: [Name — e.g., "Replicas Table Section"]
-- Section heading: "[heading text]" Body/SemiBold/16 color/text/primary
+- Section heading: "[heading text]" `✅ Headlines/H6` (16/20 Semi Bold) BODY/Text/Static/Primary
   - Right side: Button "[label]" (key: 1e04478db0..., Type: Primary, Size: Default)
 - Table: Table AI (key: f3a77a..., set)
   - Import: importComponentSetByKeyAsync
@@ -599,8 +602,8 @@ cards, and change column layouts if it improves the design. Functional coverage
 
 ### Quality
 - [ ] Colors: ZERO hardcoded hex — EVERY fill, stroke, text color bound to zcat variable (check Selection Colors panel)
-- [ ] No raw `{r:0, g:0, b:0}` fills — even black text uses `color/text/primary` variable
-- [ ] No raw white backgrounds — use `color/bg/surface` variable
+- [ ] No raw `{r:0, g:0, b:0}` fills — even black text uses `BODY/Text/Static/Primary` variable
+- [ ] No raw white backgrounds — use `CARDS/Bg Default/Primary` variable
 - [ ] Icons: all zcat stroke icons — no emoji/unicode/shapes
 - [ ] Layout: matches [Me- reference] pattern — NOT a wireframe copy
 - [ ] Spacing: matches design uniforms
@@ -689,7 +692,7 @@ Patterns" section for the full improvement reference table.
    - Table AI columns match data types? (not left as defaults)
    - Active tab state set correctly? Sidebar active state correct?
    - Three-dot menus have Dropdown Menu built alongside?
-   - Link text bound to `color/interactive/default`?
+   - Link text bound to `BUTTONS/Link/Text & Icon/Default`?
    - Hover/interaction states set where applicable?
 
    PART C — Wireframe Completeness (inch by inch):
@@ -849,4 +852,4 @@ Show user ALL pages together:
 
 ### 19. Hardcoded Hex Colors Instead of Variable Bindings
 **Problem:** Agent writes `node.fills = [{type: 'SOLID', color: {r:0, g:0, b:0}}]` for text or backgrounds — raw hex that breaks dark mode. Selection Colors panel shows "000000" or "FFFFFF" instead of variable names. Even text that "looks correct" in light mode is wrong if not variable-bound.
-**Fix:** EVERY fill, stroke, and text color MUST use `figma.variables.setBoundVariableForPaint`. Black text = `color/text/primary`, white bg = `color/bg/surface`, grey border = `color/border/default`. Agent MUST screenshot and check the Selection Colors panel — any raw hex value is a bug.
+**Fix:** EVERY fill, stroke, and text color MUST use `figma.variables.setBoundVariableForPaint`. Black text = `BODY/Text/Static/Primary`, white bg = `CARDS/Bg Default/Primary`, grey border = `CARDS/Borders/Default`. Agent MUST screenshot and check the Selection Colors panel — any raw hex value is a bug.
