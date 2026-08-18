@@ -370,29 +370,18 @@ Wait for user confirmation before proceeding. Adjust the screen list based on fe
 
 For EACH screen in the confirmed flow, execute steps 4a through 4f before moving to the next screen.
 
-### 4a. Component Mapping
+### 4a. Composition Direction + Design Decisions
 
-Read `references/component-manifest.json` to map each UI element to a zcat component.
-
-For each element in the screen:
-- Identify the matching zcat component (e.g., data listing → Table, form field → Text Input + Label)
-- Look up the component in `componentKeyMap` — note its `type` (component_set or component) and `componentKey`
-- If the component has an `exampleCode` field, use that as your starting code — it has the exact property names and valid values
-- Determine which variant properties to set (Type, Size, State, Color) — get the valid values from the component's `properties` array in the `components` list
-- **Decide a SINGLE Size variant for the screen's action bar** — all buttons, text boxes, and dropdowns in the same row MUST use this same Size. Default to `"Default"` unless the context calls for compact (`"Small"`) or spacious (`"Large"`)
-- If no exact component match exists: compose from atoms or note as "custom frame using zcat tokens"
-
-### 4b. Clarifying Questions + Composition Decisions
-
-Read `references/decision-rules.md` and check for ambiguous design choices.
+Before mapping to components, determine the composition strategy. Components implement the composition — they do not determine it.
 
 **Composition decisions (decide yourself, inform the user — don't ask):**
 
-- What is the focal point of this page? What should the user see first?
+- What is the primary user goal on this page? What should the user's eye land on FIRST?
 - Should content be grouped in cards, or does direct placement with spacing work better? Not every section needs a card — use cards when visual separation helps, not as a default wrapper
 - Should detail sections use multi-column layout? (YES for 2+ info groups, NO for sequential forms)
 - What is the section flow? (stats → detail → table? or table-first? depends on user task)
 - Is the density appropriate? (monitoring = dense, settings = spacious, detail = mixed)
+- What is the strongest alternative to the obvious/default layout, and why is your selected composition better?
 
 **Genuinely ambiguous questions (ask the user — ONLY when truly ambiguous):**
 
@@ -402,6 +391,18 @@ Read `references/decision-rules.md` and check for ambiguous design choices.
 - "The [action] looks destructive. Should I add a **confirmation dialog** before proceeding?"
 
 Use AskUserQuestion for these. Bundle related questions together (max 4 per ask).
+
+### 4b. Component Mapping
+
+Now map each element in the approved composition to a zcat component. Read `references/component-manifest.json`.
+
+For each required UI element in the composition:
+- Identify the matching zcat component (e.g., data listing → Table, form field → Text Input + Label)
+- Look up the component in `componentKeyMap` — note its `type` (component_set or component) and `componentKey`
+- If the component has an `exampleCode` field, use that as your starting code — it has the exact property names and valid values
+- Determine which variant properties to set (Type, Size, State, Color) — get the valid values from the component's `properties` array in the `components` list
+- **Decide a SINGLE Size variant for the screen's action bar** — all buttons, text boxes, and dropdowns in the same row MUST use this same Size. Default to `"Default"` unless the context calls for compact (`"Small"`) or spacious (`"Large"`)
+- If no exact component match exists: compose from existing zcat components and structural auto-layout frames. Never manually recreate a component's visual or control behavior
 
 ### 4c. Low-Fidelity Wireframe
 

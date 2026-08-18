@@ -34,7 +34,7 @@ The design system file (`ugOZk4O0g6XpviEBSN24mF`) has a **"Referance Templates"*
 | Me - Create Database Wizard | Wizard popup | Multi-step wizard, Stepper, selection cards, footer layout |
 | Three dot menu | Overflow menu | Dropdown Menu structure, icon placement |
 
-**How to use:** Before writing ANY page spec, `get_screenshot` the relevant "Me-" reference screen. Match its exact patterns.
+**How to use:** Before writing ANY page spec, `get_screenshot` the relevant "Me-" reference screen. Use it as the primary pattern and design-language reference.
 
 ### Source 2: Production Screenshots (Local Folder)
 
@@ -42,7 +42,7 @@ The design system file (`ugOZk4O0g6XpviEBSN24mF`) has a **"Referance Templates"*
 
 ### Priority Order
 
-1. **"Me-" screens FIRST** — if a matching "Me-" reference exists, follow it exactly
+1. **"Me-" screens FIRST** — if a matching "Me-" reference exists, use it as the primary design-language and pattern reference. Preserve its established component usage, hierarchy principles, and visual language, but adapt composition when the current content or user task requires a better arrangement. If the user explicitly says "match this exactly," exact matching wins (user requirement is priority 1)
 2. **Production screenshots SECOND** — for page types without a "Me-" reference
 3. **decision-rules.md THIRD** — for patterns not covered by either visual reference
 
@@ -216,7 +216,7 @@ INTERACTIONS/LINKS:
   - [Table row click] → navigates to [where]
 ```
 
-**CRITICAL: Every single functional element in this inventory MUST appear in the final design. This is the contract. Functional fidelity = 100% (every feature present), spatial fidelity = 0% (layout, grouping, hierarchy, emphasis are all creative decisions). Design creativity includes composition, grouping, visual hierarchy, information density, and emphasis — not just visual styling.**
+**CRITICAL: Every single functional element in this inventory MUST appear in the final design. This is the contract. Functional fidelity = 100% (every feature present). Spatial fidelity is flexible — layout, grouping, hierarchy, and emphasis are creative decisions that should be improved when a better composition serves the user goal. Design creativity includes composition, grouping, visual hierarchy, information density, and emphasis — not just visual styling.**
 
 ### Step 1.3 — Map Page Relationships
 
