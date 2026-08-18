@@ -117,25 +117,37 @@ AvatarName `098e88732352f7b1fdafd205b7928ddd9686ac87` · Badge `f54ff134a0c90e39
 
 These are internal to Table AI and CANNOT be imported by key. Get them from an existing Table AI instance's columns via `await col.getMainComponentAsync()`, then `swapComponent(thatComponent)`.
 
-**⚠️ NESTED LEGACY CHILDREN — context changes the valid enum.** Some CURRENT components nest LEGACY children, so the same logical component has different valid values depending on where it lives. Verified cases:
+**⚠️ TWO LIBRARIES — verify ORIGIN, not just that a key resolves.** Legacy-library keys resolve fine and look correct, so "it imported" proves nothing.
 
-| Where | Component actually used | Valid Color values |
+| Library | Library key | Use |
 |---|---|---|
-| Standalone Badge you place yourself | Gen B `43e36112…` | `Primary/Grey/Purple/Danger/Disabled/Info/Success/Warning` (semantic) |
-| Badge **inside Table AI** (`_Table_Col_Badge`) | Gen A `158e4b6d…` | `Primary/Green/Red/Orange/Pink/Grey/Purple/Disable` (literal) |
+| **ZCat-AI Understandable** (primary) | `lk-6b302ab2…` | ALL new designs |
+| ZCatalyst Design System (legacy) | `lk-ae83192f…` | Pre-existing instances only |
 
-So a table status badge uses `Color: "Green"`, while the same status on a standalone badge uses `Color: "Success"`. Mapping for table badges: Healthy/Active→`Green`, Degraded/Pending→`Orange`, Critical/Failed→`Red`, Inactive→`Grey`, Info→`Primary`.
+`Badges` was changed and republished in the primary library. The legacy copy kept the older **literal** colour enum; the primary copy uses **semantic** names. Same story for the other migrated components.
 
-**Never assume the nested child's enum from the parent's generation.** Read it from the instance:
+**The plugin API CANNOT tell you the library** — it only reports `remote: true`. To confirm origin use `search_design_system` with `includeLibraryKeys`, or read the library badge on the instance in the Figma UI.
+
+**KNOWN DEFECT — Table AI nests a legacy-library Badge.** `Table AI` is primary-library, but its internal `_Table_Col_Badge` nests `Badges` from the **legacy** library. Consequence:
+
+| Where | Badge actually used | Colour values you must pass |
+|---|---|---|
+| Standalone Badge you place | primary `43e36112…` | `Success / Danger / Warning / Info / Primary / Grey / Purple / Disabled` |
+| Badge inside Table AI | **legacy** `158e4b6d…` | `Green / Orange / Red / Grey / Primary / Pink / Purple / Disable` |
+
+Inside Table AI: Healthy/Active→`Green`, Degraded/Pending→`Orange`, Critical/Failed→`Red`, Inactive→`Grey`, Info→`Primary`. Passing `Success`/`Danger`/`Warning` there **throws**.
+
+This cannot be fixed agent-side (Table AI is zero-detach). **Design team fix:** repoint `_Table_Col_Badge` to the primary-library Badges (`43e36112…`).
+
+When a nested child's enum is uncertain, read it off the actual instance:
 ```js
-const inst = col.findOne(n => n.name === "R1" && n.type === "INSTANCE");
 const mc = await inst.getMainComponentAsync();
 const owner = (mc.parent && mc.parent.type === "COMPONENT_SET") ? mc.parent : mc;
 return owner.componentPropertyDefinitions;   // authoritative for THIS instance
 ```
-The Popup footer's Buttons, by contrast, ARE Gen B and already ship with correct CTA hierarchy (Grey secondary + Fill primary) — set labels only, do not restyle them.
+The Popup footer's Buttons ARE primary-library and already ship correct CTA hierarchy (Grey secondary + Fill primary) — set labels only, never restyle.
 
-**Legacy generation — NEVER use for new designs.** These keys still resolve but are superseded and absent from the published index. They exist only so pre-existing instances keep working. Their variant enums are INCOMPATIBLE (e.g. Badge Color=Green/Red/Orange instead of Success/Danger/Warning; Checkbox uses `Check type`/`Status` instead of `Checked`/`State`; Text Box State=Completed instead of Filled):
+**Legacy-library keys — NEVER use for new designs.** These keys still resolve but are superseded and absent from the published index. They exist only so pre-existing instances keep working. Their variant enums are INCOMPATIBLE (e.g. Badge Color=Green/Red/Orange instead of Success/Danger/Warning; Checkbox uses `Check type`/`Status` instead of `Checked`/`State`; Text Box State=Completed instead of Filled):
 `1e04478db049…` Button · `411f52c2e028…` Text Box · `021a6653c106…` Drop down · `158e4b6d656a…` Badge · `69274b619232…` Chip · `f6f4ae2426b2…` Checkbox · `35016f9e4ebd…` Toggle · `4851c5917e3c…` Tabs · `4200a0aef4a2…` Popup
 Dead keys (do not resolve at all): `8f3943b8ca40…` `8fe1faec85e9…` `e38e2e4c72af…` `ea1a7685e935…` `d9c4ab7dc9b1…` `8aed0a243553…`
 
@@ -1592,38 +1604,55 @@ Show to user ←─────────────┘
 - **Bug fixes:** bind unbound colors, fix HUG heights, add missing elements, correct variants, fix overflow, set active states, fix button sizes, add missing three-dot menus
 - **Enhancements (composition-only):** reorder sections for better hierarchy, adjust spacing to create rhythm and grouping, add icon BGs where meaningful (not forced), balance action bars, improve typography hierarchy, adjust content density to match the user task, break visual monotony (not every section should look identical), ensure focal point draws the eye to the most important content. NEVER detach/rebuild/unbind components
 
-#### DESIGN CRITIQUE GATE (blocking — the screen cannot be shown until this passes)
+#### SENIOR DESIGNER REVIEW (blocking — a judgment loop, not a checklist)
 
-This is a **gate, not a suggestion.** Judge the **rendered screenshot**, as a product designer seeing it for the first time with no knowledge of your plan.
+Technical validation (4f) answers **"is this correct?"** This step answers **"is this actually good?"** They are different questions and passing the first tells you nothing about the second.
 
-**The reasoning below is FORBIDDEN:**
-> "The Composition Direction was good, therefore the final UI is good."
+```
+BUILD → SCREENSHOT → TECHNICAL VALIDATION → SENIOR DESIGNER REVIEW
+      → TOP DESIGN ISSUES → APPLY BEST IMPROVEMENTS → SCREENSHOT
+      → RE-CRITIQUE → FINAL VALIDATION
+```
 
-A correct composition decision is not evidence of a resolved screen. The composition can be right and the render still flat — that is the most common outcome. Evaluate the pixels, not the plan.
+**Set your Composition Direction aside while reviewing.** Do not verify that you followed your plan. Ask instead:
 
-Answer all eleven, each with a verdict and a one-line reason:
+> *"If another designer handed me this finished screen, what would I redesign?"*
 
-| # | Question |
-|---|---|
-| 1 | **Focal point** — does the eye land on the most important thing first, or does everything compete equally? |
-| 2 | **Visual hierarchy** — can a new user grasp the structure in ~3 seconds? |
-| 3 | **Typography hierarchy** — is there real WEIGHT contrast (Semi Bold vs Regular), or only size differences? All-Regular text = automatic FAIL |
-| 4 | **Visual monotony** — is it a stack of near-identical rectangles? |
-| 5 | **Card/container justification** — does each card earn its containment, or is it a default wrapper? Is there enough surface contrast for cards to read as cards at all? |
-| 6 | **Whitespace** — is it creating rhythm and grouping, or is it accidental leftover space? |
-| 7 | **Density** — does it match the user's task (monitoring dense, form spacious)? |
-| 8 | **Composition** — do sections relate meaningfully, or are they merely stacked? |
-| 9 | **Proportions** — do section/column sizes reflect importance? |
-| 10 | **Viewport allocation** — does content stop at ~50-60% height leaving accidental emptiness? |
-| 11 | **Designed or assembled?** — does this look like a designer made it, or like components were placed in a column? |
+**A composition can be correctly implemented and still be a bad design.** This reasoning is FORBIDDEN:
+> "My composition decision was correct, therefore the screen is good."
 
-**Then do one of exactly two things:**
+**Review the rendered screenshot on four things — in prose, not as ticks:**
 
-- **Problems found:** fix them (composition-only), re-screenshot, re-run this critique. Max 2 rounds. After round 2, show what you have and state plainly what is still unresolved.
-- **No problems found:** record this line verbatim in your summary:
-  > "No meaningful design improvement identified; keeping the current composition."
+1. **First impression.** What does a user understand in 3 seconds? What does the eye hit first? Is that actually the most important thing on the page?
+2. **Hierarchy, honestly.** Name the primary / secondary / supporting information and the primary action. Then ask whether the *visual design* actually communicates that ordering — through scale, position, whitespace, grouping, contrast, surface treatment, typography and component variants. Not font size alone.
+3. **Composition as rendered.** Proportions, grouping, alignment, column relationships, whitespace, density, rhythm, containment, balance, viewport usage. Is space given in proportion to importance? If secondary content occupies more visual space than primary content, that is a design problem.
+4. **Designed or assembled?** Does this feel like a product designer intentionally designed it, or like zcat components were stacked into a page? **If assembled, say exactly why.**
 
-Never invent changes to look more creative. A simple form that is already clear needs nothing. The test is *intentional for this task*, not *unusual*.
+**Two specific things that repeatedly ship broken — check them explicitly:**
+
+- **Uniformity of same-role elements.** Every section heading must use the *identical* style; every card in a row the identical padding and treatment. Two headings at different sizes/weights is a defect even though both are valid zcat styles.
+- **Container purpose.** For each major card/container ask: does this earn its existence? If not — remove it, merge it, change the grouping, or change the surface treatment. Never use Card BG merely because the component exists.
+
+**Judge against the task, not against novelty:**
+Dashboard → hierarchy + scanning · Monitoring → density + fast scanning · Logs → information density · Form → clarity + reduced cognitive load · Detail → relationships + hierarchy · Empty state → guidance + action · Create/Edit → task focus + progressive disclosure
+
+Never force a "creative" layout where simplicity is better.
+
+**Then force a decision. Output up to 3 highest-impact improvements in this exact shape:**
+
+```
+TOP DESIGN ISSUE
+Why it matters
+Proposed improvement
+Expected UX/design benefit
+```
+
+**If meaningful improvements exist you MUST apply them — describing them is not completing this step.** Then screenshot again and re-critique, comparing BEFORE → CRITIQUE → CHANGES → AFTER: did hierarchy, composition, usability, visual quality and task clarity actually improve? Max 2 rounds; after that show the screen and state plainly what remains unresolved.
+
+**If the screen is genuinely strong, record verbatim:**
+> "No meaningful design improvement identified; keeping the current composition."
+
+Do not invent changes to look more creative. But "everything passed" is not an available answer if you have not named the weakest thing on the screen.
 
 **After every fix → re-verify:** auto-layout intact? Colors still bound? Text styles still bound? Components not broken? No new overflow?
 

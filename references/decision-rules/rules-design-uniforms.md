@@ -70,12 +70,12 @@ Popup Blur (full page backdrop)
 
 | Property | Value |
 |----------|-------|
-| Background | Card BG component (`color/bg/surface`) |
+| Background | Card BG component (`CARDS/Bg Default/Primary`) |
 | Border radius | 6px (component default) |
 | Internal padding | 16px all sides |
 | Gap label → value | 8px |
-| Stat value font | 24px SemiBold, `color/text/primary` |
-| Stat label font | 12px Regular, `color/text/secondary` |
+| Stat value font | 24px SemiBold, `BODY/Text/Static/Primary` |
+| Stat label font | 12px Regular, `BODY/Text/Static/Secondary` |
 | Cards in row gap | 16px |
 | Cards in row width | All FILL (equal) |
 
@@ -83,8 +83,8 @@ Popup Blur (full page backdrop)
 
 | Property | Value |
 |----------|-------|
-| Background | `color/bg/surface` |
-| Border | 1px solid, `color/border/default` |
+| Background | `CARDS/Bg Default/Primary` |
+| Border | 1px solid, `CARDS/Borders/Default` |
 | Border radius | 6px |
 | Internal padding | 16px all sides |
 | Heading → content gap | 12px |
@@ -124,14 +124,14 @@ Popup Blur (full page backdrop)
 
 | Role | Size | Weight | Color |
 |------|------|--------|-------|
-| Section heading | 16px | SemiBold | `color/text/primary` |
-| Sub-section heading | 14px | SemiBold | `color/text/primary` |
-| Body / table cell | 14px | Regular | `color/text/primary` |
-| Form label | 14px | Medium | `color/text/primary` |
-| Caption / metadata | 12px | Regular | `color/text/secondary` |
-| Help text | 12px | Regular | `color/text/placeholder` |
-| Stat card value | 24px | SemiBold | `color/text/primary` |
-| Stat card label | 12px | Regular | `color/text/secondary` |
+| Section heading | 16px | SemiBold | `BODY/Text/Static/Primary` |
+| Sub-section heading | 14px | SemiBold | `BODY/Text/Static/Primary` |
+| Body / table cell | 14px | Regular | `BODY/Text/Static/Primary` |
+| Form label | 14px | Medium | `BODY/Text/Static/Primary` |
+| Caption / metadata | 12px | Regular | `BODY/Text/Static/Secondary` |
+| Help text | 12px | Regular | `BODY/Text/Static/Disable` |
+| Stat card value | 24px | SemiBold | `BODY/Text/Static/Primary` |
+| Stat card label | 12px | Regular | `BODY/Text/Static/Secondary` |
 | Badge text | Component default |
 
 ## Button Placement
@@ -147,8 +147,8 @@ Popup Blur (full page backdrop)
 
 | Property | Value |
 |----------|-------|
-| Wrapper | Attention Box (Error) or 1px `color/border/strong` frame |
+| Wrapper | Attention Box (Error) or 1px `CARDS/Borders/Default` frame |
 | Padding | 16px |
-| Heading | 14px SemiBold, `color/text/primary` |
-| Description | 12px Regular, `color/text/placeholder` |
+| Heading | 14px SemiBold, `BODY/Text/Static/Primary` |
+| Description | 12px Regular, `BODY/Text/Static/Disable` |
 | Gap from content above | 24px minimum |

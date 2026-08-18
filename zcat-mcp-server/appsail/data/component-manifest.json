@@ -39,7 +39,7 @@
     "currentGenerationOnly": "Use only the current published component generation (componentKeyMap). Superseded keys still resolve but are absent from the published index and have incompatible variant enums — legacy use only, never for new designs. See legacyGeneration.",
     "removalNeedsApproval": "Composition freedom covers HOW required information is presented, never WHETHER required functionality exists. A required element may be repositioned, resized, re-treated, merged or demoted — never deleted. Removal requires explicit user approval BEFORE building.",
     "createEditIsModal": "Create/Edit follows the Catalyst interaction pattern: a popup/modal. Preserve it and optimise the composition inside; a wireframe drawn as a page does not override it. Escalate to large/full-page popup only for >~8 fields, Stepper wizards, side-by-side content, or embedded tables/code editors. For a merely tall form use Popup type=With Scroll — never detach just to gain height.",
-    "nestedChildEnumsDifferByContext": "Some current components nest legacy children, so a nested child's valid enum can differ from the standalone component's. Verified: Badge inside Table AI uses literal colours (Green/Red/Orange) while a standalone Badge uses semantic colours (Success/Danger/Warning). NEVER infer a nested child's enum from the parent's generation — read componentPropertyDefinitions off the actual nested instance."
+    "verifyLibraryOrigin": "Verify which LIBRARY a component comes from, not merely that its key resolves. Legacy-library keys resolve fine and look correct. The plugin API only exposes remote:true — use search_design_system with includeLibraryKeys to confirm origin. Known defect: Table AI nests a legacy-library Badge, so table badges use the literal colour enum. See libraryOrigin."
   },
   "foundations": {
     "colors": {
@@ -7535,29 +7535,6 @@
     "componentKeysChecked": 56,
     "allResolve": true
   },
-  "legacyGeneration": {
-    "warning": "A superseded generation of these components still resolves by key but is ABSENT from the published library index and has INCOMPATIBLE variant enums. Use ONLY for pre-existing instances, NEVER for new designs.",
-    "supersededKeys": {
-      "Button": "1e04478db049373eb096060a60ee7bbbc4da4e9a",
-      "Text Box": "411f52c2e02879cd0cd7a259933325c7cbc04b5c",
-      "Drop down": "021a6653c106f277f2481ee722ed93d4137dc3a6",
-      "Badge": "158e4b6d656a62d4244efc4e5583794044328d3a",
-      "Chip": "69274b61923231a45f559e59bed169c121d9bc45",
-      "Checkbox": "f6f4ae2426b2e9d6c3ee7fc3727e06054b0f5d58",
-      "Toggle": "35016f9e4ebd41a83c952fa04c3c47a1f36d0ec4",
-      "Tabs": "4851c5917e3ca7aca6aa65f44d49d83b9594f3f0",
-      "Popup": "4200a0aef4a25f7cdbdf628575c41347c9e8a8fe"
-    },
-    "enumDifferences": "Badge Color=Green/Red/Orange/Pink (vs Success/Danger/Warning/Info); Checkbox uses Check type/Status (vs Checked/State); Text Box State=Completed (vs Filled); Dropdown State=Disable/Default Completed (vs Disabled/Filled); Button State=Click/Button Disable (vs Pressed/Button Disabled)",
-    "deadKeys": [
-      "8f3943b8ca40c63a40109681a4a84ee0f02ed9da (Avatar)",
-      "8fe1faec85e92db3d43b66c5f30eaf28e6de9e91 (Search)",
-      "e38e2e4c72af7526c8f2c07d0621dbea85aba8b8 (Pagination)",
-      "ea1a7685e93507b3e4da3bcdbbfa1dd3c28c0ba4 (Accordion)",
-      "d9c4ab7dc9b1a1f10c8de0b5d8281a00f4b27b90 (Stepper)",
-      "8aed0a243553aeb0ed6ad2f9a6387c8a5764c5f9 (Empty State)"
-    ]
-  },
   "verifiedTokens": {
     "importRule": "Library variables and text styles are NOT local. getLocalVariablesAsync() and getLocalTextStylesAsync() return EMPTY — name lookup against them silently yields nothing, causing raw hex and Inter Regular fallbacks. Always importVariableByKeyAsync / importStyleByKeyAsync.",
     "fontFamily": "Inter (Roboto Mono for code). Earlier 'Zoho Puvi' claims were incorrect.",
@@ -7643,5 +7620,39 @@
     ],
     "tableBadgeColourMapping": "Healthy/Active->Green, Degraded/Pending->Orange, Critical/Failed->Red, Inactive->Grey, Info/Processing->Primary",
     "howToVerify": "Read the enum off the actual nested instance: const mc = await inst.getMainComponentAsync(); const owner = (mc.parent && mc.parent.type==='COMPONENT_SET') ? mc.parent : mc; owner.componentPropertyDefinitions"
+  },
+  "libraryOrigin": {
+    "critical": "There are TWO LIBRARIES, not two generations of one library. Verify which LIBRARY a key belongs to, not just that it resolves. The Figma plugin API reports only remote:true and CANNOT tell you the library — use search_design_system with includeLibraryKeys, or check the Figma UI badge on the instance.",
+    "primary": {
+      "name": "ZCat-AI Understandable",
+      "fileKey": "ugOZk4O0g6XpviEBSN24mF",
+      "libraryKey": "lk-6b302ab265d1e80fb5a2a876b2f9ecef1c2795c5fa5e168b3dadaaf3ab1aab4fbf0dab1bd19e7010bf498e184a6bd6ebb5c8b1e1bf780bb4d8db2a6267a82b5f",
+      "use": "ALL new designs"
+    },
+    "legacy": {
+      "name": "ZCatalyst Design System",
+      "fileKey": "dwQLnT4eJ3zCaOwhk7JXIn",
+      "libraryKey": "lk-ae83192f7b7305d9600785756ca9770312ad96826287c5b416a5e9f38c0b8c858632b716ed0e326c887e942ac3951557de60da44a53fc44693483ad0dd1dcd5f",
+      "use": "Pre-existing instances only. NEVER for new designs.",
+      "keysThatLiveHere": {
+        "Badges": "158e4b6d656a62d4244efc4e5583794044328d3a",
+        "Button": "1e04478db049373eb096060a60ee7bbbc4da4e9a",
+        "Text Box": "411f52c2e02879cd0cd7a259933325c7cbc04b5c",
+        "Drop down": "021a6653c106f277f2481ee722ed93d4137dc3a6",
+        "Chip": "69274b61923231a45f559e59bed169c121d9bc45",
+        "Checkbox": "f6f4ae2426b2e9d6c3ee7fc3727e06054b0f5d58",
+        "Toggle": "35016f9e4ebd41a83c952fa04c3c47a1f36d0ec4",
+        "Tabs": "4851c5917e3ca7aca6aa65f44d49d83b9594f3f0",
+        "Popup": "4200a0aef4a25f7cdbdf628575c41347c9e8a8fe",
+        "Avatar": "928239e0d3b1666d7ab0d26c42c71ab8a2fd3233"
+      },
+      "whyEnumsDiffer": "Badges was changed and republished in the primary library. The legacy copy kept the older literal colour enum (Green/Red/Orange/Pink); the primary copy uses semantic names (Success/Danger/Warning/Info). Same for other migrated components."
+    },
+    "knownCrossLibraryDefect": {
+      "component": "Table AI (primary library, key f3a77aaa…)",
+      "problem": "Its internal _Table_Col_Badge nests Badges from the LEGACY library (158e4b6d…), so every table built with Table AI pulls a legacy-library badge and must use the LITERAL colour enum (Green/Orange/Red/Grey) rather than the semantic one.",
+      "agentWorkaround": "Inside Table AI use Color: Green|Orange|Red|Grey|Primary. Do NOT use Success/Danger/Warning/Info there — setProperties will throw.",
+      "realFix": "DESIGN TEAM: repoint _Table_Col_Badge inside Table AI to the primary-library Badges (43e36112…). Cannot be fixed agent-side — Table AI is zero-detach."
+    }
   }
 }

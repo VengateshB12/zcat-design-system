@@ -154,7 +154,7 @@ AvatarName forces 2 text lines on every cell. This is WRONG when:
 | Status/badge | **1 line** | Badge pill is always single-line |
 | Date | **1 line** | Formatted date is always single-line |
 
-**Description columns with long content:** Truncate at 2 lines with text overflow ellipsis. Add a "View More" text link (color/text/link) that expands the cell to show the full description. By default, only 2 lines are visible — the rest is hidden until the user clicks "View More".
+**Description columns with long content:** Truncate at 2 lines with text overflow ellipsis. Add a "View More" text link (`BRANDING ICON/Icon Color/Blue`) that expands the cell to show the full description. By default, only 2 lines are visible — the rest is hidden until the user clicks "View More".
 
 **NEVER allow 3+ lines in any table cell.** If a cell needs more than 2 lines, it needs truncation + expand, not more row height.
 

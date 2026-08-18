@@ -90,22 +90,22 @@ Do NOT combine all states into one frame — it confuses the developer about wha
 
 | Role | Text Style | Color Variable |
 |------|-----------|---------------|
-| Section heading | Body/SemiBold/16 | `color/text/primary` |
-| Sub-section heading | Body/SemiBold/14 | `color/text/primary` |
-| Body / data text | Body/Regular/14 | `color/text/primary` |
-| Label / caption | Body/Regular/12 | `color/text/secondary` |
-| Help text | Body/Regular/12 | `color/text/placeholder` |
-| Card title | Body/SemiBold/16 | `color/text/primary` |
-| Card subtitle | Body/Regular/14 | `color/text/secondary` |
-| Card timestamp | Body/Regular/12 | `color/text/placeholder` |
+| Section heading | Body/SemiBold/16 | `BODY/Text/Static/Primary` |
+| Sub-section heading | Body/SemiBold/14 | `BODY/Text/Static/Primary` |
+| Body / data text | Body/Regular/14 | `BODY/Text/Static/Primary` |
+| Label / caption | Body/Regular/12 | `BODY/Text/Static/Secondary` |
+| Help text | Body/Regular/12 | `BODY/Text/Static/Disable` |
+| Card title | Body/SemiBold/16 | `BODY/Text/Static/Primary` |
+| Card subtitle | Body/Regular/14 | `BODY/Text/Static/Secondary` |
+| Card timestamp | Body/Regular/12 | `BODY/Text/Static/Disable` |
 
 **Stat card values:**
 
 | Element | Text Style | Color Variable |
 |---------|-----------|---------------|
-| Metric value | Headlines/SemiBold/24 | `color/text/primary` |
-| Metric label | Body/Regular/12 | `color/text/secondary` |
-| Metric unit/suffix | Body/Regular/14 | `color/text/secondary` |
+| Metric value | Headlines/SemiBold/24 | `BODY/Text/Static/Primary` |
+| Metric label | Body/Regular/12 | `BODY/Text/Static/Secondary` |
+| Metric unit/suffix | Body/Regular/14 | `BODY/Text/Static/Secondary` |
 
 **Action hierarchy:** Primary → Fill button. Secondary → Outline button. Tertiary → Ghost button or text link. **ONE primary (Fill) per action group — see rules-navigation-actions.md.**
 
@@ -113,7 +113,7 @@ Do NOT combine all states into one frame — it confuses the developer about wha
 
 **Use Card BG for:** stat tiles, info sections, dashboard widgets. Detach to insert content; keep padding, radius, color binding.
 
-**Use bordered frames** (1px `color/border/default`, 6px radius, `color/bg/surface`) **for:** form field groups, configuration sections, content blocks needing separation without elevation.
+**Use bordered frames** (1px `CARDS/Borders/Default`, 6px radius, `CARDS/Bg Default/Primary`) **for:** form field groups, configuration sections, content blocks needing separation without elevation.
 
 **Use section headers** (heading text + 8-12px gap) **for:** dividing content within a card or bordered frame.
 
@@ -204,15 +204,15 @@ Agents write `node.fills = [{type: 'SOLID', color: {r:0, g:0, b:0}}]` — this c
 
 | What you're coloring | Variable to bind |
 |---------------------|-----------------|
-| Text (black/dark) | `color/text/primary` |
-| Text (grey/secondary) | `color/text/secondary` |
-| Text (light/placeholder) | `color/text/placeholder` |
-| Background (white/surface) | `color/bg/surface` |
-| Background (page/grey) | `color/bg/default` |
-| Border/divider | `color/border/default` |
+| Text (black/dark) | `BODY/Text/Static/Primary` |
+| Text (grey/secondary) | `BODY/Text/Static/Secondary` |
+| Text (light/placeholder) | `BODY/Text/Static/Disable` |
+| Background (white/surface) | `CARDS/Bg Default/Primary` |
+| Background (page/grey) | `BODY/Background/Static/Body Bg` |
+| Border/divider | `CARDS/Borders/Default` |
 | Icon fill/stroke | Same as parent text variable |
 | Card background | Use Card BG component (already bound) |
-| Brand/accent color | `color/bg/brand` or `color/bg/brand-subtle` |
+| Brand/accent color | `BADGE/Background/Sec- Primary` (subtle blue) |
 
 ### Self-Check After Building
 
@@ -230,11 +230,11 @@ Card BG (detached, 16px padding, FILL width, HUG height)
 ├── HORIZONTAL auto-layout, gap: 12, center-aligned
 │   ├── Icon BG frame (40x40, cornerRadius: 10) — ONLY if a meaningful icon exists
 │   │   └── zcat stroke icon (18x18)
-│   │   └── Fill: color/bg/brand-subtle (vary per card)
+│   │   └── Fill: BADGE/Background/Sec- Primary (vary per card)
 │   └── VERTICAL auto-layout, gap: 4
-│       ├── Label (12px Regular, color/text/secondary)
-│       ├── Value (24px SemiBold, color/text/primary)
-│       └── Subtitle (12px Regular, color/text/placeholder) — optional
+│       ├── Label (12px Regular, BODY/Text/Static/Secondary)
+│       ├── Value (24px SemiBold, BODY/Text/Static/Primary)
+│       └── Subtitle (12px Regular, BODY/Text/Static/Disable) — optional
 ```
 Use when: KPI values, counts, percentages, summary metrics.
 Icon BG: only when a meaningful icon exists (Users → person, Revenue → currency). Skip for abstract stats.
@@ -245,8 +245,8 @@ Card BG (detached, 16px padding, FILL width, HUG height)
 ├── VERTICAL auto-layout, gap: 12
 │   ├── Icon circle (48x48, cornerRadius: 24, colored fill)
 │   │   └── zcat stroke icon (24x24, white or on-brand)
-│   ├── Title (16px SemiBold, color/text/primary)
-│   └── Description (14px Regular, color/text/secondary, 2-3 lines max)
+│   ├── Title (16px SemiBold, BODY/Text/Static/Primary)
+│   └── Description (14px Regular, BODY/Text/Static/Secondary, 2-3 lines max)
 ```
 Use when: feature tiles, code recipes, integration cards, template selectors.
 These are clickable cards that navigate to a detail page. Icon represents the feature category.
@@ -257,11 +257,11 @@ Arrange in 2-4 column grid with equal-width cards.
 Card BG (detached, 16px padding, FILL width, HUG height)
 ├── VERTICAL auto-layout, gap: 8
 │   ├── HORIZONTAL auto-layout (FILL width, SPACE_BETWEEN)
-│   │   ├── Title (16px SemiBold, color/text/primary)
+│   │   ├── Title (16px SemiBold, BODY/Text/Static/Primary)
 │   │   └── Three-dot Icon Button — OR — nothing (if no actions)
-│   ├── Description (14px Regular, color/text/secondary)
+│   ├── Description (14px Regular, BODY/Text/Static/Secondary)
 │   └── HORIZONTAL auto-layout, gap: 12 — footer area
-│       ├── Link/action ("App Settings" with icon, color/interactive/default)
+│       ├── Link/action ("App Settings" with icon, BRANDING ICON/Icon Color/Blue)
 │       └── Badge/status ("Enabled" green) — optional
 ```
 Use when: settings panels, config options, feature toggles inside accordion sections.
@@ -270,14 +270,14 @@ Status badge: include when the card has an on/off or status state. Skip when sta
 
 ### Recipe D: Info/Description Card (bordered, no elevation)
 ```
-Bordered frame (1px color/border/default, 6px radius, 16-24px padding, FILL width, HUG height)
+Bordered frame (1px CARDS/Borders/Default, 6px radius, 16-24px padding, FILL width, HUG height)
 ├── HORIZONTAL auto-layout, gap: 24
 │   ├── Left content (FILL width)
-│   │   ├── Title (16px SemiBold, color/text/primary)
-│   │   ├── Description (14px Regular, color/text/secondary, multi-line)
+│   │   ├── Title (16px SemiBold, BODY/Text/Static/Primary)
+│   │   ├── Description (14px Regular, BODY/Text/Static/Secondary, multi-line)
 │   │   └── HORIZONTAL auto-layout, gap: 16, paddingTop: 12
 │   │       ├── Button (Outline, "Connect Cookbook")
-│   │       └── Link text ("Learn More", color/interactive/default)
+│   │       └── Link text ("Learn More", BRANDING ICON/Icon Color/Blue)
 │   └── Right content (HUG width) — optional
 │       ├── Label + value pairs (Key Value Pair or manual text)
 │       └── Copy icon buttons for copyable values
@@ -289,8 +289,8 @@ No Card BG component needed — manual bordered frame with variable-bound colors
 ```
 Card BG (detached, 16px padding, FILL width, HUG height)
 ├── VERTICAL auto-layout, gap: 4
-│   ├── Title (16px SemiBold, color/text/primary)
-│   └── Value or description (14px Regular, color/text/secondary)
+│   ├── Title (16px SemiBold, BODY/Text/Static/Primary)
+│   └── Value or description (14px Regular, BODY/Text/Static/Secondary)
 ```
 Use when: the card contains a single piece of information that doesn't need icon or action decoration.
 NOT every card needs an icon, a three-dot menu, or a badge. Simple cards are fine when the content speaks for itself.
@@ -304,9 +304,9 @@ Card BG (detached, 16px padding, FILL width, HUG height)
 │   │   │   └── zcat stroke icon (24x24)
 │   │   │   └── Fill: varies per card (brand-subtle, danger-subtle, info-subtle, warning-subtle)
 │   │   └── VERTICAL auto-layout, gap: 2
-│   │       ├── Value (24px SemiBold, color/text/primary) — "0", "NA", "1,247"
-│   │       └── Label (12px Regular, color/text/secondary) — "Total Invocations"
-│   └── Info icon (ⓘ tooltip trigger, color/text/placeholder) — optional
+│   │       ├── Value (24px SemiBold, BODY/Text/Static/Primary) — "0", "NA", "1,247"
+│   │       └── Label (12px Regular, BODY/Text/Static/Secondary) — "Total Invocations"
+│   └── Info icon (ⓘ tooltip trigger, BODY/Text/Static/Disable) — optional
 ```
 Use when: KPI metrics on detail/overview pages with different colored icon BGs per metric.
 Each card in a row gets a DIFFERENT icon BG color. Info tooltip for metric explanation.
@@ -316,10 +316,10 @@ Each card in a row gets a DIFFERENT icon BG color. Info tooltip for metric expla
 Card BG (detached, 16px padding, FILL width, HUG height)
 ├── VERTICAL auto-layout, gap: 16
 │   ├── HORIZONTAL auto-layout (FILL width, SPACE_BETWEEN)
-│   │   ├── Title (16px SemiBold, color/text/primary) — "App Execution Settings"
-│   │   └── Edit link (icon + "Edit", color/interactive/default)
+│   │   ├── Title (16px SemiBold, BODY/Text/Static/Primary) — "App Execution Settings"
+│   │   └── Edit link (icon + "Edit", BRANDING ICON/Icon Color/Blue)
 │   └── VERTICAL auto-layout, gap: 12 — key-value pairs
-│       ├── HORIZONTAL: Label (14px Regular, color/text/secondary, fixed-width) + Value (14px Regular, color/text/primary)
+│       ├── HORIZONTAL: Label (14px Regular, BODY/Text/Static/Secondary, fixed-width) + Value (14px Regular, BODY/Text/Static/Primary)
 │       ├── HORIZONTAL: Label + Value
 │       └── HORIZONTAL: Label + Value
 ```
@@ -330,11 +330,11 @@ Use General Details component when available. Edit link top-right, NOT a button.
 ```
 Card BG (detached, 16px padding, FIXED width per grid column, HUG height)
 ├── VERTICAL auto-layout, gap: 12
-│   ├── Name (16px SemiBold, color/text/primary) — "hjm"
-│   ├── ID line (12px Regular, color/text/secondary) — "ID : 3069000000039886"
-│   ├── Dotted divider (1px dashed, color/border/subtle)
+│   ├── Name (16px SemiBold, BODY/Text/Static/Primary) — "hjm"
+│   ├── ID line (12px Regular, BODY/Text/Static/Secondary) — "ID : 3069000000039886"
+│   ├── Dotted divider (1px dashed, CARDS/Borders/Default)
 │   └── HORIZONTAL auto-layout, gap: 8, SPACE_BETWEEN
-│       ├── HORIZONTAL: Integration icon + name (14px, color/text/secondary) — "Zoho CRM"
+│       ├── HORIZONTAL: Integration icon + name (14px, BODY/Text/Static/Secondary) — "Zoho CRM"
 │       └── HORIZONTAL: Status dot (8x8 circle, green) + text (14px) — "Enabled"
 ```
 Use when: entity listing in card grid (publishers, integrations, connections). Shows identity + metadata + status.
@@ -348,8 +348,8 @@ Card BG (detached, 16-24px padding, FILL width, HUG height)
 │   │   ├── Icon BG circle (48x48, cornerRadius: 24, colored fill)
 │   │   │   └── zcat stroke icon (24x24)
 │   │   └── VERTICAL auto-layout, gap: 2
-│   │       ├── Title (16px SemiBold, color/text/primary) — "Current Plan"
-│   │       └── Subtitle (12px Regular, color/text/secondary) — "20 Jul 2026 - 20 Aug 2026"
+│   │       ├── Title (16px SemiBold, BODY/Text/Static/Primary) — "Current Plan"
+│   │       └── Subtitle (12px Regular, BODY/Text/Static/Secondary) — "20 Jul 2026 - 20 Aug 2026"
 │   └── Sub-content area — varies by card:
 │       ├── Nested badge cards (plan tier + price) — OR
 │       ├── Label + value + info icon — OR
@@ -364,7 +364,7 @@ Card BG (detached, 16px padding, HUG or FIXED width, HUG height)
 ├── VERTICAL auto-layout, gap: 8, center-aligned
 │   ├── Icon circle (48x48, cornerRadius: 24, colored fill)
 │   │   └── zcat stroke icon or product logo (24x24)
-│   └── Label (14px SemiBold, color/text/primary) — "Java", "Nodejs", "Python"
+│   └── Label (14px SemiBold, BODY/Text/Static/Primary) — "Java", "Nodejs", "Python"
 State: Default (grey border) / Selected (brand border + brand-subtle bg)
 ```
 Use when: option selection grids (runtime picker, template chooser, integration selector).
@@ -406,20 +406,20 @@ Stat cards are Recipe A, E, or F from the Card Composition Recipes above. Choose
 Card BG (detached, 16px padding, FILL width, HUG height)
 ├── HORIZONTAL auto-layout, gap: 12, center-aligned
 │   ├── Icon BG frame (40×40, cornerRadius: 10, padding: 11)
-│   │   └── zcat stroke icon (18×18, color: color/text/on-brand)
-│   │   └── Fill: color/bg/brand-subtle
+│   │   └── zcat stroke icon (18×18, color: BODY/Text/Static/White)
+│   │   └── Fill: BADGE/Background/Sec- Primary
 │   └── VERTICAL auto-layout, gap: 4
-│       ├── Label (12px Regular, color/text/secondary)
-│       ├── Value (24px SemiBold, color/text/primary)
-│       └── Subtitle (12px Regular, color/text/placeholder) — optional
+│       ├── Label (12px Regular, BODY/Text/Static/Secondary)
+│       ├── Value (24px SemiBold, BODY/Text/Static/Primary)
+│       └── Subtitle (12px Regular, BODY/Text/Static/Disable) — optional
 ```
 
 **GOOD — without icon (Recipe E):** when no natural icon exists, or when the card is simple enough that typography alone provides hierarchy.
 ```
 Card BG (detached, 16px padding, FILL width, HUG height)
 ├── VERTICAL auto-layout, gap: 4
-│   ├── Label (12px Regular, color/text/secondary)
-│   └── Value (24px SemiBold, color/text/primary)
+│   ├── Label (12px Regular, BODY/Text/Static/Secondary)
+│   └── Value (24px SemiBold, BODY/Text/Static/Primary)
 ```
 
 - Icon BG: only when a meaningful icon exists (Users → person, Errors → alert). Do NOT force icons
@@ -447,10 +447,10 @@ Card BG (detached, 16px padding, FILL width, HUG height)
 ### Icon BG Colors (in stat cards)
 
 Each stat card in a row uses a DIFFERENT color to create visual variety:
-- Card 1: `color/bg/brand-subtle` (blue)
-- Card 2: `color/bg/success-subtle` (green)
-- Card 3: `color/bg/warning-subtle` (amber)
-- Card 4: `color/bg/danger-subtle` (red)
+- Card 1: `BADGE/Background/Sec- Primary` (blue)
+- Card 2: `BADGE/Background/Sec- Green` (green)
+- Card 3: `BADGE/Background/Sec- Orange` (amber)
+- Card 4: `BADGE/Background/Sec- Red` (red)
 
 If there are only 2-3 cards, pick from the above. NEVER use the same color for all cards.
 
@@ -510,7 +510,7 @@ After building each screen, audit every area and actively improve anything that 
 | Problem | Improvement |
 |---------|-------------|
 | Everything stacked vertically | Use two-column layout for related info sections (detail pages) |
-| Sections floating without grouping | Wrap in Card BG or bordered frame (1px `color/border/default`, 6px radius) |
+| Sections floating without grouping | Wrap in Card BG or bordered frame (1px `CARDS/Borders/Default`, 6px radius) |
 | Too much empty space | Check if sections can be reorganized or content density increased |
 | Content too cramped | Increase section gap (24px between sections, 16px within) |
 | No visual focal point | Make the most important section larger, more prominent, or positioned first |
@@ -563,8 +563,8 @@ After building each screen, audit every area and actively improve anything that 
 ### Links & Interactive Text
 | Problem | Improvement |
 |---------|-------------|
-| Link text using hardcoded blue hex | Bind to `color/interactive/default` variable |
-| Link not visually distinct from body text | Use Link component or text with `color/interactive/default` color binding |
+| Link text using hardcoded blue hex | Bind to `BRANDING ICON/Icon Color/Blue` variable |
+| Link not visually distinct from body text | Use Link component or text with `BRANDING ICON/Icon Color/Blue` color binding |
 | "View All", "See More" links with no destination | Remove if there's no target page, or replace with meaningful action |
 | Clear All / Reset link missing when filters active | Add as text link at the end of active filter chip row |
 
@@ -653,7 +653,7 @@ Apply to EVERY screen before showing:
 4. Multi-column where appropriate — detail pages use side-by-side
 5. Prominent stat values — 24-28px bold number, 12px label
 6. **Semantic status colors — badges use DIFFERENT colors per status meaning** (green/red/amber/blue/grey)
-7. Help text under controls — 12px in `color/text/placeholder`
+7. Help text under controls — 12px in `BODY/Text/Static/Disable`
 8. Danger zone separation — Attention Box (Error) or red-bordered frame
 9. Consistent component sizing — same Size variant in groups
 10. Components on EVERY screen — no context drift to manual frames

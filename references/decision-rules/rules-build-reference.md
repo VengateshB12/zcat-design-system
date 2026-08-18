@@ -107,7 +107,7 @@ Text nodes named after default copy ("Text Field"), not generic ("Label"). Navig
 - Auto-layout frames for rows, `layoutSizingHorizontal = FILL`
 - Use zcat atoms INSIDE rows: Badges, Checkbox, Buttons
 - ALL fills/strokes bound to variables
-- Header: weight 500, `color/text/secondary`
-- Data rows: weight 400, `color/text/primary`
+- Header: weight 500, `BODY/Text/Static/Secondary`
+- Data rows: weight 400, `BODY/Text/Static/Primary`
 - Row height: 44-48px Default, 36px Compact
 - SURFACE this as a decision to the user

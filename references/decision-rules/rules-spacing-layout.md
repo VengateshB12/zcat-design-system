@@ -79,14 +79,14 @@ Buttons, dropdowns, and text boxes in the same visual group (action bar, form ro
 **Dashboard Card Grid:** Dashboard/analytics/overview. Independent sections. Each section as card on gray background.
 
 **Dashboard build:**
-1. Container fill → `color/bg/sunken` (gray)
+1. Container fill → `CARDS/Bg Default/Body Bg` (gray)
 2. Padding 16-24px all sides
 3. Layout → vertical auto-layout, gap 16px
 4. Each section → **Card BG** (White variant), detach for content
 5. Side-by-side → horizontal frame, gap 16px, FILL width children
 
 ```
-Container (fill: color/bg/sunken, padding: 16-24px, gap: 16px, VERTICAL)
+Container (fill: CARDS/Bg Default/Body Bg, padding: 16-24px, gap: 16px, VERTICAL)
 ├── Card BG — "Event Chart" (full width)
 ├── Card BG — "Event Statistics" (full width)
 └── Row frame (HORIZONTAL, gap: 16px)
@@ -94,7 +94,7 @@ Container (fill: color/bg/sunken, padding: 16-24px, gap: 16px, VERTICAL)
     └── Card BG — "Most Failures" (FILL)
 ```
 
-Card headings: 14px SemiBold or 16px SemiBold, `color/text/primary`.
+Card headings: 14px SemiBold or 16px SemiBold, `BODY/Text/Static/Primary`.
 
 ---
 

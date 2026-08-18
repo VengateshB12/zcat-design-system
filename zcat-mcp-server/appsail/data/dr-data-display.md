@@ -61,8 +61,8 @@ When ANY screen shows a list of events, logs, or activity with timestamps:
 Row (HORIZONTAL, gap: 12, center-aligned)
 ├── Status dot (8×8 circle, fill: semantic color variable)
 ├── VERTICAL auto-layout, gap: 2
-│   ├── Event text (Body/Regular/14, color/text/primary)
-│   └── Timestamp (Body/Regular/12, color/text/placeholder)
+│   ├── Event text (Body/Regular/14, BODY/Text/Static/Primary)
+│   └── Timestamp (Body/Regular/12, BODY/Text/Static/Disable)
 ```
 
 **NEVER drop the status dots.** They communicate event severity. An activity feed without dots is just a plain text list and looks unfinished.
@@ -134,9 +134,9 @@ Card frame (FILL width, Card BG fills, 16px padding, 6px radius)
 ├── Icon BG (40x40, cornerRadius 10, subtle color fill)
 │   └── Stroke icon (18x18, centered)
 ├── Badge (top-RIGHT, positioned absolutely)
-├── Title (Body/SemiBold/16, color/text/primary)
-├── Subtitle (Body/Regular/14, color/text/secondary)
-└── Timestamp (Body/Regular/12, color/text/placeholder)
+├── Title (Body/SemiBold/16, BODY/Text/Static/Primary)
+├── Subtitle (Body/Regular/14, BODY/Text/Static/Secondary)
+└── Timestamp (Body/Regular/12, BODY/Text/Static/Disable)
 ```
 
 **Rules:** Badge at TOP-RIGHT. 3 cards per row, all FILL width. All text uses zcat styles.

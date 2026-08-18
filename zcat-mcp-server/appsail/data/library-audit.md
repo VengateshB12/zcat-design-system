@@ -77,6 +77,41 @@ return results;
 
 **Also confirm which generation is published.** A superseded generation stays importable by key but is absent from the library search index. For each ambiguous component, run `search_design_system` for its name: the key the index returns is the current one. Keys that never appear in the index are legacy.
 
+## Step 1b — Verify LIBRARY ORIGIN (do not skip — this is the check that was missing)
+
+A key resolving proves nothing about which library it came from. Legacy-library components import cleanly and look correct. **The plugin API cannot tell you the library** — `component.remote` is only `true`/`false`.
+
+Two libraries exist:
+
+| Library | Library key | Use |
+|---|---|---|
+| ZCat-AI Understandable (primary) | `lk-6b302ab2…` | ALL new designs |
+| ZCatalyst Design System (legacy) | `lk-ae83192f…` | pre-existing instances only |
+
+To confirm origin, search each library explicitly and see which one returns the key:
+
+```
+search_design_system(query: "<Component Name>", includeLibraryKeys: ["lk-6b302ab2…"])   → primary?
+search_design_system(query: "<Component Name>", includeLibraryKeys: ["lk-ae83192f…"])   → legacy?
+```
+
+The Figma UI also shows the owning library on a selected instance in the right panel — that is authoritative and the fastest manual check.
+
+**Audit nested children too.** A primary-library component can nest a legacy-library child, which changes the valid enum for that child. Known case: `Table AI` (primary) nests `Badges` from the **legacy** library, so table badges take literal colours (`Green/Orange/Red`) while standalone badges take semantic ones (`Success/Danger/Warning`). Enumerate distinct nested main components and check each:
+
+```js
+const seen = new Map();
+for (const inst of root.findAll(n => n.type === "INSTANCE")) {
+  const mc = await inst.getMainComponentAsync();
+  if (!mc) continue;
+  const owner = (mc.parent && mc.parent.type === "COMPONENT_SET") ? mc.parent : mc;
+  if (!seen.has(owner.key)) seen.set(owner.key, { name: owner.name, key: owner.key, usedAs: inst.name });
+}
+return [...seen.values()];   // then confirm each key's library via search_design_system
+```
+
+Report any key that is not in the primary library. If it is reachable only through a primary component's internals, it is a **library-side defect** to raise with the design team — it cannot be fixed agent-side when the parent is zero-detach.
+
 ## Step 2 — Dump variables and text styles
 
 ```js
