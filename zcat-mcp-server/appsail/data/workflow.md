@@ -129,16 +129,46 @@ These are internal to Table AI and CANNOT be imported by key. Get them from an e
 
 **The plugin API CANNOT tell you the library** — it only reports `remote: true`. To confirm origin use `search_design_system` with `includeLibraryKeys`, or read the library badge on the instance in the Figma UI.
 
-**KNOWN DEFECT — Table AI nests a legacy-library Badge.** `Table AI` is primary-library, but its internal `_Table_Col_Badge` nests `Badges` from the **legacy** library. Consequence:
+**Table AI badge — FIXED AND PUBLISHED, but pre-existing instances lag.** Verified 2026-08-18 after the library was published:
 
-| Where | Badge actually used | Colour values you must pass |
+| Case | Badge set resolved | Colour enum |
 |---|---|---|
-| Standalone Badge you place | primary `43e36112…` | `Success / Danger / Warning / Info / Primary / Grey / Purple / Disabled` |
-| Badge inside Table AI | **legacy** `158e4b6d…` | `Green / Orange / Red / Grey / Primary / Pink / Purple / Disable` |
+| **New** Table AI you import now | primary `43e36112…` | `Primary / Grey / Purple / Danger / Disabled / Info / Success / Warning` |
+| Standalone Badge you place | primary `43e36112…` | same semantic set |
+| Table AI instances **already in a file** that has not accepted the library update | legacy `158e4b6d…` | `Green / Orange / Red / Grey / Primary / Pink / Purple / Disable` |
 
-Inside Table AI: Healthy/Active→`Green`, Degraded/Pending→`Orange`, Critical/Failed→`Red`, Inactive→`Grey`, Info→`Primary`. Passing `Success`/`Danger`/`Warning` there **throws**.
+Confirmed by importing `Table AI` fresh by key into a consuming file: its nested
+`Badges` resolved to `43e36112…` and `setProperties({ Color: "Success" })` was
+**accepted**. In the same file, a pre-existing Table AI instance still resolved
+`158e4b6d…` and the identical call still **threw**.
 
-This cannot be fixed agent-side (Table AI is zero-detach). **Design team fix:** repoint `_Table_Col_Badge` to the primary-library Badges (`43e36112…`).
+So for anything you build from now on, use the **semantic** values:
+Healthy/Active→`Success`, Degraded/Pending→`Warning`, Critical/Failed→`Danger`,
+Inactive→`Grey`, Info→`Info` or `Primary`.
+
+**Still read the enum off the instance when touching a pre-existing table** — the
+same call is valid or throws depending on whether that file has taken the update:
+
+```js
+const mc = await badgeInstance.getMainComponentAsync();
+const owner = (mc.parent && mc.parent.type === "COMPONENT_SET") ? mc.parent : mc;
+const colours = owner.componentPropertyDefinitions.Color.variantOptions;
+const pick = (semantic, legacy) => colours.includes(semantic) ? semantic : legacy;
+
+badgeInstance.setProperties({ Type: "Secondary", Color: pick("Success", "Green") });
+```
+
+Fallbacks: `Success`→`Green`, `Danger`→`Red`, `Warning`→`Orange`, `Info`→`Primary`,
+`Disabled`→`Disable`.
+
+**To retire the legacy path in an existing file:** Assets panel → Updates available
+→ Update all. `_Table_Col_Badge` is a private component (leading `_`), so it is not
+published on its own and cannot be imported by key — it only travels inside the
+published `Table AI`.
+
+⚠️ **After accepting the update, re-check badge colours on existing screens.** Values
+like `Green`/`Red`/`Orange` no longer exist in the new enum, so Figma may fall back
+to a default and silently change what those badges look like. Screenshot and verify.
 
 When a nested child's enum is uncertain, read it off the actual instance:
 ```js
