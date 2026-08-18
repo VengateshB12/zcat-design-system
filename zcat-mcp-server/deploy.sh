@@ -16,6 +16,20 @@ DEV_URL="https://zcat.development.catalystappsail.in"
 PROD_URL="https://zcat.catalystappsail.in"
 URL="$DEV_URL"
 
+# Deploying uncommitted source means the deployed state cannot be reproduced from
+# git. Warn, but do not block — sometimes you genuinely want to test before committing.
+if git -C "$ROOT" rev-parse --show-toplevel >/dev/null 2>&1; then
+  REPO="$(git -C "$ROOT" rev-parse --show-toplevel)"
+  DIRTY_SRC="$(git -C "$REPO" status --porcelain -- \
+      ':!zcat-mcp-server/appsail/data' 2>/dev/null | head -20)"
+  if [ -n "$DIRTY_SRC" ]; then
+    echo "WARNING: deploying with uncommitted source changes:"
+    echo "$DIRTY_SRC" | sed 's/^/    /'
+    echo "  The deployed build will not be reproducible from git until these are committed."
+    echo
+  fi
+fi
+
 echo "==> Syncing reference data"
 "$ROOT/sync-data.sh" "$@"
 
@@ -80,6 +94,22 @@ for i in $(seq 1 8); do
     echo "  Catalyst console -> zcat-mcp -> Deploy to Production"
     echo
     echo "Users connect to: $PROD_URL/mcp"
+
+    # sync-data.sh rewrites appsail/data/ on every run, so a successful deploy
+    # normally leaves the snapshot dirty. Left uncommitted, git stops matching
+    # what is actually deployed.
+    if git -C "$ROOT" rev-parse --show-toplevel >/dev/null 2>&1; then
+      REPO="$(git -C "$ROOT" rev-parse --show-toplevel)"
+      DIRTY_DATA="$(git -C "$REPO" status --porcelain -- \
+          zcat-mcp-server/appsail/data 2>/dev/null)"
+      if [ -n "$DIRTY_DATA" ]; then
+        echo
+        echo "Snapshot changed by this deploy — commit it so git matches production:"
+        echo "$DIRTY_DATA" | sed 's/^/    /'
+        echo
+        echo "    git add zcat-mcp-server/appsail/data && git commit -m 'Sync deployed data snapshot'"
+      fi
+    fi
     exit 0
   fi
   echo "  attempt $i: $count/$EXPECTED_TOOLS tools"
