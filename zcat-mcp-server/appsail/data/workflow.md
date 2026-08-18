@@ -117,6 +117,24 @@ AvatarName `098e88732352f7b1fdafd205b7928ddd9686ac87` · Badge `f54ff134a0c90e39
 
 These are internal to Table AI and CANNOT be imported by key. Get them from an existing Table AI instance's columns via `await col.getMainComponentAsync()`, then `swapComponent(thatComponent)`.
 
+**⚠️ NESTED LEGACY CHILDREN — context changes the valid enum.** Some CURRENT components nest LEGACY children, so the same logical component has different valid values depending on where it lives. Verified cases:
+
+| Where | Component actually used | Valid Color values |
+|---|---|---|
+| Standalone Badge you place yourself | Gen B `43e36112…` | `Primary/Grey/Purple/Danger/Disabled/Info/Success/Warning` (semantic) |
+| Badge **inside Table AI** (`_Table_Col_Badge`) | Gen A `158e4b6d…` | `Primary/Green/Red/Orange/Pink/Grey/Purple/Disable` (literal) |
+
+So a table status badge uses `Color: "Green"`, while the same status on a standalone badge uses `Color: "Success"`. Mapping for table badges: Healthy/Active→`Green`, Degraded/Pending→`Orange`, Critical/Failed→`Red`, Inactive→`Grey`, Info→`Primary`.
+
+**Never assume the nested child's enum from the parent's generation.** Read it from the instance:
+```js
+const inst = col.findOne(n => n.name === "R1" && n.type === "INSTANCE");
+const mc = await inst.getMainComponentAsync();
+const owner = (mc.parent && mc.parent.type === "COMPONENT_SET") ? mc.parent : mc;
+return owner.componentPropertyDefinitions;   // authoritative for THIS instance
+```
+The Popup footer's Buttons, by contrast, ARE Gen B and already ship with correct CTA hierarchy (Grey secondary + Fill primary) — set labels only, do not restyle them.
+
 **Legacy generation — NEVER use for new designs.** These keys still resolve but are superseded and absent from the published index. They exist only so pre-existing instances keep working. Their variant enums are INCOMPATIBLE (e.g. Badge Color=Green/Red/Orange instead of Success/Danger/Warning; Checkbox uses `Check type`/`Status` instead of `Checked`/`State`; Text Box State=Completed instead of Filled):
 `1e04478db049…` Button · `411f52c2e028…` Text Box · `021a6653c106…` Drop down · `158e4b6d656a…` Badge · `69274b619232…` Chip · `f6f4ae2426b2…` Checkbox · `35016f9e4ebd…` Toggle · `4851c5917e3c…` Tabs · `4200a0aef4a2…` Popup
 Dead keys (do not resolve at all): `8f3943b8ca40…` `8fe1faec85e9…` `e38e2e4c72af…` `ea1a7685e935…` `d9c4ab7dc9b1…` `8aed0a243553…`

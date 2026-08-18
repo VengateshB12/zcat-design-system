@@ -38,7 +38,8 @@
     "zeroUnboundText": "Every authored TEXT node must have a bound zcat text style (non-empty textStyleId), a bound colour variable, and the correct family (Inter, or Roboto Mono for code). Headings and emphasised values must use a Semi Bold style. All-Regular authored typography = FAIL.",
     "currentGenerationOnly": "Use only the current published component generation (componentKeyMap). Superseded keys still resolve but are absent from the published index and have incompatible variant enums — legacy use only, never for new designs. See legacyGeneration.",
     "removalNeedsApproval": "Composition freedom covers HOW required information is presented, never WHETHER required functionality exists. A required element may be repositioned, resized, re-treated, merged or demoted — never deleted. Removal requires explicit user approval BEFORE building.",
-    "createEditIsModal": "Create/Edit follows the Catalyst interaction pattern: a popup/modal. Preserve it and optimise the composition inside; a wireframe drawn as a page does not override it. Escalate to large/full-page popup only for >~8 fields, Stepper wizards, side-by-side content, or embedded tables/code editors. For a merely tall form use Popup type=With Scroll — never detach just to gain height."
+    "createEditIsModal": "Create/Edit follows the Catalyst interaction pattern: a popup/modal. Preserve it and optimise the composition inside; a wireframe drawn as a page does not override it. Escalate to large/full-page popup only for >~8 fields, Stepper wizards, side-by-side content, or embedded tables/code editors. For a merely tall form use Popup type=With Scroll — never detach just to gain height.",
+    "nestedChildEnumsDifferByContext": "Some current components nest legacy children, so a nested child's valid enum can differ from the standalone component's. Verified: Badge inside Table AI uses literal colours (Green/Red/Orange) while a standalone Badge uses semantic colours (Success/Danger/Warning). NEVER infer a nested child's enum from the parent's generation — read componentPropertyDefinitions off the actual nested instance."
   },
   "foundations": {
     "colors": {
@@ -7620,5 +7621,27 @@
       }
     },
     "typographyRoles": "Headings/emphasised values MUST use a Semi Bold style (Headlines/H5, Body/Subtitle 1-3). A larger Regular size is NOT hierarchy. All-Regular authored text fails validation."
+  },
+  "nestedLegacyChildren": {
+    "warning": "Some CURRENT components nest LEGACY children, so the valid enum depends on CONTEXT, not on the parent's generation.",
+    "cases": [
+      {
+        "context": "Standalone Badge",
+        "componentUsed": "Gen B 43e36112e3424d07337dd538025a7a53d1ec1c95",
+        "validColors": "Primary, Grey, Purple, Danger, Disabled, Info, Success, Warning"
+      },
+      {
+        "context": "Badge inside Table AI (_Table_Col_Badge)",
+        "componentUsed": "Gen A 158e4b6d656a62d4244efc4e5583794044328d3a",
+        "validColors": "Primary, Green, Red, Orange, Pink, Grey, Purple, Disable"
+      },
+      {
+        "context": "Buttons inside Popup footer (Modal Content)",
+        "componentUsed": "Gen B 5819eb825dad40876f31545c93804195f11ea535",
+        "note": "Already ships correct CTA hierarchy (Grey secondary + Fill primary). Set labels only; do not restyle. Variant=Outline with Color=Grey is NOT a valid combination."
+      }
+    ],
+    "tableBadgeColourMapping": "Healthy/Active->Green, Degraded/Pending->Orange, Critical/Failed->Red, Inactive->Grey, Info/Processing->Primary",
+    "howToVerify": "Read the enum off the actual nested instance: const mc = await inst.getMainComponentAsync(); const owner = (mc.parent && mc.parent.type==='COMPONENT_SET') ? mc.parent : mc; owner.componentPropertyDefinitions"
   }
 }
