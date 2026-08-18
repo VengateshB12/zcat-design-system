@@ -129,16 +129,36 @@ These are internal to Table AI and CANNOT be imported by key. Get them from an e
 
 **The plugin API CANNOT tell you the library** — it only reports `remote: true`. To confirm origin use `search_design_system` with `includeLibraryKeys`, or read the library badge on the instance in the Figma UI.
 
-**KNOWN DEFECT — Table AI nests a legacy-library Badge.** `Table AI` is primary-library, but its internal `_Table_Col_Badge` nests `Badges` from the **legacy** library. Consequence:
+**IN TRANSITION — Table AI's nested Badge was repointed in the library, but the fix may not have reached your file yet.** Verified 2026-08-18:
 
-| Where | Badge actually used | Colour values you must pass |
+| Where | State | Colour enum |
 |---|---|---|
-| Standalone Badge you place | primary `43e36112…` | `Success / Danger / Warning / Info / Primary / Grey / Purple / Disabled` |
-| Badge inside Table AI | **legacy** `158e4b6d…` | `Green / Orange / Red / Grey / Primary / Pink / Purple / Disable` |
+| Library **source** (`_Table_Col_Badge` @ `13223:1777`) | **FIXED** — now nests primary `43e36112…` | `Primary / Grey / Purple / Danger / Disabled / Info / Success / Warning` |
+| Consuming files not yet updated | still resolve legacy `158e4b6d…` | `Green / Orange / Red / Grey / Primary / Pink / Purple / Disable` |
 
-Inside Table AI: Healthy/Active→`Green`, Degraded/Pending→`Orange`, Critical/Failed→`Red`, Inactive→`Grey`, Info→`Primary`. Passing `Success`/`Danger`/`Warning` there **throws**.
+So the same property can be valid or throw depending on whether the file has
+received the library update. Confirmed in a consuming file after the source fix:
+`setProperties({ Color: "Success" })` still threw
+`Unable to find a variant with those property values`.
 
-This cannot be fixed agent-side (Table AI is zero-detach). **Design team fix:** repoint `_Table_Col_Badge` to the primary-library Badges (`43e36112…`).
+**Therefore: never hardcode either enum for a Table AI badge. Read it off the
+instance and branch.** This is correct before, during and after propagation:
+
+```js
+const mc = await badgeInstance.getMainComponentAsync();
+const owner = (mc.parent && mc.parent.type === "COMPONENT_SET") ? mc.parent : mc;
+const colours = owner.componentPropertyDefinitions.Color.variantOptions;
+const pick = (semantic, literal) => colours.includes(semantic) ? semantic : literal;
+
+badgeInstance.setProperties({ Type: "Secondary", Color: pick("Success", "Green") });
+```
+
+Semantic → legacy fallbacks: `Success`→`Green`, `Danger`→`Red`, `Warning`→`Orange`,
+`Info`→`Primary`, `Grey`→`Grey`, `Purple`→`Purple`, `Disabled`→`Disable`.
+
+**To finish the migration** (design team): publish the library, then accept the
+library update in each consuming file. `_Table_Col_Badge` is internal and cannot
+be imported by key, so there is no agent-side way to force it.
 
 When a nested child's enum is uncertain, read it off the actual instance:
 ```js

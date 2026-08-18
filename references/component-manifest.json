@@ -7291,26 +7291,31 @@
     "tokenReference": "references/design-tokens.md (GENERATED — 493 colour + 41 value variables + 26 text styles). Do not hand-edit; regenerate per library-audit.md."
   },
   "nestedLegacyChildren": {
-    "warning": "Some CURRENT components nest LEGACY children, so the valid enum depends on CONTEXT, not on the parent's generation.",
-    "cases": [
-      {
-        "context": "Standalone Badge",
-        "componentUsed": "Gen B 43e36112e3424d07337dd538025a7a53d1ec1c95",
-        "validColors": "Primary, Grey, Purple, Danger, Disabled, Info, Success, Warning"
-      },
-      {
-        "context": "Badge inside Table AI (_Table_Col_Badge)",
-        "componentUsed": "Gen A 158e4b6d656a62d4244efc4e5583794044328d3a",
-        "validColors": "Primary, Green, Red, Orange, Pink, Grey, Purple, Disable"
-      },
-      {
-        "context": "Buttons inside Popup footer (Modal Content)",
-        "componentUsed": "Gen B 5819eb825dad40876f31545c93804195f11ea535",
-        "note": "Already ships correct CTA hierarchy (Grey secondary + Fill primary). Set labels only; do not restyle. Variant=Outline with Color=Grey is NOT a valid combination."
-      }
-    ],
-    "tableBadgeColourMapping": "Healthy/Active->Green, Degraded/Pending->Orange, Critical/Failed->Red, Inactive->Grey, Info/Processing->Primary",
-    "howToVerify": "Read the enum off the actual nested instance: const mc = await inst.getMainComponentAsync(); const owner = (mc.parent && mc.parent.type==='COMPONENT_SET') ? mc.parent : mc; owner.componentPropertyDefinitions"
+    "status": "IN TRANSITION as of 2026-08-18 — library source fixed, consumers may lag",
+    "warning": "Table AI's internal _Table_Col_Badge was repointed to the PRIMARY Badges set (43e36112...) in the library source. Consuming files that have not received the library update still resolve the LEGACY set (158e4b6d...). The valid enum therefore depends on the FILE, not just the component.",
+    "librarySource": {
+      "node": "_Table_Col_Badge @ 13223:1777",
+      "nests": "43e36112e3424d07337dd538025a7a53d1ec1c95",
+      "validColors": "Primary, Grey, Purple, Danger, Disabled, Info, Success, Warning",
+      "rowsUseSemanticValues": "Active=Primary, Inactive=Grey, Running=Success, Error=Danger, Pending=Warning"
+    },
+    "consumerNotYetUpdated": {
+      "nests": "158e4b6d656a62d4244efc4e5583794044328d3a",
+      "validColors": "Primary, Green, Red, Orange, Pink, Grey, Purple, Disable",
+      "evidence": "setProperties({Color:'Success'}) threw 'Unable to find a variant with those property values' in a consuming file after the source fix"
+    },
+    "requiredApproach": "Read Color.variantOptions off the instance's owning set and branch. Never hardcode either enum.",
+    "semanticToLegacyFallback": {
+      "Success": "Green",
+      "Danger": "Red",
+      "Warning": "Orange",
+      "Info": "Primary",
+      "Grey": "Grey",
+      "Purple": "Purple",
+      "Disabled": "Disable"
+    },
+    "howToFinish": "Publish the library, then accept the library update in each consuming file. _Table_Col_Badge is internal and cannot be imported by key, so there is no agent-side workaround.",
+    "howToVerify": "const mc = await inst.getMainComponentAsync(); const owner = (mc.parent && mc.parent.type==='COMPONENT_SET') ? mc.parent : mc; owner.componentPropertyDefinitions.Color.variantOptions"
   },
   "libraryOrigin": {
     "critical": "There are TWO LIBRARIES, not two generations of one library. Verify which LIBRARY a key belongs to, not just that it resolves. The Figma plugin API reports only remote:true and CANNOT tell you the library — use search_design_system with includeLibraryKeys, or check the Figma UI badge on the instance.",

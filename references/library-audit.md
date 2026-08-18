@@ -300,3 +300,28 @@ hands agents keys that throw, which is the same silent-failure class this whole 
 exists to remove.
 
 Text styles are bindable (`importStyleByKeyAsync`), sample-verified.
+
+### E. Table AI badge defect fixed at source, pending propagation (2026-08-18)
+
+The design team repointed `_Table_Col_Badge` to the primary `Badges` set. Verified in the
+library file: node `13223:1777` now nests `43e36112e3424d07337dd538025a7a53d1ec1c95`, enum
+`Primary / Grey / Purple / Danger / Disabled / Info / Success / Warning`, and its five
+sample rows use semantic values (Active=Primary, Inactive=Grey, Running=Success,
+Error=Danger, Pending=Warning).
+
+**The fix had not reached consumers at time of writing.** In the test file
+`Bagecp6Z9Ih9kMRhbGF9Fj`, Table AI badge instances still resolved to the legacy set
+`158e4b6d…`, and `setProperties({ Color: "Success" })` still threw
+`Unable to find a variant with those property values`. `_Table_Col_Badge` cannot be
+imported by key from a consuming file, so a fresh import cannot be used to probe
+propagation and there is no agent-side way to force the update — the library must be
+published and each consuming file must accept the update.
+
+**Audit lesson:** a component fix verified in the library source is NOT evidence that
+consuming files behave differently. Verify library state and consumer state separately —
+they can disagree for as long as the update is unpublished or unaccepted. This is the same
+shape as finding D: existence in the library does not imply availability to consumers.
+
+Guidance was therefore changed from "pass the legacy enum" to "read
+`Color.variantOptions` off the instance's owning set and branch", which is correct before,
+during and after propagation, plus a semantic-to-legacy fallback map.
