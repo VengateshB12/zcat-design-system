@@ -15,7 +15,7 @@ Follow this workflow exactly, step by step.
 
 1. **Every color MUST be a variable** — no hardcoded hex values, ever
 2. **Use zcat components** — if a component exists in the library, you MUST use it. NEVER create manual rectangles/shapes as UI controls. Use the COMPONENT KEY TABLE below to import directly
-3. **Container background MUST be preserved** — NEVER clear Container fills. Keep `color/bg/surface`
+3. **Container background MUST be preserved** — NEVER clear Container fills. Keep its bound `BODY/Background/Static/Container Bg` fill
 4. **Even numbers only** — spacing, font sizes, radius, padding, margins, gaps
 5. **Minimum font size: 10px** — never go below
 6. **Default radius: 6px** — for buttons, inputs, cards, dropdowns
@@ -35,7 +35,7 @@ Follow this workflow exactly, step by step.
 20. **Component limits ≠ feature limits** — if Tab supports 5 but wireframe shows 7, DETACH and add more manually with matching styling. NEVER remove content to fit a component's constraints
 21. **Design composition** — wireframes define features, not visual design. Apply visual hierarchy (24px bold stat values, 16px section headings, 12px labels), section grouping (Card BG, bordered frames), multi-column layouts for detail pages, consistent spacing (16px card gap, 24px section gap, 12px heading-to-content). Use Design Uniforms from decision-rules.md
 22. **Label:Value = horizontal, ALWAYS** — for read-only info (connection details, metadata, config summaries), use General Details component or Key Value Pair (Layout=Horizontal). Label LEFT, value RIGHT. NEVER stack label on top with value below. General Details is a pre-built block; Key Value Pair is the individual row component
-23. **Icons: clone+swap ONLY** — the Icon component set is internal/non-published. `importComponentSetByKeyAsync` and `importComponentByKeyAsync` both FAIL for icons. You MUST clone an icon instance from an existing component (e.g., Button's Help variant → find Icon Left child) and then `swapComponent()` to the desired variant. NEVER use emoji or Unicode characters (▶, ✕, ▾, ●, ←) as icons
+23. **Icons: import DIRECTLY by key** — all 87 zcat icons are standalone published `component`s. Use `importComponentByKeyAsync(key)` → `createInstance()`, with keys from `references/icon-catalog.json`. Verified live 2026-08-18: every icon is a `COMPONENT`, none is a variant, none has a `COMPONENT_SET` parent, each holds one stroke-only `VECTOR:Icon`, and the stroke ships **already bound** to `BODY/Icons/Static/Primary` — rebind only to change the colour role. Resize with BOTH axes (`icon.resize(16,16)`); one axis collapses it. The old clone-from-Button + `swapComponent()` workaround is obsolete — do not use it. Icon *slots* inside components (`INSTANCE_SWAP` props like Link's `Change Icon Left`) are the separate case that still needs a main-component reference. NEVER use emoji or Unicode characters (↑, ▶, ✕, ▾, ●, ←) as icons
 24. **Button labels: override nested TEXT node** — Button has NO text component property. Set label by: `btn.findAll(n => n.type === 'TEXT')` → find node with characters 'Button Text' → `await figma.loadFontAsync(node.fontName)` → `node.characters = "Your Label"`. There is no shortcut
 25. **Build before destroy** — NEVER remove existing content before confirming replacement content can be created. Build new content first, validate it works, then swap. A failed script that already removed old content leaves a broken screen with no undo
 26. **No manual UI controls** — NEVER create a rectangle/circle/frame to represent a button, input, badge, toggle, checkbox, or any UI control. If you catch yourself doing this, STOP and search for the component. The ONLY manual frames are structural layout containers (rows, columns, sections)
@@ -48,10 +48,10 @@ Follow this workflow exactly, step by step.
 33. **Action bar balance** — when a button appears on the right side of an action bar or section header, ALWAYS provide a supporting element on the left side (Search component, section heading text, breadcrumb, filter dropdowns). NEVER leave a lonely right-aligned button with empty space on the left. This applies to Container action bars, card headers, section headers, and any horizontal row with a right-aligned action. Think MORE than the wireframe — enrich with Search, filters, or descriptive text
 34. **Design beyond wireframes** — wireframes are MINIMUM requirements. You MUST improve them: (a) flat wireframe cards → use Card BG with icon backgrounds, color variables, visual hierarchy (24px bold values, 12px labels), (b) wireframe tabs inside content → move primary tabs to Sub Header, (c) plain text lists → use proper components with badges, icons, spacing, (d) empty action bars → add Search, filters, or headings alongside buttons. The final design should look like a polished product, not a wireframe with components swapped in
 35. **Eliminate duplicate information** — if the wireframe shows the same data in two places (e.g., Storage as a stat card AND a separate storage graph card), MERGE them into one card and tell the user what you merged. **Outright REMOVAL requires approval first** — propose it and wait. "Don't blindly copy every wireframe element" means rethink presentation, NOT delete content
-36. **Use Code Block / Code Editor component** — for SQL consoles, query editors, code views, JSON displays, and any monospace text area, ALWAYS use the Code Block component or build a code editor frame with `color/bg/sunken` fill, `color/border/default` border, and Roboto Mono font. NEVER build a plain text frame for code content. See component-manifest.json for Code Block details
+36. **Use Code Block / Code Editor component** — for SQL consoles, query editors, code views, JSON displays, and any monospace text area, ALWAYS use the Code Block component or build a code editor frame with `CODE BLOCK/Bg colors/Writer` fill, `CODE BLOCK/Borders/Default` border, and Roboto Mono font. NEVER build a plain text frame for code content. See component-manifest.json for Code Block details
 37. **Master-detail = Side Menu pattern** — when a wireframe shows a list on the left and detail on the right that changes when you click a list item (e.g., Schema page: table list → column schema), ALWAYS use the Side Menu / master-detail layout pattern from Recipe 4. NEVER copy the wireframe's flat two-panel layout. Use Sidebar List Panel or Nav Button list + Divider + detail panel
 38. **Fill ALL dropdown/input content** — EVERY dropdown must show a realistic selected value or meaningful placeholder from sample-data.md. NEVER leave dropdowns showing "Select List", "Enter Label Text", or default placeholder text. Same for text inputs — fill with realistic data that matches the screen context
-39. **ZERO hardcoded hex colors** — after building, verify that EVERY fill and stroke is bound to a zcat variable. Check the Selection Colors panel in Figma — if you see ANY raw hex values (like 0F1F3D, EBEDF5, 7887A8, FFFFFF, 2966F0, etc.), those are BUGS. Dark mode will break. Use `figma.variables.setBoundVariableForPaint` for EVERY color. The ONLY acceptable colors in the Selection Colors panel are variable references (like "color/bg/surface", "CARDS/Bg Default/Primary", etc.)
+39. **ZERO hardcoded hex colors** — after building, verify that EVERY fill and stroke is bound to a zcat variable. Check the Selection Colors panel in Figma — if you see ANY raw hex values (like 0F1F3D, EBEDF5, 7887A8, FFFFFF, 2966F0, etc.), those are BUGS. Dark mode will break. Use `figma.variables.setBoundVariableForPaint` for EVERY color. The ONLY acceptable colors in the Selection Colors panel are variable references (like "CARDS/Bg Default/Primary", "BODY/Text/Static/Primary", etc.)
 40. **Self-critique before showing** — NEVER assume your design looks good. Before showing each screen to the user, take a screenshot and verify: (a) does every element use a zcat component? (b) are all colors variable-bound? (c) are stat cards creative with icon BGs? (d) is master-detail using Side Menu pattern? (e) are all dropdowns/inputs filled with real values? (f) is there any duplicate information? (g) does it look like a polished product or a wireframe copy? If ANY of these fail, fix them before showing
 41. **Think and decide, then inform** — when you encounter ambiguous design choices (merge duplicate sections, choose between layouts, improve wireframe patterns), make the decision yourself and inform the user in your summary: "I made these design decisions: [list]. Let me know if you want changes." Do NOT ask about every small choice — make good decisions and tell the user what you decided
 42. **Popup close is in FOOTER only** — the zcat Popup component has NO X close button in the header. NEVER add a manual X icon in the popup header. The popup header contains ONLY the title (and optionally a Stepper or primary Tabs below it). Footer layout for simple form: Cancel (Ghost, LEFT) + Create (Fill, RIGHT). Footer layout for wizard with stepper: Back (Outline, LEFT) + Cancel (Ghost, RIGHT) + Continue (Fill, RIGHT). On first wizard step: no Back, just Cancel (left) + Continue (right). On last step: Back (left) + Cancel + Create (right)
@@ -106,6 +106,7 @@ Verified against live `componentPropertyDefinitions` on 2026-08-18.
 | Key Value Pair | `2d82f5c0a6c24ab0370c320d0044cc8346666077` | set | State=Default/Hover/Error/Disabled; bools Label/Optional/info/Minus/Manual Add/Third filed/Drag and drop. **There is NO "Layout" property** |
 | Sidebar List Panel | `c042e030f9a1755279cd389302cf6f3f693f6707` | comp | bools Show Header/Search/Headings/Section 1-3 |
 | Divider | `ae8ace032eb5e3ff8b86424a97be7a3728bde3bd` | set | State=Default/Active/Completed/Disabled. IS importable — do not hand-build dividers |
+| Double field | `9e7f5074afab3832b227c16aa1b342a18186c9c0` | set | `Type`=Front/Backside ONLY. A Dropdown + Text Box forming ONE field. Children pinned FIXED 36px; `itemSpacing = -1` gives a shared seam. Label goes on the LEADING child only — see COMPONENT GOTCHAS |
 | Radio | `ab6af71593734fe402bcb0a9106c198083ebd3c3` | set | Selected=Unselected/Selected; State=Default/Hover/Disabled; bools `Title text`/`Sub Text` |
 | Code Block | `24b627cef8b8b7cfeb0966ffcabcfc8c0b97ba9b` | set | `type`=Editor/Viewer |
 | Link | `937992145223c13dcefa819ba6513d1a291a5520` | set | Type=Link Text; State=Default/Hover/Pressed/Disabled; Size=Default/Small/Large/Extra Small; Color=Default/Primary |
@@ -156,6 +157,29 @@ Dead keys (do not resolve at all): `8f3943b8ca40…` `8fe1faec85e9…` `e38e2e4c
 ## ZCAT VARIABLES AND TEXT STYLES (verified live — import by KEY, never by name)
 
 Library variables and text styles are NOT local to your file. `figma.variables.getLocalVariablesAsync()` and `figma.getLocalTextStylesAsync()` both return **empty** — looking up by name against them silently yields nothing and leads to hardcoded hex and Inter Regular fallbacks. Always import by key.
+
+**This table is a verified SUBSET, not the whole system.** Live enumeration of the
+library (2026-08-18) found **710 variables across 5 collections** and **26 text styles**:
+
+| Collection | Modes | Variables |
+|---|---|---|
+| `Mode` | Light, Dark | **493** — the semantic layer to bind to |
+| `_Global_Colors` | Hex Code | 111 — raw ramp, do NOT bind directly |
+| `Typography` | **Primary (Inter)**, Secondary (Zoho Puvi) | 55 |
+| `_Global_Values` | Mode 1 | 41 — `Spacing/S*`, `Radius/R*`, `Border/*` |
+| `Theme` | Default - Royal Blue, Purple | 10 |
+
+The real colour taxonomy is **component-scoped**, not a flat `color/*` tree:
+`BUTTONS/*` (87), `TABS/*` (28), `INPUT FIELDS/*` (26), `ATTENTION/*` (25), `BADGE/*` (22),
+`CARDS/*` (22), `CHECK, RADIO, TOGGLE/*` (19), `PROFILE NAV/*` (19), `TABLE/*` (18),
+`STEPPER/*` (17), `BODY/*` (16), `ACCORDION/*` (14), `MENU LIST/*` (14), `CHIPS/*` (12),
+`DATE PICKER/*` (12), `LINK BOX/*` (12), `TIMELINE/*` (11), `SIDE MENU/*` (10), plus
+`POPUP/*`, `TOOLTIP/*`, `TOAST/*`, `GRAPH/*`, `CODE BLOCK/*`, `SHADOWS/*` and others.
+
+**Any `color/bg/*`, `color/text/*`, `color/border/*`, `color/icon/*` or
+`color/interactive/*` name is FABRICATED and resolves to nothing.** If you need a
+variable that is not in the table below, resolve it with `search_design_system` and add
+it — never invent a name, and never bind by name.
 
 **Color variables** (collection `Mode`):
 
@@ -674,7 +698,7 @@ Before writing ANY use_figma code, go through this checklist. For EVERY UI eleme
 | Any modal/dialog | Use "Deefault Popup" + zcat components inside | Never create buttons/inputs/checkboxes manually inside modals |
 | Label text | Build as text layer (not a library component) | — |
 | Helper text | Build as text layer (not a library component) | — |
-| Code editor / SQL / query input | Build manually — no zcat component exists. Bind fill to `color/bg/sunken`, border to `color/border/default`, text to `Code/LG` (Roboto Mono) | Never hardcode the fill/stroke hex — "manual" means no component to import, not permission to hardcode colors |
+| Code editor / SQL / query input | Build manually — no zcat component exists. Bind fill to `CODE BLOCK/Bg colors/Writer`, border to `CODE BLOCK/Borders/Default`, text to `✅ Code Text/Code Body` (Roboto Mono) | Never hardcode the fill/stroke hex — "manual" means no component to import, not permission to hardcode colors |
 
 **CRITICAL RULE:** If you catch yourself creating a rectangle, circle, or frame to represent a UI control — STOP. Search for the component first. The ONLY things you should create manually are structural layout frames (rows, columns, sections).
 
@@ -987,55 +1011,55 @@ for (const t of allTexts) {
 // If a column type doesn't exist (e.g., progress bar column), ask the user.
 ```
 
-#### ICON CLONE+SWAP PATTERN
+#### ICON PATTERN — import by key
 
-Icons in zcat are internal components — they CANNOT be imported directly via
-`importComponentByKeyAsync` or `importComponentSetByKeyAsync`. Both will fail.
+All 87 icons are standalone published components. Keys: `references/icon-catalog.json`
+(74 UI icons at 16x16, 13 Catalyst product logos at 20x20).
 
 ```javascript
-// The ONLY way to get an icon: clone from an existing component instance
-// Step 1: Import a component that HAS an icon (e.g., Button with Help variant)
-const btnSet = await requireSet("5819eb825dad40876f31545c93804195f11ea535", "Buttons");
-const helpBtn = btnSet.defaultVariant.createInstance();
-setProps(helpBtn, { "Type": "Default Button", "Content": "Icon Button", "Icon Left": true });
+// Import an icon DIRECTLY. No cloning, no swapComponent, no helper Button.
+const arrowUp = await requireComp("8d1e8c58ca41d88d54c6613ff5e7be73f92b9aac", "Arrow Up");
+const icon = arrowUp.createInstance();
+row.appendChild(icon);
+icon.resize(12, 12);          // BOTH axes — one axis alone collapses the icon
 
-// Step 2: Find the icon instance inside the component
-const iconSource = helpBtn.findOne(n => n.type === "INSTANCE" && n.name.toLowerCase().includes("icon"));
-
-// Step 3: Clone the icon
-const myIcon = iconSource.clone();
-
-// Step 4: Swap to the desired icon variant
-// First, find all available icon variants:
-const iconComp = iconSource.mainComponent;
-const iconSet = iconComp.parent; // the component set
-const targetVariant = iconSet.children.find(v => v.variantProperties?.Icon === "deploy");
-if (targetVariant) myIcon.swapComponent(targetVariant);
-
-// Step 5: Clean up the helper button (we only needed it for the icon)
-helpBtn.remove();
-
-// Step 6: Place the icon where you need it
-targetFrame.appendChild(myIcon);
-
-// ICON BACKGROUND PATTERN (for stat card icons):
-// 40x40 frame, cornerRadius 10, VERTICAL center layout, 11px padding all sides
-// Fill MUST be bound to a zcat color variable — NEVER hardcoded RGB
-const iconBg = figma.createAutoLayout("VERTICAL", {
-  name: "Icon BG",
-  counterAxisAlignItems: "CENTER",
-  primaryAxisAlignItems: "CENTER",
-  paddingTop: 11, paddingBottom: 11, paddingLeft: 11, paddingRight: 11
-});
-iconBg.resize(40, 40);
-iconBg.cornerRadius = 10;
-bindFill(iconBg, "color/bg/brand-subtle"); // use a zcat variable!
-iconBg.appendChild(myIcon);
-myIcon.resize(18, 18);
-
-// NEVER use emoji (🚀, ⚡, 📁) or Unicode (▶, ✕, ▾, ●, ←) as icons.
-// ALWAYS use zcat stroke icons via this clone+swap pattern.
+// The stroke arrives bound to BODY/Icons/Static/Primary. Rebind ONLY to change role:
+const iconSecondary = await requireVar("9a6e973050f37a6629a57920cca8ef3bbc40c021", "BODY/Icons/Static/Secondary");
+const vec = icon.findOne(n => n.strokes && n.strokes.length > 0);
+if (!vec) throw new Error("icon instance has no stroked vector");
+bindStroke(vec, iconSecondary);
 ```
+
+**Icon slots inside components** are a different mechanism. A property of type
+`INSTANCE_SWAP` (e.g. Link's `Change Icon Left`) takes a main-component reference:
+
+```javascript
+const target = await requireComp("dd0a2337f62c69097168dd4dd9ca578e0d87d186", "Arrow Right");
+setProps(linkInstance, { "Change Icon Left": target.id });
+```
+
+**ICON BACKGROUND PATTERN** — only where an icon BG genuinely serves the content;
+never add one to every card reflexively.
+
+```javascript
+const cardSurface = await requireVar("07b804765f3b327cc43681a59f5ca690685f4f63", "CARDS/Bg Default/Body Bg");
+const iconBg = figma.createAutoLayout("VERTICAL", {
+  name: "Icon BG", counterAxisAlignItems: "CENTER", primaryAxisAlignItems: "CENTER",
+  paddingTop: 12, paddingBottom: 12, paddingLeft: 12, paddingRight: 12
+});
+iconBg.resize(40, 40);        // BOTH axes — fixing width only gives the 40x18 collapse bug
+iconBg.cornerRadius = 10;
+bindFill(iconBg, cardSurface);
+iconBg.appendChild(icon);
+icon.resize(16, 16);
+```
+
+For coloured icon backgrounds use the `BADGE/Background/Sec- *` family
+(`Sec- Primary` is subtle **blue** despite the name; also `Sec- Green`, `Sec- Orange`,
+`Sec- Red`). Their keys are not yet in the key table — resolve via
+`search_design_system` and add them, never guess.
+
+NEVER use emoji or Unicode glyphs as icons. Use a catalog entry.
 
 #### COMPONENT GOTCHAS
 
@@ -1056,6 +1080,22 @@ FRAME-type children you manually added.
 
 **Progress Bar fill** — fill width must be calculated as percentage of parent
 track width AFTER layout settles: `fillNode.resize(trackNode.width * 0.41, 6)`.
+
+**Double field** (`9e7f5074afab3832b227c16aa1b342a18186c9c0`) — a Dropdown + Text Box
+that form ONE logical field. It exposes only `Type`=Front/Backside. Verified live: both
+variants are 36px tall and contain **zero** text nodes, i.e. it is authored deliberately
+label-less. Three traps, all of which render wrong while 4f still reports clean:
+
+| Trap | Wrong | Right |
+|---|---|---|
+| Label | `Label=true` on BOTH nested children → two labels overflowing a 36px frame | `Label=true` on the **leading** child only (so the label sits at the pair's left edge); `Label=false` on the trailing one |
+| Height | the variant pins both children to **FIXED 36px**, so an enabled label renders outside the frame and the frame still reports `h=36` | labelled child `layoutSizingVertical = "HUG"`, then `counterAxisAlignItems = "MAX"` on the row so the unlabelled 36px sibling bottom-aligns — both inputs share one baseline |
+| Seam | overriding `itemSpacing` to a positive value → two separate borders with a visible gap | inherit the component's `itemSpacing = -1`, which overlaps the two 1px borders into a single shared seam (children sum to 1px MORE than the frame width) |
+
+**General rule this generalises to:** do NOT override a component's own layout values
+(`itemSpacing`, padding, sizing modes) unless the design demands it. A silent layout
+override keeps colours bound and text styled, so every technical check passes while the
+render is broken. See the drift check in 4f.
 
 #### PAGE LAYOUT RECIPES
 
@@ -1438,7 +1478,7 @@ if (manualElements.length > 0) issues.push("FAIL: " + manualElements.length + " 
 
 // CHECK 2: Container background fill preserved
 const container = screenFrame.findOne(n => n.name === "Container");
-if (container && container.fills.length === 0) issues.push("FAIL: Container fills are empty — must keep color/bg/surface fill");
+if (container && container.fills.length === 0) issues.push("FAIL: Container fills are empty — must keep its bound Container Bg fill");
 
 // CHECK 3: Component instances exist (should be > 0, typically 10+)
 const instances = screenFrame.findAll(n => n.type === "INSTANCE");
@@ -1548,8 +1588,28 @@ if (container) {
       });
     }
   });
-  if (manualHexCount > 0) issues.push("FAIL: " + manualHexCount + " manual elements have hardcoded fill/stroke — bind to zcat color variables (color/bg/*, color/border/*, color/text/*)");
+  if (manualHexCount > 0) issues.push("FAIL: " + manualHexCount + " manual elements have hardcoded fill/stroke — bind to zcat color variables (BODY/*, CARDS/*, TABLE/*, INPUT FIELDS/* — see the key table)");
 }
+
+// CHECK 10: INSTANCE LAYOUT DRIFT — a silent override renders wrong while every
+// colour/text/variant check still passes. Compare each instance's layout against its
+// main component and flag differences we did not deliberately intend.
+const drift = [];
+for (const inst of instances) {
+  let mc;
+  try { mc = await inst.getMainComponentAsync(); } catch (e) { continue; }
+  if (!mc) continue;
+  const src = (mc.parent && mc.parent.type === "COMPONENT_SET")
+    ? (mc.parent.children.find(v => v.name === mc.name) || mc) : mc;
+  if (!src || src.layoutMode === "NONE" || !src.layoutMode) continue;
+  const fields = ["itemSpacing", "paddingTop", "paddingRight", "paddingBottom", "paddingLeft",
+                  "counterAxisAlignItems", "primaryAxisAlignItems"];
+  for (const f of fields) {
+    if (typeof src[f] === "undefined") continue;
+    if (inst[f] !== src[f]) drift.push(inst.name + "." + f + ": " + src[f] + " -> " + inst[f]);
+  }
+}
+if (drift.length) issues.push("WARN: " + drift.length + " instance layout overrides (verify each is intentional): " + drift.slice(0,10).join(", "));
 
 // REPORT
 if (issues.length === 0) {
