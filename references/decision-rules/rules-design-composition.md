@@ -605,6 +605,24 @@ After building each screen, audit every area and actively improve anything that 
 
 ---
 
+## Composition Critique — Design Quality Questions
+
+After fixing bugs and before showing the screen, run this composition critique. These questions go beyond "is it technically correct" to "is it actually good design."
+
+**Ask yourself:**
+
+1. **Focal point** — Does the user's eye land on the most important content first? Or does everything compete equally for attention?
+2. **Visual hierarchy** — Can a new user scan this page and understand the structure in 3 seconds? Are primary actions obvious and secondary actions subdued?
+3. **Visual monotony** — Does the page look like a stack of identical cards? Vary card sizes, use multi-column layouts, mix card types (stat card ≠ info card ≠ table card). Not every section needs a card — some content works better as direct elements with spacing
+4. **Card overuse** — Did you wrap every section in Card BG just because the component exists? Cards should group related content that benefits from visual separation. A page where everything is a card is the same as a page where nothing is
+5. **Whitespace intentionality** — Is the spacing creating rhythm and grouping, or is it just default gaps? Larger gaps between sections, smaller gaps within sections. The spacing should communicate structure
+6. **Content density** — Does the density match the user's task? A monitoring dashboard needs density. A settings page needs breathing room. A detail page needs both — dense data in some sections, spacious forms in others
+7. **Senior designer test** — Would a senior product designer look at this and say "ship it"? Or would they redesign the layout? If the answer is "they'd rearrange sections, change the grouping, adjust emphasis" — do that now
+
+**If any answer reveals a problem, fix it within the 2-round polish limit. Composition-only changes — reorder, regroup, adjust emphasis. Never detach components during critique fixes.**
+
+---
+
 ## Visual Polish Checklist
 
 Apply to EVERY screen before showing:

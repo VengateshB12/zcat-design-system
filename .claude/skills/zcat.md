@@ -382,11 +382,19 @@ For each element in the screen:
 - **Decide a SINGLE Size variant for the screen's action bar** — all buttons, text boxes, and dropdowns in the same row MUST use this same Size. Default to `"Default"` unless the context calls for compact (`"Small"`) or spacious (`"Large"`)
 - If no exact component match exists: compose from atoms or note as "custom frame using zcat tokens"
 
-### 4b. Clarifying Questions
+### 4b. Clarifying Questions + Composition Decisions
 
 Read `references/decision-rules.md` and check for ambiguous design choices.
 
-Common questions to ask (ONLY ask when genuinely ambiguous — don't over-ask):
+**Composition decisions (decide yourself, inform the user — don't ask):**
+
+- What is the focal point of this page? What should the user see first?
+- Should content be grouped in cards, or does direct placement with spacing work better? Not every section needs a card — use cards when visual separation helps, not as a default wrapper
+- Should detail sections use multi-column layout? (YES for 2+ info groups, NO for sequential forms)
+- What is the section flow? (stats → detail → table? or table-first? depends on user task)
+- Is the density appropriate? (monitoring = dense, settings = spacious, detail = mixed)
+
+**Genuinely ambiguous questions (ask the user — ONLY when truly ambiguous):**
 
 - "This screen shows a list of [items]. Should I use a **data table** (best for dense data with sortable columns) or **cards** (best for visual content with images)? Or **both** with a view toggle?"
 - "For creating a new [item], should I use a **popup modal** (quick, stays in context) or a **full-page form** (more space, complex forms)?"
@@ -1335,7 +1343,13 @@ Show to user ←─────────────┘
 
 **Two types of fixes in the same pass:**
 - **Bug fixes:** bind unbound colors, fix HUG heights, add missing elements, correct variants, fix overflow, set active states, fix button sizes, add missing three-dot menus
-- **Enhancements (composition-only):** reorder sections, adjust spacing, add icon BGs where meaningful (not forced), balance action bars, improve typography hierarchy. NEVER detach/rebuild/unbind components
+- **Enhancements (composition-only):** reorder sections for better hierarchy, adjust spacing to create rhythm and grouping, add icon BGs where meaningful (not forced), balance action bars, improve typography hierarchy, adjust content density to match the user task, break visual monotony (not every section should look identical), ensure focal point draws the eye to the most important content. NEVER detach/rebuild/unbind components
+
+**Composition critique (quick check):**
+- Does the page have a clear focal point, or does everything compete equally?
+- Is there visual monotony — identical cards stacked vertically? Vary layout, size, or grouping
+- Would a senior designer ship this layout, or would they rearrange sections and adjust emphasis?
+- Is card usage justified — does every Card BG serve a grouping purpose, or are some just wrappers?
 
 **After every fix → re-verify:** auto-layout intact? Colors still bound? Components not broken? No new overflow?
 

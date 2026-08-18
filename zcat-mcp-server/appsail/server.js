@@ -247,10 +247,41 @@ function buildServer() {
       title: "Get the zcat build workflow",
       description:
         "The complete step-by-step workflow for turning a wireframe, PRD, or " +
-        "description into a Figma screen. Read this before any design task.",
-      inputSchema: {},
+        "description into a Figma screen. Call without a section to get the " +
+        "table of contents, then request specific sections as needed.",
+      inputSchema: {
+        section: z
+          .string()
+          .optional()
+          .describe(
+            "Optional section filter: 'hard rules', 'component key', " +
+            "'phase 0', 'step 1', 'step 2', 'step 3', 'step 4', 'build', " +
+            "'validation', 'polish', 'recipe', 'review', 'reference'"
+          ),
+      },
     },
-    async () => asText(readText("workflow.md"))
+    async ({ section }) => {
+      const doc = readText("workflow.md");
+      if (!section) {
+        const headings = doc
+          .split("\n")
+          .filter((l) => /^#{1,3} /.test(l))
+          .map((l) => l.replace(/^#+\s*/, ""));
+        return asText(
+          "# zcat Build Workflow — Table of Contents\n\n" +
+          "Call zcat_get_workflow with a `section` parameter to retrieve " +
+          "specific sections (e.g. 'hard rules', 'step 4', 'recipe').\n\n" +
+          headings.map((h) => `- ${h}`).join("\n")
+        );
+      }
+
+      const wanted = section.trim().toLowerCase();
+      const blocks = doc
+        .split(/\n(?=#{1,3} )/)
+        .filter((b) => b.toLowerCase().includes(wanted));
+
+      return asText(blocks.length ? blocks.join("\n\n") : doc);
+    }
   );
 
   server.registerTool(

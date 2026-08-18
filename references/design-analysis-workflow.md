@@ -216,7 +216,7 @@ INTERACTIONS/LINKS:
   - [Table row click] → navigates to [where]
 ```
 
-**CRITICAL: Every single functional element in this inventory MUST appear in the final design. This is the contract. Design creativity = HOW it looks, not WHAT appears.**
+**CRITICAL: Every single functional element in this inventory MUST appear in the final design. This is the contract. Functional fidelity = 100% (every feature present), spatial fidelity = 0% (layout, grouping, hierarchy, emphasis are all creative decisions). Design creativity includes composition, grouping, visual hierarchy, information density, and emphasis — not just visual styling.**
 
 ### Step 1.3 — Map Page Relationships
 
@@ -254,9 +254,42 @@ Scan every page for information that appears MORE than once:
 
 For each duplicate: decide MERGE or REMOVE. Note the decision.
 
-### Step 1.6 — Design Improvement Decisions
+### Step 1.6 — Composition Direction + Design Improvements
 
-For EACH page, note what the wireframe does WRONG or could be BETTER:
+Before mapping to components, decide the **composition strategy** for each page. This is where design creativity lives — not in the spec template later.
+
+**Answer these composition questions for each page:**
+
+```
+COMPOSITION DIRECTION:
+━━━━━━━━━━━━━━━━━━━━━
+Page: [Page Name]
+
+1. PRIMARY GOAL: What is the user trying to DO on this page?
+   → [e.g., "Find and manage databases", "Configure a specific connection"]
+
+2. FOCAL POINT: What should the user's eye land on FIRST?
+   → [e.g., "The status of each database", "The connection string"]
+
+3. INFORMATION HIERARCHY: Rank content by importance (1 = most):
+   → 1. [most important content]
+   → 2. [second most important]
+   → 3. [supporting context]
+   → 4. [metadata / less-used]
+
+4. DENSITY: How much information does this page carry?
+   → [Sparse (few data points, lots of space) / Dense (many fields, compact)]
+
+5. GROUPING STRATEGY: How should content be organized?
+   → [Cards per section? Single card with internal dividers? Multi-column?
+      Not every section needs a card — use cards when content needs visual
+      separation from surroundings, not as a default wrapper for everything]
+
+6. SECTION RHYTHM: How do sections flow vertically?
+   → [Stat overview → detail sections → table? Or table-first? Why?]
+```
+
+**Then note wireframe improvements:**
 
 ```
 PAGE IMPROVEMENTS:
@@ -420,6 +453,19 @@ For EVERY page and popup identified in Phase 1, write a complete build spec file
 - counterAxisSizingMode: FIXED
 - primaryAxisSizingMode: AUTO
 
+## Composition Direction (from Step 1.6)
+- Focal point: [what draws the eye first]
+- Hierarchy: [ranked content importance]
+- Grouping: [card strategy — not every section needs a card]
+- Section flow: [vertical rhythm rationale]
+- Density: [sparse/dense — affects spacing and card usage]
+
+NOTE: The children below list WHAT to build and WHICH components to use (hard
+constraints). The ARRANGEMENT, grouping, and visual emphasis are composition
+GUIDANCE — the agent may adjust grouping, reorder sections, combine or split
+cards, and change column layouts if it improves the design. Functional coverage
+(every feature appears) is mandatory; spatial layout is flexible.
+
 ## Container Children (in order, top to bottom)
 
 ### Child 1: [Name — e.g., "Stat Cards Row"]
@@ -559,7 +605,7 @@ Default is **auto-proceed** — most users want results, not checkpoints.
 
 ## Phase 3: Build (one page at a time, spec-driven, autonomous verify)
 
-**Goal: Minimize user effort. The agent reads the page spec, builds exactly what it says, verifies internally, fixes, and shows ONLY the final verified result.**
+**Goal: Minimize user effort. The agent reads the page spec, follows hard constraints exactly and uses composition guidance as a starting direction, verifies internally, fixes and improves, and shows ONLY the final verified result.**
 
 ### Step 3.1 — Build Order
 
@@ -579,12 +625,13 @@ For EACH page:
 2. WIREFRAME → Show low-fi wireframe via show_widget for user approval
    (This is the ONLY user checkpoint before the final result)
 
-3. BUILD → Execute in Figma following the spec EXACTLY
-   - Import components using the keys from the spec
-   - Set properties using the values from the spec
-   - Place children in the order listed in the spec
-   - Bind colors to the variables listed in the spec
-   - Set text to the content listed in the spec
+3. BUILD → Execute in Figma following the spec
+   - HARD CONSTRAINTS (follow exactly): component keys, variable bindings,
+     component properties, column types, feature list, text content
+   - COMPOSITION GUIDANCE (improve if you see a better arrangement):
+     section order, grouping strategy, card usage, column layouts
+   - Functional coverage is mandatory — every feature in the spec MUST appear
+   - Spatial layout is flexible — rearrange, regroup, adjust emphasis
    - Use 2-3 use_figma scripts max
 
 --- SCREEN POLISH & VERIFY (autonomous — user does NOT see this) ---
