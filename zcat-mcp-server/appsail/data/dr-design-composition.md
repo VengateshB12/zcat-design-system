@@ -605,9 +605,20 @@ After building each screen, audit every area and actively improve anything that 
 
 ---
 
-## Composition Critique — Design Quality Questions
+## Composition Critique — A GATE, Not a Checklist
 
-After fixing bugs and before showing the screen, run this composition critique. These questions go beyond "is it technically correct" to "is it actually good design."
+After fixing bugs and before showing the screen, run this critique. It is **blocking**: the screen cannot be shown until it passes or you record the no-change line below.
+
+**Judge the RENDERED SCREENSHOT, not your plan.** Look at it as a product designer seeing it for the first time, with no knowledge of the composition you intended.
+
+**This reasoning is FORBIDDEN:**
+> "The Composition Direction was good, therefore the final UI is good."
+
+A correct composition decision is not evidence of a resolved screen. The most common failure is a right plan that renders flat — because typography lost its weight, surfaces lack contrast, or an intended accent never got built. Evaluate the pixels.
+
+**Two hard automatic failures:**
+- **All-Regular typography.** If every authored text node is Regular weight, there is no hierarchy regardless of size differences. FAIL.
+- **Cards that don't read as cards.** If card surface and page background are near-identical with no border/elevation contrast, the containment is doing nothing. FAIL.
 
 **Ask yourself:**
 
@@ -617,9 +628,19 @@ After fixing bugs and before showing the screen, run this composition critique. 
 4. **Card overuse** — Did you wrap every section in Card BG just because the component exists? Cards should group related content that benefits from visual separation. A page where everything is a card is the same as a page where nothing is
 5. **Whitespace intentionality** — Is the spacing creating rhythm and grouping, or is it just default gaps? Larger gaps between sections, smaller gaps within sections. The spacing should communicate structure
 6. **Content density** — Does the density match the user's task? A monitoring dashboard needs density. A settings page needs breathing room. A detail page needs both — dense data in some sections, spacious forms in others
-7. **Senior designer test** — Would a senior product designer look at this and say "ship it"? Or would they redesign the layout? If the answer is "they'd rearrange sections, change the grouping, adjust emphasis" — do that now
+7. **Typography hierarchy** — Is there real WEIGHT contrast (Semi Bold headings/values vs Regular body), or only size differences? Size alone is not hierarchy
+8. **Proportions** — Do section and column sizes reflect actual importance, or is everything equal-width by default?
+9. **Viewport allocation** — Does content stop at ~50-60% of the height leaving accidental emptiness below? Fix with better proportions, larger primary surfaces, or more rows — never with invented filler content
+10. **Designed or assembled** — Does this look like a designer made it, or like components were placed in a vertical column?
+11. **Senior designer test** — Would a senior product designer look at this and say "ship it"? Or would they redesign the layout? If the answer is "they'd rearrange sections, change the grouping, adjust emphasis" — do that now
 
-**If any answer reveals a problem, fix it within the 2-round polish limit. Composition-only changes — reorder, regroup, adjust emphasis. Never detach components during critique fixes.**
+**Then do exactly one of two things:**
+
+- **Problems found:** fix them (composition-only — reorder, regroup, adjust emphasis, rebind typography; never detach), re-screenshot, and re-run this critique. Max 2 rounds. After round 2, show what you have and state plainly what remains unresolved.
+- **No problems found:** record this line verbatim in your summary:
+  > "No meaningful design improvement identified; keeping the current composition."
+
+**Never force changes just to make the UI look more creative.** A simple form that is already clear and easy to use needs nothing. The test is whether the composition is *intentional for this task* — not whether it is unusual.
 
 ---
 

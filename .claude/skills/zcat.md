@@ -31,7 +31,7 @@ Follow this workflow exactly, step by step.
 16. **Screenshots are reference only** — never copy exact designs or use them to justify manual builds
 17. **Primary tabs → Sub Header FIRST** — NEVER place primary (whole-page) tabs in Container. Container tabs are ONLY for secondary/section-scoped tabs
 18. **Pause on errors** — if a component doesn't import or properties throw, STOP and ask the user. Never burn tokens on a failing approach
-19. **100% wireframe coverage** — EVERY tab, menu item, button, field, column from the wireframe MUST appear. NEVER silently drop features. Design creativity = HOW it looks, not WHAT appears
+19. **100% wireframe coverage** — EVERY tab, menu item, button, field, column from the wireframe MUST appear. Composition freedom covers HOW required information is presented, never WHETHER required functionality exists. You may reposition, resize, re-treat, merge, or demote a required element; you may NOT delete it. To remove one, STOP and get explicit user approval FIRST — telling the user afterwards is a violation
 20. **Component limits ≠ feature limits** — if Tab supports 5 but wireframe shows 7, DETACH and add more manually with matching styling. NEVER remove content to fit a component's constraints
 21. **Design composition** — wireframes define features, not visual design. Apply visual hierarchy (24px bold stat values, 16px section headings, 12px labels), section grouping (Card BG, bordered frames), multi-column layouts for detail pages, consistent spacing (16px card gap, 24px section gap, 12px heading-to-content). Use Design Uniforms from decision-rules.md
 22. **Label:Value = horizontal, ALWAYS** — for read-only info (connection details, metadata, config summaries), use General Details component or Key Value Pair (Layout=Horizontal). Label LEFT, value RIGHT. NEVER stack label on top with value below. General Details is a pre-built block; Key Value Pair is the individual row component
@@ -47,7 +47,7 @@ Follow this workflow exactly, step by step.
 32. **Use stroke icons everywhere** — wherever an icon is needed (stat cards, action buttons, navigation, status indicators), use a zcat stroke icon from the library via the clone+swap pattern. Even if the exact icon doesn't exist, use the closest available icon and tell the user: "I used [icon name] as a placeholder — swap it manually in Figma if needed." NEVER skip icons or substitute emoji/Unicode
 33. **Action bar balance** — when a button appears on the right side of an action bar or section header, ALWAYS provide a supporting element on the left side (Search component, section heading text, breadcrumb, filter dropdowns). NEVER leave a lonely right-aligned button with empty space on the left. This applies to Container action bars, card headers, section headers, and any horizontal row with a right-aligned action. Think MORE than the wireframe — enrich with Search, filters, or descriptive text
 34. **Design beyond wireframes** — wireframes are MINIMUM requirements. You MUST improve them: (a) flat wireframe cards → use Card BG with icon backgrounds, color variables, visual hierarchy (24px bold values, 12px labels), (b) wireframe tabs inside content → move primary tabs to Sub Header, (c) plain text lists → use proper components with badges, icons, spacing, (d) empty action bars → add Search, filters, or headings alongside buttons. The final design should look like a polished product, not a wireframe with components swapped in
-35. **Eliminate duplicate information** — if the wireframe shows the same data in two places (e.g., Storage as a stat card AND a separate storage graph card), MERGE them into one creative card or REMOVE the redundant one. Think about what value each element adds — don't blindly copy every wireframe element. Tell the user: "I merged the storage stat card and storage graph into one card since they show the same data"
+35. **Eliminate duplicate information** — if the wireframe shows the same data in two places (e.g., Storage as a stat card AND a separate storage graph card), MERGE them into one card and tell the user what you merged. **Outright REMOVAL requires approval first** — propose it and wait. "Don't blindly copy every wireframe element" means rethink presentation, NOT delete content
 36. **Use Code Block / Code Editor component** — for SQL consoles, query editors, code views, JSON displays, and any monospace text area, ALWAYS use the Code Block component or build a code editor frame with `color/bg/sunken` fill, `color/border/default` border, and Roboto Mono font. NEVER build a plain text frame for code content. See component-manifest.json for Code Block details
 37. **Master-detail = Side Menu pattern** — when a wireframe shows a list on the left and detail on the right that changes when you click a list item (e.g., Schema page: table list → column schema), ALWAYS use the Side Menu / master-detail layout pattern from Recipe 4. NEVER copy the wireframe's flat two-panel layout. Use Sidebar List Panel or Nav Button list + Divider + detail panel
 38. **Fill ALL dropdown/input content** — EVERY dropdown must show a realistic selected value or meaningful placeholder from sample-data.md. NEVER leave dropdowns showing "Select List", "Enter Label Text", or default placeholder text. Same for text inputs — fill with realistic data that matches the screen context
@@ -70,43 +70,104 @@ Follow this workflow exactly, step by step.
 
 ## COMPONENT KEY TABLE (Import directly — skip search_design_system for these)
 
-Use `importComponentSetByKeyAsync` for `set` types, `importComponentByKeyAsync` for `comp` types.
+**SOURCE OF TRUTH / PRECEDENCE.** This table is a convenience mirror of `componentKeyMap` in `references/component-manifest.json`, which is itself generated from the LIVE library. If this table and `componentKeyMap` ever disagree, **`componentKeyMap` wins** — and the disagreement is a bug: run the audit in `references/library-audit.md` and re-sync. Never hand-edit either one from a component's *description* text; descriptions in the library are stale and disagree with the real property definitions.
 
-| Component | Key | Type | Essential Properties |
+**GENERATION.** All keys below are the CURRENT published generation (verified present in the library search index). A superseded generation of many of these components is still resolvable by key but is NOT in the published index — never use those keys for new work. See "Legacy generation" below.
+
+Use `importComponentSetByKeyAsync` for `set` types, `importComponentByKeyAsync` for `comp` types.
+Verified against live `componentPropertyDefinitions` on 2026-08-18.
+
+| Component | Key | Type | Verified variants / properties |
 |-----------|-----|------|---------------------|
-| Layout | `c321d468b0231e052b921026407ff896bdf2c55e` | set | type=Default/No Left Menu, Show Header/Sidemenu/Sub Header booleans |
-| Button | `1e04478db049373eb096060a60ee7bbbc4da4e9a` | set | Type=Default Button/Split Button, Variant=Fill/Outline/Ghost, Size, Color, State |
-| Text Box | `411f52c2e02879cd0cd7a259933325c7cbc04b5c` | set | Size, State, Content=Placeholder/Filled, Has Label, Icon Left |
-| Drop down | `021a6653c106f277f2481ee722ed93d4137dc3a6` | set | Size, State, Content, Has Label, Icon Left |
-| Table AI | `f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07` | set | Style=Stretch/Boxy, Columns=3-8, Show Checkbox/Threedot/Pagination booleans, Col 1-8 instance swaps. ZERO-DETACH — configure entirely via setProperties(). See TABLE AI section below |
-| Badge | `158e4b6d656a62d4244efc4e5583794044328d3a` | set | Type=Secondary (default for tables, RARELY use Primary), Style=Subtle/Solid, Color=8 values, Size=sm/md |
-| Tag/Chip | `69274b61923231a45f559e59bed169c121d9bc45` | set | Color, Size, Removable="true"/"false" |
-| Checkbox | `f6f4ae2426b2e9d6c3ee7fc3727e06054b0f5d58` | set | Checked=Unchecked/Checked/Indeterminate, State, Show Label |
-| Toggle | `35016f9e4ebd41a83c952fa04c3c47a1f36d0ec4` | set | Size, State=Off/On, Show Label |
-| Tabs | `4851c5917e3ca7aca6aa65f44d49d83b9594f3f0` | set | Type=Primary/Secondary/Code/Pill, Count=2-5 |
-| Avatar | `8f3943b8ca40c63a40109681a4a84ee0f02ed9da` | set | Size, Shape |
-| Search | `8fe1faec85e92db3d43b66c5f30eaf28e6de9e91` | set | Size, State |
-| Pagination | `e38e2e4c72af7526c8f2c07d0621dbea85aba8b8` | set | — |
-| Container Header | `c1e72c452cc937aa5dfc80c6308008c5038bc10f` | set | Type=Feature Name/Search/Tab, Show Primary/Secondary/Outline Button, Show Filter 1-3 |
-| Accordion | `ea1a7685e93507b3e4da3bcdbbfa1dd3c28c0ba4` | set | State=Collapsed/Expanded/Disabled |
-| Card BG | `f94642162a404b4dd9b0c2c9e8c7e3d1a8ba330e` | set | State=Default/Hover/Selected/Disabled |
-| Attention Box | `af7fe6fd04dec3fb55f360c2094c2c8b2585f219` | set | Type=Info/Success/Warning/Error/Neutral |
-| Stepper | `d9c4ab7dc9b1a1f10c8de0b5d8281a00f4b27b90` | set | — |
+| Layout | `c321d468b0231e052b921026407ff896bdf2c55e` | set | `type`=Default/No Left Menu (lowercase!); bools Show Header/Show Service Menu/Show Sidemenu/Show Sub Header/Container left Menu/Empty Sates |
+| Button | `5819eb825dad40876f31545c93804195f11ea535` | set | Type=Default Button/Split Button/Navigation Buttons; Variant=Fill/Outline/Grey/Ghost/Ghost Grey; Size=Default/Small/Extra Small/Large; Color=Primary/Success/Danger/Grey; Content=Default/Icon Button; State=Default/Hover/Pressed/Disabled/Split Hover/Split Disabled/Button Disabled; Radius=Default/Rounded |
+| Text Box | `86d2922b50fd392993e764897307679a90868350` | set | Type=Text Field/Textarea; State=Default/Hover/Active/Disabled/**Filled**/Error; Size=Default/Small/Extra Small; bools `optional`/`Label`/`Label Icon`/`Icon Left`/`Icon Right` |
+| Dropdown | `3be1bec4288c412f93ed636e35158b9c1f191e0e` | set | Type=Default/Link Dropdown; State=Default/Hover/Error/Active/Disabled/Chips Filled/Filled; Size=Default/Small/Extra Small; bools `Label`/`Label Icon`/`Icon Left`/`Optional`/`Show Chip 2`/`Show Chip 3` |
+| Table AI | `f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07` | set | Style=Stretch/Boxy; Columns=3-8; Size=Default; bools Show Checkbox/Show Threedot/Show Pagination; swaps Col 1-8. ZERO-DETACH. See TABLE AI section |
+| Badge | `43e36112e3424d07337dd538025a7a53d1ec1c95` | set | Type=Primary/**Secondary** (Secondary in tables); Color=Primary/Grey/Purple/**Danger**/Disabled/**Info**/**Success**/**Warning**; Size=Default/Small/Dot. NOTE: colors are SEMANTIC — there is no Green/Red/Amber/Orange |
+| Chip | `521cb36aff97e00dc59f5c37b5f04a684b475930` | set | State=Default/Hover/Disabled; Size=Default/Small; bools `Icon Left`/`Close`/`Text`. No Color property |
+| Checkbox | `b9a92f9bb04c582561f041cbda39cd14e27d22af` | set | Checked=Unchecked/Checked/Indeterminate; State=Default/Hover/Disabled; bools `Title Text`/`Sub Text` |
+| Toggle | `90e1e6c78f80a75a7482711c809a34336027805b` | set | **Toggled**=Off/On (not "State=Off/On"); State=Default/Hover/Disabled; bools `Title text`/`Sub text` |
+| Tabs | `5ad363087bae85f4ef5f4d1355e80107f48d54c6` | set | Type=Primary/Secondary Default/Secondary Small/Secondary Extra Small/Code Tab; bools `Show Tab 3`/`Show Tab 4`/`Show Tab 5` → **max 5 tabs**. There is NO "Count" property and NO "Pill" type |
+| Avatar | `10995f8d4482e2fdf26d5496ff155a14a3299976` | set | Type=Icon/Icon Filled/Initials/Men/Women; Size=Small/Default/Large; State=Default/Disabled; bool `Status` |
+| Search | `cef60eea85a7fb5c9939acde23efce24f6d55fea` | set | State=Default/Hover/Active/Filled/Disabled; Size=Default/Small |
+| Pagination | `e2e8d2df4e0e1de88032ff157aeb1dd51b2d370b` | **comp** | no properties |
+| Container Header | `c1e72c452cc937aa5dfc80c6308008c5038bc10f` | set | Type=Feature Name/Search/Tab; bools Show Badge/Info Icon/Description/Tab/Link Box/Filter 1-3/Primary Button/Secondary Button/Outline Button |
+| Accordion | `a59f918adc4134fed68c06bd36684577019c3f0a` | set | State=Default/Hover/**Active** (there is NO "Collapsed"/"Expanded"); bools `Heading`/`Sub Text`/`Show Icon` |
+| Card | `f94642162a404b4dd9b0c2c9e8c7e3d1a8ba330e` | set | State=Default/Hover/Selected/Disabled ONLY. There is NO Color property |
+| Attention Box | `af7fe6fd04dec3fb55f360c2094c2c8b2585f219` | set | **Type**=Message/Alert; **Color**=Info/Success/Warning/Danger/Default; bools Show Icon/Show Sub Text/Hide Button |
+| Stepper | `2c2cd669431492f516b4c9a2a4fde585cfd74116` | **comp** | bools `Step 4`/`Step 5` |
 | Popup Blur | `825e3c4aa551ccd56ec61d6f5059dda1e92abbc5` | comp | Backdrop rectangle (1582x860). NOT a dialog |
-| Popup | `4200a0aef4a25f7cdbdf628575c41347c9e8a8fe` | comp | The actual dialog |
-| Empty State | `8aed0a243553aeb0ed6ad2f9a6387c8a5764c5f9` | comp | Show Illustration/Heading/Description/Primary Button booleans |
-| Dropdown Menu | `ba5cf29d43170458cbdf49ea186e6ff6e50579e0` | set | Type=Default/With Icons/Grouped. Detach to set real items |
-| General Details | `6dd180e6490c68971c8c9b5cc963349b711a5e5d` | comp | Pre-built KV pair display block. Show Heading boolean |
-| Key Value Pair | `2d82f5c0a6c24ab0370c320d0044cc8346666077` | set | Layout=Horizontal/Vertical (ALWAYS use Horizontal), State |
-| Sidebar List Panel | `c042e030f9a1755279cd389302cf6f3f693f6707` | comp | 300px sidebar with grouped menu items. Detach to customize |
+| Popup | `33c77b98d939494dc272bc94d0b8d726eb870346` | **set** | `type`=Default/With Scroll/With Description/Only Word/With Note/With View More/With View More Expanded. Default=3 field slots; With Scroll=6 field slots |
+| Full Page Popup Header | `c1995f32d539d54afe0ffdb3ea21eaf01c02f43c` | comp | header for full-page/large popup pattern |
+| Empty State | `03321dc06395aa6b94783d0289637de8ddc82de0` | comp | bools Show Illustration/Heading/Description/Primary Button/Outline Button |
+| Dropdown Menu | `ba5cf29d43170458cbdf49ea186e6ff6e50579e0` | set | Type=Default/Multi Select/Multi Select with Button/Default with Button/Empty 1/Empty 2; Size=Default/Small; bool Show Search box |
+| General Details | `6dd180e6490c68971c8c9b5cc963349b711a5e5d` | comp | bool Show Heading. Pre-built KV display block |
+| Key Value Pair | `2d82f5c0a6c24ab0370c320d0044cc8346666077` | set | State=Default/Hover/Error/Disabled; bools Label/Optional/info/Minus/Manual Add/Third filed/Drag and drop. **There is NO "Layout" property** |
+| Sidebar List Panel | `c042e030f9a1755279cd389302cf6f3f693f6707` | comp | bools Show Header/Search/Headings/Section 1-3 |
+| Divider | `ae8ace032eb5e3ff8b86424a97be7a3728bde3bd` | set | State=Default/Active/Completed/Disabled. IS importable — do not hand-build dividers |
+| Radio | `ab6af71593734fe402bcb0a9106c198083ebd3c3` | set | Selected=Unselected/Selected; State=Default/Hover/Disabled; bools `Title text`/`Sub Text` |
+| Code Block | `24b627cef8b8b7cfeb0966ffcabcfc8c0b97ba9b` | set | `type`=Editor/Viewer |
+| Link | `937992145223c13dcefa819ba6513d1a291a5520` | set | Type=Link Text; State=Default/Hover/Pressed/Disabled; Size=Default/Small/Large/Extra Small; Color=Default/Primary |
+| Three Dot Menu | `a977f7f3121b5286e18021ef0cfdebb74adf6348` | comp | overflow trigger |
+| Table Multi Select | `ed95af8f3df5046f8cf6212bda5fc2cbfe910446` | comp | bulk-action bar |
+
+**Table AI column types** (instance-swap targets, swap via `swapComponent`):
+AvatarName `098e88732352f7b1fdafd205b7928ddd9686ac87` · Badge `f54ff134a0c90e39702568598321cb7c69ec3635` · Text `72d50704a2f6b388808c5d5f643636a3d1f3f261` · Date `5ea7672068a9a6f18396ae92ad0184a75bf254c4` · ExecutionStatus `9c1f1f05ea3b544b722b1b727a126834df658365` · IconText `e877af2d4127072bc9938b8cc61ad812891b86f0` · Button `abbc84ec3fe8eb71edc3db76441a969b827878d0` · Icon `eb970147ce7d1d59c8ac5c346d5dfb6b77a56baf` · Checkbox `825fd477e5fedf4626e1f7a75f88b3f7c6b6c201` · Threedot `ee1068af909656735939f69d0e7aeb4c7f35c081`
+
+These are internal to Table AI and CANNOT be imported by key. Get them from an existing Table AI instance's columns via `await col.getMainComponentAsync()`, then `swapComponent(thatComponent)`.
+
+**Legacy generation — NEVER use for new designs.** These keys still resolve but are superseded and absent from the published index. They exist only so pre-existing instances keep working. Their variant enums are INCOMPATIBLE (e.g. Badge Color=Green/Red/Orange instead of Success/Danger/Warning; Checkbox uses `Check type`/`Status` instead of `Checked`/`State`; Text Box State=Completed instead of Filled):
+`1e04478db049…` Button · `411f52c2e028…` Text Box · `021a6653c106…` Drop down · `158e4b6d656a…` Badge · `69274b619232…` Chip · `f6f4ae2426b2…` Checkbox · `35016f9e4ebd…` Toggle · `4851c5917e3c…` Tabs · `4200a0aef4a2…` Popup
+Dead keys (do not resolve at all): `8f3943b8ca40…` `8fe1faec85e9…` `e38e2e4c72af…` `ea1a7685e935…` `d9c4ab7dc9b1…` `8aed0a243553…`
 
 **Use `search_design_system` ONLY for:** icons (not in this table), and components you're unsure about.
 
-**Color variable names for manual frames:**
-- Backgrounds: `color/bg/surface`, `color/bg/raised`, `color/bg/sunken`, `color/bg/medium`
-- Text: `color/text/primary`, `color/text/secondary`, `color/text/placeholder`, `color/text/disabled`
-- Borders: `color/border/default`, `color/border/subtle`, `color/border/strong`
-- Interactive: `color/interactive/default`, `color/interactive/hover`
+## ZCAT VARIABLES AND TEXT STYLES (verified live — import by KEY, never by name)
+
+Library variables and text styles are NOT local to your file. `figma.variables.getLocalVariablesAsync()` and `figma.getLocalTextStylesAsync()` both return **empty** — looking up by name against them silently yields nothing and leads to hardcoded hex and Inter Regular fallbacks. Always import by key.
+
+**Color variables** (collection `Mode`):
+
+| Purpose | Name | Key |
+|---|---|---|
+| Text primary | `BODY/Text/Static/Primary` | `78d226f67f70b301e15211138d50f31c6e0b73f1` |
+| Text secondary | `BODY/Text/Static/Secondary` | `6ce27486a25197ca55bd13199d0b270ae669e507` |
+| Text disabled | `BODY/Text/Static/Disable` | `94023c2b1c06cb38be91c89825cf52bf5eff7cf7` |
+| Text on dark | `BODY/Text/Static/White` | `3d35e063ee0e6e70c3adeb2868c22cb1a498b2fc` |
+| Page background | `BODY/Background/Static/Body Bg` | `154a19caf1070577dbc2981738c6f2ef4096e55b` |
+| Page border | `BODY/Border/Static/Border` | `0dd61c592dea6f8a4a7ed8d71ed3c3bb51308ea0` |
+| Card surface | `CARDS/Bg Default/Primary` | `497de4a3445dd02172eeb981d292a9764f6aeaa8` |
+| Card sunken | `CARDS/Bg Default/Body Bg` | `07b804765f3b327cc43681a59f5ca690685f4f63` |
+| Card border | `CARDS/Borders/Default` | `3a79616196240745e0e84ced706f2563d6c609ac` |
+| Card border hover | `CARDS/Borders/Hover` | `2dbb51fbe56bbfd41d33ff8c6352188257789cb9` |
+| Card border selected | `CARDS/Borders/Selected` | `2b6696588ce6abb97a8ea63543b7f7b7e65f99c9` |
+| Elevation/shadow | `SHADOWS/Elevation/Default` | `eea9e7cd44a527cbcc91b4fb9fdefaa8d712a2c3` |
+| Accent / link | `BRANDING ICON/Icon Color/Blue` | `f9b5ad26a7c1a38c9182a5a83cee7c3d1ca20399` |
+| Icon primary | `BODY/Icons/Static/Primary` | `9a6e973050f37a6629a57920cca8ef3bbc40c021` |
+| Icon secondary | `BODY/Icons/Static/Secondary` | `c9e929a15eb73c96ef31c2960fe99e26e930bcbd` |
+
+**Text styles** — font family is **Inter** (NOT Zoho Puvi):
+
+| Style | Spec | Key |
+|---|---|---|
+| `✅ Headlines/H5` | 18/22 Semi Bold | `2c3007c5a4169e14a11ac9b2957b2f91b4f8c47b` |
+| `✅ Body/Body 2` | 16/20 Regular | `074ccbdf65f4bf9b35442414c8b7805b75078866` |
+| `✅ Body/Body 1` | 14/20 Regular | `ae9d89acf9bb02c56f54844d48ed0b7ff98adda2` |
+| `✅ Body/Body 3` | 12/16 Regular | `4c43eefb0c536e876ceb4426bf0a85d8b519026f` |
+| `✅ Body/Body 4` | 10/12 Regular | `15003632c724896c66fc7230e7bd775dda9ebcc7` |
+| `✅ Body/Subtitle 1` | 14/20 Semi Bold | `acb8f120bb531138d05850eb7965cf305a7681e6` |
+| `✅ Body/Subtitle 2` | 12/16 Semi Bold | `96bac9d6462a4aab339153f84cd5c9d58a5e0c2b` |
+| `✅ Body/Subtitle 3` | 10/12 Semi Bold | `69e33c4c77d99d315c87ebfda823cae589437808` |
+| `✅ Code Text/Code Body` | 12/20 Roboto Mono | `0950d4fb48c454573c3064da0c41f41216dfcb6a` |
+| `✅ Code Text/Code Subtitle` | 12/20 Roboto Mono SemiBold | `482373bf511056cb3a4c68e9488222d1b7bc89f4` |
+
+**Typography roles** — headings and emphasis MUST use a Subtitle/Headline (Semi Bold) style. Using a Regular style at a larger px is NOT hierarchy:
+- Page/section heading → `Headlines/H5` or `Body/Subtitle 1`
+- Stat value / emphasised number → `Headlines/H5` (never Body/Body 2 at 16px Regular)
+- Body text → `Body/Body 1`
+- Label / caption / table cell → `Body/Body 3`
+- Overline / tiny label → `Body/Subtitle 3`
 
 ---
 
@@ -381,12 +442,26 @@ Before mapping to components, determine the composition strategy. Components imp
 - Should detail sections use multi-column layout? (YES for 2+ info groups, NO for sequential forms)
 - What is the section flow? (stats → detail → table? or table-first? depends on user task)
 - Is the density appropriate? (monitoring = dense, settings = spacious, detail = mixed)
+- **How is the available viewport height intentionally allocated?** Decide explicitly: what earns above-the-fold space, roughly what share each section gets, where whitespace is doing work, and where more structure is genuinely warranted. A screen whose content stops at 50-60% of the viewport with accidental emptiness below is an unfinished composition. Fix it with better section proportions, larger primary surfaces, more rows, or honest vertical rhythm — **never by inventing filler content.**
 - What is the strongest alternative to the obvious/default layout, and why is your selected composition better?
+
+**Create/Edit interaction — follow the Catalyst pattern, do not re-decide it:**
+
+Catalyst uses a **popup/modal** for Create and Edit. When the established Catalyst pattern for a flow is a modal, preserve that interaction model and optimise the composition *inside* it. **Do not convert Create/Edit into a full page merely because composition freedom exists** — and note that a wireframe drawn as a page does not override the pattern; wireframes show fields, not interaction model.
+
+Escalate from normal modal to the large / full-page popup pattern (`Full Page Popup Header`) only when content genuinely demands it:
+- more than ~8 form fields, or content that cannot read comfortably at 548px width
+- a multi-step wizard with a Stepper
+- side-by-side content (form + live preview, form + schema browser)
+- embedded tables, code editors, or file browsers
+
+Otherwise use the normal Popup. For a taller-than-default form use `type=With Scroll` — height scrolls, so **do not detach merely to gain height**. Detach the Popup only to insert different content *kinds* (tabs, stepper, notes, tables) that the variants don't provide — and say so when you do.
+
+If an authoritative Catalyst reference shows a given flow as a full page, follow that reference. This is "match the established pattern", not "modal always".
 
 **Genuinely ambiguous questions (ask the user — ONLY when truly ambiguous):**
 
 - "This screen shows a list of [items]. Should I use a **data table** (best for dense data with sortable columns) or **cards** (best for visual content with images)? Or **both** with a view toggle?"
-- "For creating a new [item], should I use a **popup modal** (quick, stays in context) or a **full-page form** (more space, complex forms)?"
 - "This has [N] options for [field]. Should I use a **dropdown** (compact, many options) or **radio buttons** (all visible, fewer options)?"
 - "The [action] looks destructive. Should I add a **confirmation dialog** before proceeding?"
 
@@ -436,6 +511,96 @@ If the user says "revise", update the wireframe based on their feedback and re-r
 ### 4e. Build in Figma
 
 **IMPORTANT:** Before ANY `use_figma` call, you MUST load the `/figma-use` skill first. NEVER call `use_figma` without loading `/figma-use`.
+
+#### FAIL LOUD — mandatory helper prelude for EVERY build script
+
+A design-system lookup that quietly returns nothing is worse than a crash: it produces a screen that looks finished but has raw hex fills, Inter Regular text, and unset variants — and the validation pass can then "confirm" a broken screen. **Every build script MUST begin with these helpers and MUST use them for all component / variable / style / property / text access.**
+
+```js
+// ---- ZCAT fail-loud prelude (copy verbatim into every build script) ----
+async function requireSet(key, label) {
+  try { return await figma.importComponentSetByKeyAsync(key); }
+  catch (e) { throw new Error(`ZCAT MISSING component_set "${label}" key=${key}: ${e.message}`); }
+}
+async function requireComp(key, label) {
+  try { return await figma.importComponentByKeyAsync(key); }
+  catch (e) { throw new Error(`ZCAT MISSING component "${label}" key=${key}: ${e.message}`); }
+}
+async function requireVar(key, label) {
+  const v = await figma.variables.importVariableByKeyAsync(key);
+  if (!v) throw new Error(`ZCAT MISSING variable "${label}" key=${key}`);
+  return v;
+}
+async function requireStyle(key, label) {
+  const s = await figma.importStyleByKeyAsync(key);
+  if (!s) throw new Error(`ZCAT MISSING text style "${label}" key=${key}`);
+  await figma.loadFontAsync(s.fontName);
+  return s;
+}
+function bindFill(node, variable) {
+  node.fills = [figma.variables.setBoundVariableForPaint(
+    { type: "SOLID", color: { r: 0, g: 0, b: 0 } }, "color", variable)];
+  if (!node.fills[0].boundVariables || !node.fills[0].boundVariables.color)
+    throw new Error(`ZCAT bindFill failed on "${node.name}" — fill left unbound`);
+}
+function bindStroke(node, variable) {
+  node.strokes = [figma.variables.setBoundVariableForPaint(
+    { type: "SOLID", color: { r: 0, g: 0, b: 0 } }, "color", variable)];
+  if (!node.strokes[0].boundVariables || !node.strokes[0].boundVariables.color)
+    throw new Error(`ZCAT bindStroke failed on "${node.name}" — stroke left unbound`);
+}
+// Text creation: style is REQUIRED. There is no unstyled-text path.
+async function mkText(parent, chars, styleKey, styleLabel, colorVar) {
+  const s = await requireStyle(styleKey, styleLabel);
+  const t = figma.createText();
+  parent.appendChild(t);
+  await t.setTextStyleIdAsync(s.id);
+  t.characters = chars;
+  bindFill(t, colorVar);
+  if (!t.textStyleId) throw new Error(`ZCAT text "${chars}" has no bound text style`);
+  return t;
+}
+// Retext an existing node (component instance internals) — keeps its style, never invents a font.
+async function setText(node, chars) {
+  if (!node || node.type !== "TEXT") throw new Error(`ZCAT setText: not a TEXT node`);
+  await figma.loadFontAsync(node.fontName);
+  node.characters = chars;
+}
+// Property access: throws if the property name is absent (never silently skips).
+function propKey(inst, prefix) {
+  const k = Object.keys(inst.componentProperties).find(x => x === prefix || x.startsWith(prefix + "#"));
+  if (!k) throw new Error(`ZCAT property "${prefix}" not found on "${inst.name}". Available: ${Object.keys(inst.componentProperties).join(", ")}`);
+  return k;
+}
+function setProps(inst, obj) {
+  const resolved = {};
+  for (const p of Object.keys(obj)) resolved[propKey(inst, p)] = obj[p];
+  inst.setProperties(resolved);   // let invalid enums throw — do NOT wrap in try/catch
+}
+// Find a text node by LAYER NAME, not by array index or placeholder-string guessing.
+function textByName(root, name) {
+  const n = root.findOne(x => x.type === "TEXT" && x.name === name);
+  if (!n) throw new Error(`ZCAT text node "${name}" not found under "${root.name}"`);
+  return n;
+}
+// ---- end prelude ----
+```
+
+**BANNED in build scripts — each of these silently produces a wrong screen:**
+
+| Banned | Why | Use instead |
+|---|---|---|
+| `figma.variables.getLocalVariablesAsync()` | returns **empty** — library vars aren't local | `requireVar(key)` |
+| `figma.getLocalTextStylesAsync()` | returns **empty** — library styles aren't local | `requireStyle(key)` |
+| Lookup-by-name + `if (found)` guard | miss → silently skipped | `require*` (throws) |
+| `try { ... } catch(e) {}` (empty catch) | swallows invalid-variant errors | let it throw, or rethrow with context |
+| `node.fontSize = 14` / `fontName = Inter` | hardcoded typography, no style | `mkText(..., styleKey, ...)` |
+| `node.fills = [{type:"SOLID", color:{...}}]` | raw hex | `bindFill(node, variable)` |
+| `findAll(n => n.type === "TEXT")[i]` | index shifts silently → wrong node | `textByName(root, "LayerName")` |
+| `characters.includes("Button Text")` | placeholder text differs → label never set | `textByName` |
+| `props.find(k => k.startsWith("X"))` + `if (k)` | renamed prop → silently unset | `propKey` / `setProps` (throws) |
+
+**Rule: if a required ZCAT component, style, variable, or variant cannot be resolved, THROW and stop the build step.** Report the exact missing key to the user and ask — never substitute, never fall back, never continue. Scripts are atomic, so a throw leaves the file clean.
 
 #### TOKEN OPTIMIZATION — Build in 2-3 scripts, not 10+
 
@@ -497,50 +662,49 @@ crashes and leaves a half-built screen.
 
 ```javascript
 // ═══════════════════════════════════════════════════════
-// BUTTON — key: 1e04478db049373eb096060a60ee7bbbc4da4e9a
+// BUTTON — key: 5819eb825dad40876f31545c93804195f11ea535
+// Type selects the KIND; Variant selects the STYLE. Do not confuse them.
 // ═══════════════════════════════════════════════════════
-const btnSet = await figma.importComponentSetByKeyAsync("1e04478db049373eb096060a60ee7bbbc4da4e9a");
+const btnSet = await requireSet("5819eb825dad40876f31545c93804195f11ea535", "Buttons");
 
-// Primary button
+// Primary (the ONE Fill button in this action group)
 const primaryBtn = btnSet.defaultVariant.createInstance();
-primaryBtn.setProperties({ "Type": "Primary", "Color": "Primary", "Size": "Default", "State": "Default" });
-const pText = primaryBtn.findOne(n => n.type === "TEXT");
-if (pText) { await figma.loadFontAsync(pText.fontName); pText.characters = "Create Function"; }
+setProps(primaryBtn, { "Type": "Default Button", "Variant": "Fill", "Color": "Primary", "Size": "Default", "State": "Default" });
+await setText(primaryBtn.findOne(n => n.type === "TEXT"), "Create Function");
 
-// Secondary button (same Size as other controls in this group!)
+// Secondary — Outline, NOT a second Fill (same Size as the group!)
 const secBtn = btnSet.defaultVariant.createInstance();
-secBtn.setProperties({ "Type": "Secondary", "Color": "Primary", "Size": "Default", "State": "Default" });
+setProps(secBtn, { "Type": "Default Button", "Variant": "Outline", "Color": "Primary", "Size": "Default", "State": "Default" });
 
-// Ghost button
+// Tertiary / cancel — Ghost
 const ghostBtn = btnSet.defaultVariant.createInstance();
-ghostBtn.setProperties({ "Type": "Ghost", "Color": "Primary", "Size": "Default", "State": "Default" });
+setProps(ghostBtn, { "Type": "Default Button", "Variant": "Ghost", "Color": "Grey", "Size": "Default", "State": "Default" });
 
-// Outline button
-const outlineBtn = btnSet.defaultVariant.createInstance();
-outlineBtn.setProperties({ "Type": "Outline", "Color": "Primary", "Size": "Default", "State": "Default" });
-
-// Danger button (for destructive actions)
+// Destructive
 const dangerBtn = btnSet.defaultVariant.createInstance();
-dangerBtn.setProperties({ "Type": "Primary", "Color": "Danger", "Size": "Default", "State": "Default" });
+setProps(dangerBtn, { "Type": "Default Button", "Variant": "Fill", "Color": "Danger", "Size": "Default", "State": "Default" });
 
-// VALID Size values: "XS", "Small", "Medium", "Default", "Large"
-// VALID Type values: "Primary", "Secondary", "Outline", "Ghost"
-// VALID Color values: "Primary", "Danger", "Success", "Neutral"
-// VALID State values: "Default", "Hover", "Pressed", "Disabled"
+// VERIFIED LIVE VALUES — anything else throws:
+//   Type    = Default Button | Split Button | Navigation Buttons
+//   Variant = Fill | Outline | Grey | Ghost | Ghost Grey
+//   Size    = Default | Small | Extra Small | Large
+//   Color   = Primary | Success | Danger | Grey      (no Warning, no Neutral)
+//   State   = Default | Hover | Pressed | Disabled | Split Hover | Split Disabled | Button Disabled
+//   Radius  = Default | Rounded
+//   Bools   = Icon Left, Icon Right
 
 
 // ═══════════════════════════════════════════════════════
-// TEXT BOX (search input) — key: 411f52c2e02879cd0cd7a259933325c7cbc04b5c
+// TEXT BOX (search input) — key: 86d2922b50fd392993e764897307679a90868350
 // ═══════════════════════════════════════════════════════
-const tbSet = await figma.importComponentSetByKeyAsync("411f52c2e02879cd0cd7a259933325c7cbc04b5c");
+const tbSet = await requireSet("86d2922b50fd392993e764897307679a90868350", "Text Box");
 const searchBox = tbSet.defaultVariant.createInstance();
-searchBox.setProperties({
+setProps(searchBox, {
+  "Type": "Text Field",
   "Size": "Default",       // MUST match buttons in same group
-  "State": "Default",
-  "Content": "Placeholder",
-  "Has Label": false,      // false for action bar search; true for form fields
-  "Has Helper": false,
-  "Icon Left": true        // enables left icon slot
+  "State": "Filled",       // "Filled" — NOT "Completed", NOT "Content"
+  "Label": false,          // false for action-bar search; true for form fields
+  "Icon Left": true        // enables the left icon SLOT only — you must still swap the icon
 });
 // SWAP the left icon to a search icon — the default is a mail icon, NOT search!
 // Step 1: find the icon instance inside the text box
@@ -557,9 +721,12 @@ if (iconLeft) {
 const phText = searchBox.findOne(n => n.type === "TEXT" && (n.name.toLowerCase().includes("placeholder") || n.name.toLowerCase().includes("text")));
 if (phText) { await figma.loadFontAsync(phText.fontName); phText.characters = "Search functions..."; }
 
-// VALID Size values: "XS", "Small", "Medium", "Default", "Large"
-// VALID State values: "Default", "Hover", "Pressed", "Active", "Error"
-// VALID Content values: "Placeholder", "Filled"
+// VERIFIED LIVE VALUES:
+//   Type  = Text Field | Textarea
+//   State = Default | Hover | Active | Disabled | Filled | Error
+//   Size  = Default | Small | Extra Small
+//   Bools = optional, Label, Label Icon, Icon Left, Icon Right
+// There is NO "Content" property and NO "Has Label"/"Has Helper" property.
 
 
 // ═══════════════════════════════════════════════════════
@@ -585,131 +752,150 @@ if (phText) { await figma.loadFontAsync(phText.fontName); phText.characters = "S
 
 
 // ═══════════════════════════════════════════════════════
-// DROP DOWN (filter) — key: 021a6653c106f277f2481ee722ed93d4137dc3a6
+// DROPDOWN (filter) — key: 3be1bec4288c412f93ed636e35158b9c1f191e0e
 // ═══════════════════════════════════════════════════════
-const ddSet = await figma.importComponentSetByKeyAsync("021a6653c106f277f2481ee722ed93d4137dc3a6");
+const ddSet = await requireSet("3be1bec4288c412f93ed636e35158b9c1f191e0e", "Dropdown");
 const dropdown = ddSet.defaultVariant.createInstance();
-dropdown.setProperties({
+setProps(dropdown, {
+  "Type": "Default",
   "Size": "Default",       // MUST match buttons/text boxes in same group
-  "State": "Default",
-  "Content": "Placeholder",
-  "Has Label": false,      // false for action bar filters; true for form fields
-  "Has Helper": false,
+  "State": "Filled",       // show a REAL selected value, never a placeholder
+  "Label": false           // false for action-bar filters; true for form fields
+});
+// ALWAYS fill with a realistic selected value from sample-data.md — never leave "Select List"
+await setText(dropdown.findOne(n => n.type === "TEXT"), "All Runtimes");
+
+// VERIFIED LIVE VALUES:
+//   Type  = Default | Link Dropdown
+//   State = Default | Hover | Error | Active | Disabled | Chips Filled | Filled
+//   Size  = Default | Small | Extra Small
+//   Bools = Label, Label Icon, Icon Left, Optional, Show Chip 2, Show Chip 3
+// There is NO "Content" property.
+
+
+// ═══════════════════════════════════════════════════════
+// BADGE (status in table) — key: 43e36112e3424d07337dd538025a7a53d1ec1c95
+// ═══════════════════════════════════════════════════════
+const badgeSet = await requireSet("43e36112e3424d07337dd538025a7a53d1ec1c95", "Badges");
+const badge = badgeSet.defaultVariant.createInstance();
+setProps(badge, {
+  "Type": "Secondary",   // Secondary in tables. Primary = bold pill, standalone emphasis only
+  "Color": "Success",    // SEMANTIC names only — see mapping below
+  "Size": "Default"      // Default | Small | Dot
+});
+await setText(badge.findOne(n => n.type === "TEXT"), "Active");
+
+// VERIFIED LIVE VALUES — there is NO Green/Red/Amber/Orange, and NO Style or Content property:
+//   Type  = Primary | Secondary
+//   Color = Primary | Grey | Purple | Danger | Disabled | Info | Success | Warning
+//   Size  = Default | Small | Dot
+//
+// BADGE TYPE IN TABLES: ALWAYS Type="Secondary" (subtle/muted).
+// Type="Primary" creates bold filled pills — too heavy for table cells.
+// In tables, Secondary badges blend with the row while still showing status colour.
+
+// SEMANTIC colour mapping (these are the ONLY valid values):
+//   Active / Running / Healthy / Paid    → "Success"
+//   Pending / Degraded / Retrying        → "Warning"
+//   Failed / Stopped / Error / Overdue   → "Danger"
+//   Processing / Draft / Informational   → "Info"
+//   Inactive / Archived / Unknown        → "Grey"
+//   Disabled                             → "Disabled"
+//   Special category                     → "Purple" or "Primary"
+
+
+// ═══════════════════════════════════════════════════════
+// CHIP (filter chip) — key: 521cb36aff97e00dc59f5c37b5f04a684b475930
+// ═══════════════════════════════════════════════════════
+const tagSet = await requireSet("521cb36aff97e00dc59f5c37b5f04a684b475930", "Chip");
+const tag = tagSet.defaultVariant.createInstance();
+setProps(tag, {
+  "State": "Default",      // Default | Hover | Disabled
+  "Size": "Default",       // Default | Small
+  "Close": true,           // BOOLEAN — the close × for removable filter chips
+  "Text": true,
   "Icon Left": false
 });
-const ddText = dropdown.findOne(n => n.type === "TEXT" && (n.name.toLowerCase().includes("placeholder") || n.name.toLowerCase().includes("select")));
-if (ddText) { await figma.loadFontAsync(ddText.fontName); ddText.characters = "All Runtimes"; }
+await setText(tag.findOne(n => n.type === "TEXT"), "Runtime: Node.js 18");
 
-// VALID Size values: "Default", "XS", "Small", "Medium", "Large"
-// VALID Content values: "Placeholder", "Selected", "Multi", "Comma"
-
-
-// ═══════════════════════════════════════════════════════
-// BADGE (status in table) — key: 158e4b6d656a62d4244efc4e5583794044328d3a
-// ═══════════════════════════════════════════════════════
-const badgeSet = await figma.importComponentSetByKeyAsync("158e4b6d656a62d4244efc4e5583794044328d3a");
-const badge = badgeSet.defaultVariant.createInstance();
-badge.setProperties({
-  "Style": "Subtle",     // "Solid" or "Subtle" — ALWAYS use "Subtle" for table badges
-  "Color": "Success",    // "Success", "Warning", "Error", "Info", "Neutral", "Brand"
-  "Size": "sm",          // "sm" or "md" — NOTE lowercase, not "Small"
-  "Type": "Count",       // "Count" (shows text) or "Dot" (dot only)
-  "Show Dot": false,
-  "Icon Left": false,
-  "Icon Right": false
-});
-// BADGE TYPE IN TABLES: ALWAYS use Type="Secondary" (subtle/muted look).
-// Type="Primary" creates bold filled pills — too heavy for table cells.
-// Primary badges are ONLY for standalone emphasis (hero stats, alerts).
-// In tables, Secondary badges blend with the row while still showing status color.
-const badgeText = badge.findOne(n => n.type === "TEXT");
-if (badgeText) { await figma.loadFontAsync(badgeText.fontName); badgeText.characters = "Active"; }
-
-// Common color mapping:
-//   Active/Success/Running → "Success"
-//   Warning/Pending       → "Warning"
-//   Error/Failed/Stopped  → "Error"
-//   Info/Default          → "Info"
-//   Disabled/Neutral      → "Neutral"
+// VERIFIED LIVE VALUES — Chip has NO Color property and NO "Removable" property:
+//   State = Default | Hover | Disabled
+//   Size  = Default | Small
+//   Bools = Icon Left, Close, Text
+// Removable filter chip → Close: true.  Always-active query chip → Close: false.
 
 
 // ═══════════════════════════════════════════════════════
-// TAG / CHIP (filter chip) — key: 69274b61923231a45f559e59bed169c121d9bc45
+// CHECKBOX — key: b9a92f9bb04c582561f041cbda39cd14e27d22af
 // ═══════════════════════════════════════════════════════
-const tagSet = await figma.importComponentSetByKeyAsync("69274b61923231a45f559e59bed169c121d9bc45");
-const tag = tagSet.defaultVariant.createInstance();
-tag.setProperties({
-  "Color": "Neutral",      // "Neutral", "Brand", "Success", "Warning", "Error", "Info"
-  "Size": "Default",       // "Small" or "Default"
-  "Removable": "true",     // STRING "true"/"false", NOT boolean — for applied filters use "true"
-  "Show Icon Left": false
-});
-const tagText = tag.findOne(n => n.type === "TEXT");
-if (tagText) { await figma.loadFontAsync(tagText.fontName); tagText.characters = "Runtime: Node.js 18"; }
-
-// For removable filter chips:  "Removable": "true"  (close × is built in)
-// For always-active query chips: "Removable": "false" (no close ×)
-
-
-// ═══════════════════════════════════════════════════════
-// CHECKBOX — key: f6f4ae2426b2e9d6c3ee7fc3727e06054b0f5d58
-// ═══════════════════════════════════════════════════════
-const cbSet = await figma.importComponentSetByKeyAsync("f6f4ae2426b2e9d6c3ee7fc3727e06054b0f5d58");
+const cbSet = await requireSet("b9a92f9bb04c582561f041cbda39cd14e27d22af", "Check Box");
 const checkbox = cbSet.defaultVariant.createInstance();
-checkbox.setProperties({
-  "Checked": "Unchecked",  // "Unchecked", "Checked", "Indeterminate"
-  "State": "Default",
-  "Show Label": false,     // true if label needed alongside
-  "Show Description": false
+setProps(checkbox, {
+  "Checked": "Unchecked",  // Unchecked | Checked | Indeterminate
+  "State": "Default",      // Default | Hover | Disabled  (no Focused)
+  "Title Text": false,     // bool — the label. NOT "Show Label"
+  "Sub Text": false
 });
 
 
 // ═══════════════════════════════════════════════════════
-// TOGGLE — key: 35016f9e4ebd41a83c952fa04c3c47a1f36d0ec4
+// TOGGLE — key: 90e1e6c78f80a75a7482711c809a34336027805b
 // ═══════════════════════════════════════════════════════
-const toggleSet = await figma.importComponentSetByKeyAsync("35016f9e4ebd41a83c952fa04c3c47a1f36d0ec4");
+const toggleSet = await requireSet("90e1e6c78f80a75a7482711c809a34336027805b", "Toggle button");
 const toggle = toggleSet.defaultVariant.createInstance();
-toggle.setProperties({
-  "Size": "Default",       // "Small" or "Default"
-  "State": "Off",          // "Off" or "On"
-  "Interaction": "Default", // "Default", "Hover", "Focus", "Disabled"
-  "Show Label": true,
-  "Show Description": false
+setProps(toggle, {
+  "Toggled": "Off",        // Off | On  — the property is Toggled, NOT State
+  "State": "Default",      // Default | Hover | Disabled  (no Interaction property)
+  "Title text": true,
+  "Sub text": false
 });
 
 
 // ═══════════════════════════════════════════════════════
-// TABS — key: 4851c5917e3ca7aca6aa65f44d49d83b9594f3f0
+// TABS — key: 5ad363087bae85f4ef5f4d1355e80107f48d54c6
 // ═══════════════════════════════════════════════════════
-const tabsSet = await figma.importComponentSetByKeyAsync("4851c5917e3ca7aca6aa65f44d49d83b9594f3f0");
+const tabsSet = await requireSet("5ad363087bae85f4ef5f4d1355e80107f48d54c6", "Tabs");
 const tabs = tabsSet.defaultVariant.createInstance();
-// Tab property names are UNCONFIRMED — call zcat_get_component("Tabs") to
-// check the real property names before using setProperties()
+setProps(tabs, {
+  "Type": "Primary",       // Primary | Secondary Default | Secondary Small | Secondary Extra Small | Code Tab
+  "Show Tab 3": true,      // tab count is driven by these BOOLEANS
+  "Show Tab 4": true,
+  "Show Tab 5": false      // MAX 5 tabs. More than 5 → detach and duplicate tab instances
+});
+// There is NO "Count" property and NO "Pill" type.
+// Set the active tab on the child Tab instance: State = "Active" (exactly one).
 
 
 // ═══════════════════════════════════════════════════════
-// STRUCTURAL FRAMES — colors MUST be bound to variables
+// STRUCTURAL FRAMES + TEXT — bind BY KEY, fail loud
 // ═══════════════════════════════════════════════════════
-// Get color variables once at the top of your use_figma block:
-const colorVars = await figma.variables.getLocalVariablesAsync("COLOR");
-function findVar(name) { return colorVars.find(v => v.name === name); }
-function bindFill(node, varName) {
-  const v = findVar(varName);
-  if (v) node.fills = [figma.variables.setBoundVariableForPaint({ type: 'SOLID', color: {r:1,g:1,b:1} }, 'color', v)];
-}
-function bindStroke(node, varName) {
-  const v = findVar(varName);
-  if (v) node.strokes = [figma.variables.setBoundVariableForPaint({ type: 'SOLID', color: {r:0,g:0,b:0} }, 'color', v)];
-}
-function bindTextColor(node, varName) {
-  const v = findVar(varName);
-  if (v) node.fills = [figma.variables.setBoundVariableForPaint({ type: 'SOLID', color: {r:0,g:0,b:0} }, 'color', v)];
-}
+// ⚠️ The pattern below replaces an older name-lookup helper that used
+// getLocalVariablesAsync(). That returns EMPTY for library variables, so the
+// old helper silently skipped binding and left RAW HEX in every screen it
+// touched. Import by key and let a bad key throw.
 
-// Use like:
-// bindFill(frame, "color/bg/surface");
-// bindStroke(frame, "color/border/default");
-// bindTextColor(textNode, "color/text/primary");
+// Resolve the variables/styles you need ONCE, at the top of the script:
+const vCardBg     = await requireVar("497de4a3445dd02172eeb981d292a9764f6aeaa8", "CARDS/Bg Default/Primary");
+const vCardBorder = await requireVar("3a79616196240745e0e84ced706f2563d6c609ac", "CARDS/Borders/Default");
+const vTextPri    = await requireVar("78d226f67f70b301e15211138d50f31c6e0b73f1", "BODY/Text/Static/Primary");
+const vTextSec    = await requireVar("6ce27486a25197ca55bd13199d0b270ae669e507", "BODY/Text/Static/Secondary");
+const vAccent     = await requireVar("f9b5ad26a7c1a38c9182a5a83cee7c3d1ca20399", "BRANDING ICON/Icon Color/Blue");
+
+// Then use the prelude helpers (they THROW if the bind does not take):
+//   bindFill(frame, vCardBg);
+//   bindStroke(frame, vCardBorder);
+//   await mkText(parent, "Top Endpoints", "2c3007c5a4169e14a11ac9b2957b2f91b4f8c47b", "Headlines/H5", vTextPri);
+//   await mkText(parent, "REQUESTS",      "69e33c4c77d99d315c87ebfda823cae589437808", "Body/Subtitle 3", vTextSec);
+//
+// NEVER write node.fontSize / node.fontName — that is hardcoded typography with
+// no style binding, and it silently destroys the weight hierarchy (everything
+// renders Inter Regular at different sizes, which is NOT hierarchy).
+
+// Elevation — use the shadow variable, not an invented rgba.
+// DROP_SHADOW effects REQUIRE blendMode: "NORMAL" or they throw.
+const vShadow = await requireVar("eea9e7cd44a527cbcc91b4fb9fdefaa8d712a2c3", "SHADOWS/Elevation/Default");
+// card.effects = [{ type: "DROP_SHADOW", color: {r:0,g:0,b:0,a:0.06}, offset: {x:0,y:1},
+//                   radius: 3, spread: 0, visible: true, blendMode: "NORMAL" }];
 
 
 // ═══════════════════════════════════════════════════════
@@ -779,9 +965,9 @@ Icons in zcat are internal components — they CANNOT be imported directly via
 ```javascript
 // The ONLY way to get an icon: clone from an existing component instance
 // Step 1: Import a component that HAS an icon (e.g., Button with Help variant)
-const btnSet = await figma.importComponentSetByKeyAsync("1e04478db049373eb096060a60ee7bbbc4da4e9a");
+const btnSet = await requireSet("5819eb825dad40876f31545c93804195f11ea535", "Buttons");
 const helpBtn = btnSet.defaultVariant.createInstance();
-helpBtn.setProperties({ "Type": "Help" }); // Help variant has an icon
+setProps(helpBtn, { "Type": "Default Button", "Content": "Icon Button", "Icon Left": true });
 
 // Step 2: Find the icon instance inside the component
 const iconSource = helpBtn.findOne(n => n.type === "INSTANCE" && n.name.toLowerCase().includes("icon"));
@@ -898,7 +1084,8 @@ Container (padding: 16-24, layoutMode: VERTICAL, gap: 16)
 
 **Recipe 3: Modal / Popup with Form**
 ```
-Deefault Popup [import by key: 4200a0aef4a25f7cdbdf628575c41347c9e8a8fe, type: component]
+Popup [import by key: 33c77b98d939494dc272bc94d0b8d726eb870346, type: component_set]
+     type=Default (3 field slots) | type=With Scroll (6 field slots, scrolls)
 │
 └── Content (VERTICAL auto-layout, padding: 24, gap: 16)
     ├── Title Row (HORIZONTAL, SPACE_BETWEEN, FILL width)
@@ -1154,9 +1341,8 @@ Same content-building rules as Default layout — just wider Container and no Si
    4. **If any filter is applied**, add a second row inside the same Action Bar
       frame (so it shares the frame's 16px padding, not the zero-padding
       Container): one **Tag** instance per active filter
-      (`search_design_system("Chip")`, key
-      `69274b61923231a45f559e59bed169c121d9bc45`), text "Label: Value",
-      `Removable` variant set to `true` — the close (✕) is native to the
+      (Chip, key `521cb36aff97e00dc59f5c37b5f04a684b475930`), text "Label: Value",
+      boolean `Close` set to `true` — the close (✕) is native to the
       component, do not compose it from Badge + Icon Button — followed by a
       "Clear All" link when 1+ filters are active. Do NOT signal "applied" via
       the dropdown's focus border alone; the chip row is what communicates it.
@@ -1240,6 +1426,48 @@ screenFrame.findAll(n => n.type === "FRAME" || n.type === "RECTANGLE").forEach(n
 });
 if (hardcodedCount > 0) issues.push("WARN: " + hardcodedCount + " frames/rectangles have hardcoded fill colors — bind to variables");
 
+// CHECK 4b: ZERO UNBOUND TEXT — every TEXT node we authored must carry a zcat text style.
+// Text inside component INSTANCES is styled by the component; only check text we created.
+function insideInstance(n) {
+  let p = n.parent;
+  while (p) { if (p.type === "INSTANCE") return true; p = p.parent; }
+  return false;
+}
+const authoredText = screenFrame.findAll(n => n.type === "TEXT" && !insideInstance(n));
+const unstyled = [], wrongFamily = [], unboundTextFill = [], noWeight = [];
+for (const t of authoredText) {
+  if (!t.textStyleId) unstyled.push(t.name || t.characters.slice(0, 20));
+  if (t.fontName && t.fontName.family !== "Inter" && t.fontName.family !== "Roboto Mono")
+    wrongFamily.push((t.name || t.characters.slice(0, 20)) + " = " + t.fontName.family);
+  if (t.fills && t.fills[0] && t.fills[0].type === "SOLID" && !t.fills[0].boundVariables?.color)
+    unboundTextFill.push(t.name || t.characters.slice(0, 20));
+}
+if (unstyled.length) issues.push("FAIL: " + unstyled.length + " TEXT nodes have NO zcat text style (hardcoded typography): " + unstyled.slice(0,6).join(", "));
+if (wrongFamily.length) issues.push("FAIL: wrong font family: " + wrongFamily.slice(0,6).join(", "));
+if (unboundTextFill.length) issues.push("FAIL: " + unboundTextFill.length + " TEXT nodes have unbound color: " + unboundTextFill.slice(0,6).join(", "));
+
+// CHECK 4c: TYPOGRAPHY HIERARCHY — headings/emphasis must use a Semi Bold style,
+// not merely a larger Regular size. All-Regular typography = no hierarchy.
+const weights = {};
+for (const t of authoredText) {
+  const st = t.fontName ? t.fontName.style : "?";
+  weights[st] = (weights[st] || 0) + 1;
+}
+const hasEmphasis = Object.keys(weights).some(w => /semi ?bold|bold|medium/i.test(w));
+if (authoredText.length >= 4 && !hasEmphasis)
+  issues.push("FAIL: typography has NO weight contrast — every authored TEXT is " + Object.keys(weights).join("/") + ". Headings/values must use a Subtitle or Headline (Semi Bold) style");
+
+// CHECK 4d: spacing on the zcat scale (even numbers from the allowed set)
+const SCALE = [0,2,4,6,8,10,12,14,16,20,24,28,32,40,48,56,64,80,96,128];
+const badSpacing = [];
+screenFrame.findAll(n => n.layoutMode && n.layoutMode !== "NONE").forEach(n => {
+  const vals = { gap: n.itemSpacing, pt: n.paddingTop, pr: n.paddingRight, pb: n.paddingBottom, pl: n.paddingLeft };
+  for (const k of Object.keys(vals))
+    if (typeof vals[k] === "number" && !SCALE.includes(Math.round(vals[k])))
+      badSpacing.push(n.name + "." + k + "=" + Math.round(vals[k]));
+});
+if (badSpacing.length) issues.push("WARN: off-scale spacing: " + badSpacing.slice(0,8).join(", "));
+
 // CHECK 5: Named layers (no "Frame 1", "Rectangle 2" etc.)
 const badNames = screenFrame.findAll(n =>
   /^(Frame|Rectangle|Group|Ellipse|Line|Vector)\s*\d*$/.test(n.name)
@@ -1303,9 +1531,9 @@ if (issues.length === 0) {
 ```
 
 **CHECK — Manual elements use variables:** Every manual frame, divider, text layer, or section separator MUST:
-- Have fills/strokes bound to zcat color variables (`color/bg/*`, `color/border/*`, `color/text/*`) — no hardcoded hex
+- Have fills/strokes bound to zcat color variables imported BY KEY (see "ZCAT VARIABLES AND TEXT STYLES") — no hardcoded hex
 - Use spacing values from the zcat spacing scale (0, 2, 4, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 56, 64, 80, 96, 128) — no arbitrary values
-- Use one of the 19 defined text styles (Zoho Puvi for primary text, Inter for secondary, Roboto Mono for code) — no custom fonts
+- Use one of the verified zcat text styles imported BY KEY — font family is Inter (Roboto Mono for code). No hardcoded `fontSize`/`fontName`
 - Use even font sizes only, minimum 10px
 
 **If any FAIL issues:** fix them before proceeding. Replace manual elements with
@@ -1346,15 +1574,40 @@ Show to user ←─────────────┘
 - **Bug fixes:** bind unbound colors, fix HUG heights, add missing elements, correct variants, fix overflow, set active states, fix button sizes, add missing three-dot menus
 - **Enhancements (composition-only):** reorder sections for better hierarchy, adjust spacing to create rhythm and grouping, add icon BGs where meaningful (not forced), balance action bars, improve typography hierarchy, adjust content density to match the user task, break visual monotony (not every section should look identical), ensure focal point draws the eye to the most important content. NEVER detach/rebuild/unbind components
 
-**Composition critique (quick check):**
-- Does the page have a clear focal point, or does everything compete equally?
-- Is there visual monotony — identical cards stacked vertically? Vary layout, size, or grouping
-- Would a senior designer ship this layout, or would they rearrange sections and adjust emphasis?
-- Is card usage justified — does every Card BG serve a grouping purpose, or are some just wrappers?
+#### DESIGN CRITIQUE GATE (blocking — the screen cannot be shown until this passes)
 
-**After every fix → re-verify:** auto-layout intact? Colors still bound? Components not broken? No new overflow?
+This is a **gate, not a suggestion.** Judge the **rendered screenshot**, as a product designer seeing it for the first time with no knowledge of your plan.
 
-**Max 2 improvement rounds.** After 2, show what you have and tell user what's unresolved.
+**The reasoning below is FORBIDDEN:**
+> "The Composition Direction was good, therefore the final UI is good."
+
+A correct composition decision is not evidence of a resolved screen. The composition can be right and the render still flat — that is the most common outcome. Evaluate the pixels, not the plan.
+
+Answer all eleven, each with a verdict and a one-line reason:
+
+| # | Question |
+|---|---|
+| 1 | **Focal point** — does the eye land on the most important thing first, or does everything compete equally? |
+| 2 | **Visual hierarchy** — can a new user grasp the structure in ~3 seconds? |
+| 3 | **Typography hierarchy** — is there real WEIGHT contrast (Semi Bold vs Regular), or only size differences? All-Regular text = automatic FAIL |
+| 4 | **Visual monotony** — is it a stack of near-identical rectangles? |
+| 5 | **Card/container justification** — does each card earn its containment, or is it a default wrapper? Is there enough surface contrast for cards to read as cards at all? |
+| 6 | **Whitespace** — is it creating rhythm and grouping, or is it accidental leftover space? |
+| 7 | **Density** — does it match the user's task (monitoring dense, form spacious)? |
+| 8 | **Composition** — do sections relate meaningfully, or are they merely stacked? |
+| 9 | **Proportions** — do section/column sizes reflect importance? |
+| 10 | **Viewport allocation** — does content stop at ~50-60% height leaving accidental emptiness? |
+| 11 | **Designed or assembled?** — does this look like a designer made it, or like components were placed in a column? |
+
+**Then do one of exactly two things:**
+
+- **Problems found:** fix them (composition-only), re-screenshot, re-run this critique. Max 2 rounds. After round 2, show what you have and state plainly what is still unresolved.
+- **No problems found:** record this line verbatim in your summary:
+  > "No meaningful design improvement identified; keeping the current composition."
+
+Never invent changes to look more creative. A simple form that is already clear needs nothing. The test is *intentional for this task*, not *unusual*.
+
+**After every fix → re-verify:** auto-layout intact? Colors still bound? Text styles still bound? Components not broken? No new overflow?
 
 ### 4h. Show to User
 

@@ -42,6 +42,7 @@ FILES=(
   ".claude/skills/zcat.md|workflow.md"
   "references/design-analysis-workflow.md|design-analysis-workflow.md"
   "references/screenshot-design-patterns.md|screenshot-design-patterns.md"
+  "references/library-audit.md|library-audit.md"
 )
 
 mkdir -p "$DEST"

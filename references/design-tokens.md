@@ -1,7 +1,57 @@
 # Design Tokens — Quick Reference
 
-Quick-reference for Figma variable binding in the OM Design System 2.0.
-All tokens live in the **Themes** collection (4 modes). Components NEVER reference Primitives directly.
+> ## ⚠️ STOP — THE TOKEN NAMES IN THIS FILE DO NOT EXIST IN THE LIVE LIBRARY
+>
+> Audited against the live zcat library on **2026-08-18**: **0 of the 53** `color/bg/*`, `color/text/*`, `color/border/*` names below resolve. There is no **Themes** collection. Binding by these names silently fails and leaves **raw hex** in the design.
+>
+> The sections below are retained as *conceptual* guidance only (which token role to use where). **Never pass these strings to a binding call.**
+>
+> ### Use these verified names and keys instead
+>
+> Live collections are **`Mode`** (colour) and **`Typography`** (sizes). Import BY KEY — `figma.variables.getLocalVariablesAsync()` returns **empty** because library variables are not local.
+>
+> | Role | Live name | Key |
+> |---|---|---|
+> | Text primary | `BODY/Text/Static/Primary` | `78d226f67f70b301e15211138d50f31c6e0b73f1` |
+> | Text secondary | `BODY/Text/Static/Secondary` | `6ce27486a25197ca55bd13199d0b270ae669e507` |
+> | Text disabled | `BODY/Text/Static/Disable` | `94023c2b1c06cb38be91c89825cf52bf5eff7cf7` |
+> | Text on dark | `BODY/Text/Static/White` | `3d35e063ee0e6e70c3adeb2868c22cb1a498b2fc` |
+> | Page background | `BODY/Background/Static/Body Bg` | `154a19caf1070577dbc2981738c6f2ef4096e55b` |
+> | Page border | `BODY/Border/Static/Border` | `0dd61c592dea6f8a4a7ed8d71ed3c3bb51308ea0` |
+> | Card surface | `CARDS/Bg Default/Primary` | `497de4a3445dd02172eeb981d292a9764f6aeaa8` |
+> | Card sunken | `CARDS/Bg Default/Body Bg` | `07b804765f3b327cc43681a59f5ca690685f4f63` |
+> | Card border | `CARDS/Borders/Default` | `3a79616196240745e0e84ced706f2563d6c609ac` |
+> | Card border hover | `CARDS/Borders/Hover` | `2dbb51fbe56bbfd41d33ff8c6352188257789cb9` |
+> | Card border selected | `CARDS/Borders/Selected` | `2b6696588ce6abb97a8ea63543b7f7b7e65f99c9` |
+> | Elevation / shadow | `SHADOWS/Elevation/Default` | `eea9e7cd44a527cbcc91b4fb9fdefaa8d712a2c3` |
+> | Accent / link | `BRANDING ICON/Icon Color/Blue` | `f9b5ad26a7c1a38c9182a5a83cee7c3d1ca20399` |
+> | Icon primary | `BODY/Icons/Static/Primary` | `9a6e973050f37a6629a57920cca8ef3bbc40c021` |
+> | Icon secondary | `BODY/Icons/Static/Secondary` | `c9e929a15eb73c96ef31c2960fe99e26e930bcbd` |
+>
+> ### Typography — font family is Inter, NOT Zoho Puvi
+>
+> Text styles are library assets too: `figma.getLocalTextStylesAsync()` returns **empty**. Import by key with `importStyleByKeyAsync`, then `loadFontAsync(style.fontName)`, then `setTextStyleIdAsync(style.id)`.
+>
+> | Style | Spec | Key |
+> |---|---|---|
+> | `✅ Headlines/H5` | 18/22 Semi Bold | `2c3007c5a4169e14a11ac9b2957b2f91b4f8c47b` |
+> | `✅ Body/Body 2` | 16/20 Regular | `074ccbdf65f4bf9b35442414c8b7805b75078866` |
+> | `✅ Body/Body 1` | 14/20 Regular | `ae9d89acf9bb02c56f54844d48ed0b7ff98adda2` |
+> | `✅ Body/Body 3` | 12/16 Regular | `4c43eefb0c536e876ceb4426bf0a85d8b519026f` |
+> | `✅ Body/Body 4` | 10/12 Regular | `15003632c724896c66fc7230e7bd775dda9ebcc7` |
+> | `✅ Body/Subtitle 1` | 14/20 Semi Bold | `acb8f120bb531138d05850eb7965cf305a7681e6` |
+> | `✅ Body/Subtitle 2` | 12/16 Semi Bold | `96bac9d6462a4aab339153f84cd5c9d58a5e0c2b` |
+> | `✅ Body/Subtitle 3` | 10/12 Semi Bold | `69e33c4c77d99d315c87ebfda823cae589437808` |
+> | `✅ Code Text/Code Body` | 12/20 Roboto Mono | `0950d4fb48c454573c3064da0c41f41216dfcb6a` |
+> | `✅ Code Text/Code Subtitle` | 12/20 Roboto Mono SemiBold | `482373bf511056cb3a4c68e9488222d1b7bc89f4` |
+>
+> Headings and emphasised values MUST use a Semi Bold style. A larger **Regular** size is not hierarchy.
+>
+> To regenerate or re-verify: `references/library-audit.md`.
+
+---
+
+Quick-reference for Figma variable binding. **Conceptual role guidance only — the token strings below are not live names.**
 
 ---
 
@@ -261,7 +311,7 @@ Border radius values. The design system default is 6px.
 
 ## 10. Theme Modes
 
-The Themes collection supports 4 modes. Every component must render correctly in all 4.
+The live collection is named **`Mode`** (there is no "Themes" collection). It carries 4 modes. Every component must render correctly in all 4 — which is exactly why unbound raw hex is a bug: it cannot follow the mode.
 
 | Mode | Brand Color | Surface | Use Case |
 |---|---|---|---|

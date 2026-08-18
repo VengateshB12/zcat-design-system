@@ -252,7 +252,9 @@ Scan every page for information that appears MORE than once:
 - Same action available in multiple places
 - Same metadata shown in different formats
 
-For each duplicate: decide MERGE or REMOVE. Note the decision.
+For each duplicate: propose MERGE or REMOVE and note the reasoning.
+
+**MERGE may be applied directly. REMOVE requires user approval BEFORE building.** Deleting a required feature is never a unilateral decision, even when the redundancy looks obvious — surface it as a recommendation and wait. Composition freedom covers HOW required information is presented, never WHETHER required functionality exists. Reposition, resize, de-emphasise, or move to a secondary region freely; deleting needs a yes.
 
 ### Step 1.6 — Composition Direction + Design Improvements
 
@@ -287,6 +289,27 @@ Page: [Page Name]
 
 6. SECTION RHYTHM: How do sections flow vertically?
    → [Stat overview → detail sections → table? Or table-first? Why?]
+
+7. VIEWPORT ALLOCATION: How is the available height intentionally used?
+   → Above-the-fold priority: [what must be visible without scrolling]
+   → Approximate section shares: [e.g. summary 15%, table 65%, footer 20%]
+   → Where whitespace does real work: [separating what from what]
+   → Where more structure is genuinely warranted: [or "none"]
+   A screen whose content ends at 50-60% of the viewport with accidental
+   empty space below is an unfinished composition. Fix it with section
+   proportions, larger primary surfaces, or more rows — NEVER by
+   inventing filler content.
+
+8. CREATE/EDIT INTERACTION (if this is a create or edit flow):
+   → Catalyst uses a popup/modal for Create and Edit. Preserve that
+     interaction model and optimise the composition inside it. A wireframe
+     drawn as a page does NOT override the pattern — wireframes define
+     fields, not interaction model.
+   → Normal Popup by default. Escalate to large/full-page popup only for
+     >~8 fields, a Stepper wizard, side-by-side content, or embedded
+     tables/code editors. For a merely tall form use type=With Scroll.
+   → If an authoritative Catalyst reference shows this flow as a full
+     page, follow that reference.
 ```
 
 **Then note wireframe improvements:**

@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedDate": "2026-08-17",
+  "generatedDate": "2026-08-18",
   "figmaFileKey": "ugOZk4O0g6XpviEBSN24mF",
   "libraryKey": "lk-6b302ab265d1e80fb5a2a876b2f9ecef1c2795c5fa5e168b3dadaaf3ab1aab4fbf0dab1bd19e7010bf498e184a6bd6ebb5c8b1e1bf780bb4d8db2a6267a82b5f",
   "systemName": "ZCat-AI Understandable",
@@ -19,10 +19,10 @@
     "iconsStrokeOnly": "All icons use strokes, never fills. Bind stroke on VECTOR child, not frame wrapper",
     "noFixedHeight": "Never hardcode height on components, use auto-layout with counterAxisSizingMode AUTO",
     "neverBuildInDrafts": "Never create the Figma file in Drafts. A Drafts file cannot subscribe to the zcat team library, so component imports fail or detach. create_new_file defaults to Drafts: passing planKey alone is not enough, projectId is required. Verify with get_libraries that the zcat library is subscribed before building.",
-    "correctLibraryOnly": "Two libraries are accepted. The PRIMARY source (default) is ZCat-AI Understandable (file ugOZk4O0g6XpviEBSN24mF, key lk-6b302ab265d1e80fb5a2a876b2f9ecef1c2795c5fa5e168b3dadaaf3ab1aab4fbf0dab1bd19e7010bf498e184a6bd6ebb5c8b1e1bf780bb4d8db2a6267a82b5f). The LEGACY fallback (user-selectable) is ZCatalyst Design System (file dwQLnT4eJ3zCaOwhk7JXIn, key lk-ae83192f7b7305d9600785756ca9770312ad96826287c5b416a5e9f38c0b8c858632b716ed0e326c887e942ac3951557de60da44a53fc44693483ad0dd1dcd5f). Match on KEY, never on name. Default to the primary; only use legacy if the user explicitly selects it. No other library is acceptable \u2014 especially '2.0 Components', which is the old superseded library. Always pass the selected library key as includeLibraryKeys on every search_design_system call.",
+    "correctLibraryOnly": "Two libraries are accepted. The PRIMARY source (default) is ZCat-AI Understandable (file ugOZk4O0g6XpviEBSN24mF, key lk-6b302ab265d1e80fb5a2a876b2f9ecef1c2795c5fa5e168b3dadaaf3ab1aab4fbf0dab1bd19e7010bf498e184a6bd6ebb5c8b1e1bf780bb4d8db2a6267a82b5f). The LEGACY fallback (user-selectable) is ZCatalyst Design System (file dwQLnT4eJ3zCaOwhk7JXIn, key lk-ae83192f7b7305d9600785756ca9770312ad96826287c5b416a5e9f38c0b8c858632b716ed0e326c887e942ac3951557de60da44a53fc44693483ad0dd1dcd5f). Match on KEY, never on name. Default to the primary; only use legacy if the user explicitly selects it. No other library is acceptable — especially '2.0 Components', which is the old superseded library. Always pass the selected library key as includeLibraryKeys on every search_design_system call.",
     "sameSizeInGroup": "When buttons, dropdowns, and text boxes appear together in the same visual group (action bar, form row, filter bar, modal footer), they MUST all use the same Size variant. Never mix sizes within a group.",
-    "detachWhitelist": "Only detach Layout, Accordion, Accordion Bordered, Dropdown Menu, Card BG, Container Header, and Sidebar List Panel \u2014 for content insertion, never for restyling. For any other component, ask the user before detaching.",
-    "screenshotsAreReference": "Screenshots and existing designs provided by the user are reference only \u2014 for understanding patterns and layout intent. Never copy exact designs from them, and never use them as justification for detaching or manually recreating components that exist in zcat.",
+    "detachWhitelist": "Only detach Layout, Accordion, Accordion Bordered, Dropdown Menu, Card BG, Container Header, and Sidebar List Panel — for content insertion, never for restyling. For any other component, ask the user before detaching.",
+    "screenshotsAreReference": "Screenshots and existing designs provided by the user are reference only — for understanding patterns and layout intent. Never copy exact designs from them, and never use them as justification for detaching or manually recreating components that exist in zcat.",
     "manualFramesMustUseVariables": "When building manual frames, dividers, section separators, or any non-component element: ALL fills/strokes MUST be bound to zcat color variables (color/bg/*, color/border/*, color/text/*) via figma.variables.setBoundVariableForPaint. ALL spacing (padding, gap, itemSpacing) MUST use values from the spacing scale (0, 2, 4, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 56, 64, 80, 96, 128). ALL text MUST use one of the 19 defined text styles (Zoho Puvi for primary, Inter for secondary, Roboto Mono for code). Even numbers only. Minimum font size 10px. Never use raw hex colors or arbitrary spacing values on manual elements.",
     "autoLayoutEverywhere": "Every grouping frame, section wrapper, card, row, and container MUST use auto-layout (figma.createAutoLayout). NEVER use absolute positioning for grouped content. No fixed heights on cards or containers. Width = FILL, Height = HUG. Content determines size, not hardcoded pixels.",
     "zeroHardcodedColors": "EVERY fill, stroke, and text color MUST be bound to a zcat variable using figma.variables.setBoundVariableForPaint. NEVER use raw hex fills like [{type:'SOLID', color:{r:0,g:0,b:0}}]. Even black text = color/text/primary, white bg = color/bg/surface. If Selection Colors panel shows ANY raw hex, those are bugs.",
@@ -32,7 +32,13 @@
     "cloneLandsOnSourcePage": "node.clone() places the clone on the SAME page as the original. Always call targetPage.appendChild(clonedNode) to move it to the correct page.",
     "tableAiIsColumnBased": "Table AI uses column-first layout: Table > Col 1 (header + data cells vertically) > Col 2 > .... NOT row-based. To update text, traverse columns first, then cells within each column.",
     "oneFilButtonPerGroup": "AT MOST ONE Fill (primary) button per action group. Cancel is always Outline/grey, never Fill/blue. Multiple Fill buttons = broken design.",
-    "searchBeforeBuild": "ALWAYS call search_design_system or zcat_search_components BEFORE building ANY UI element. The library has 79 components. Skipping search and building manually is the #1 cause of broken builds."
+    "searchBeforeBuild": "ALWAYS call search_design_system or zcat_search_components BEFORE building ANY UI element. The library has 79 components. Skipping search and building manually is the #1 cause of broken builds.",
+    "liveDefinitionsAreTruth": "componentPropertyDefinitions from the live Figma library is the canonical source for component keys, types, property names and enum values. NEVER derive them from component descriptions — descriptions are stale and demonstrably contradict live definitions. When a reference file disagrees with live, live wins and the reference is a bug. See references/library-audit.md",
+    "failLoudOnMissingAssets": "Import components/variables/styles BY KEY and THROW if unresolved. NEVER use getLocalVariablesAsync/getLocalTextStylesAsync (they return empty for library assets), name-lookup fallbacks, empty catch blocks, hardcoded fonts, or raw hex fills. A silent lookup failure produces a screen that looks finished and is wrong.",
+    "zeroUnboundText": "Every authored TEXT node must have a bound zcat text style (non-empty textStyleId), a bound colour variable, and the correct family (Inter, or Roboto Mono for code). Headings and emphasised values must use a Semi Bold style. All-Regular authored typography = FAIL.",
+    "currentGenerationOnly": "Use only the current published component generation (componentKeyMap). Superseded keys still resolve but are absent from the published index and have incompatible variant enums — legacy use only, never for new designs. See legacyGeneration.",
+    "removalNeedsApproval": "Composition freedom covers HOW required information is presented, never WHETHER required functionality exists. A required element may be repositioned, resized, re-treated, merged or demoted — never deleted. Removal requires explicit user approval BEFORE building.",
+    "createEditIsModal": "Create/Edit follows the Catalyst interaction pattern: a popup/modal. Preserve it and optimise the composition inside; a wireframe drawn as a page does not override it. Escalate to large/full-page popup only for >~8 fields, Stepper wizards, side-by-side content, or embedded tables/code editors. For a merely tall form use Popup type=With Scroll — never detach just to gain height."
   },
   "foundations": {
     "colors": {
@@ -415,200 +421,220 @@
     }
   },
   "componentKeyMap": {
-    "_description": "Quick lookup: UI element \u2192 componentKey + import method. type=component_set \u2192 importComponentSetByKeyAsync (then .defaultVariant.createInstance). type=component \u2192 importComponentByKeyAsync (then .createInstance). status=manual \u2192 build with frames (use zcat color/spacing/text variables). Keys are from the PRIMARY source (ZCat-AI Understandable). Legacy keys are in legacySource.componentKeyMap.",
+    "_description": "Quick lookup: UI element → componentKey + import method. type=component_set → importComponentSetByKeyAsync (then .defaultVariant.createInstance). type=component → importComponentByKeyAsync (then .createInstance). status=manual → build with frames (use zcat color/spacing/text variables). Keys are from the PRIMARY source (ZCat-AI Understandable). Legacy keys are in legacySource.componentKeyMap.",
     "Button": {
       "figmaName": "Buttons",
       "componentKey": "5819eb825dad40876f31545c93804195f11ea535",
       "searchQuery": "Buttons",
       "type": "component_set",
-      "variants": "Type (Split Button, Button, Icon Button, Nav Button), Variant (Fill, Grey, Outline, Ghost, Text), Size (Default, Large, Small, Extra Small), Color (Primary, Grey, Success, Warning, Danger), Content (Default, Icon Left, Icon Right, Icon Button), State (Default, Hover, Click, Focused, Disabled, Split Hover, Split Disable, Button Disable), Radius (Default, Round)",
-      "exampleCode": "const btnSet = await figma.importComponentSetByKeyAsync('5819eb825dad40876f31545c93804195f11ea535');\nconst btn = btnSet.defaultVariant.createInstance();\nbtn.setProperties({ 'Type': 'Button', 'Variant': 'Fill', 'Color': 'Primary', 'Size': 'Default', 'State': 'Default', 'Content': 'Default', 'Radius': 'Default' });"
+      "variants": "Type (Default Button, Split Button, Navigation Buttons), Variant (Fill, Outline, Grey, Ghost, Ghost Grey), Size (Default, Small, Extra Small, Large), Color (Primary, Success, Danger, Grey), Content (Default, Icon Button), State (Default, Hover, Pressed, Disabled, Split Hover, Split Disabled, Button Disabled), Radius (Default, Rounded). Bools: Icon Left, Icon Right. Swaps: Change Icon Left, Change Icon Right",
+      "exampleCode": "const btnSet = await figma.importComponentSetByKeyAsync('5819eb825dad40876f31545c93804195f11ea535');\nconst btn = btnSet.defaultVariant.createInstance();\nbtn.setProperties({ 'Type': 'Button', 'Variant': 'Fill', 'Color': 'Primary', 'Size': 'Default', 'State': 'Default', 'Content': 'Default', 'Radius': 'Default' });",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Gradient Button": {
       "figmaName": "Gradient Button",
       "componentKey": "f06c22a5442902da023cef463470988a28a92a95",
       "searchQuery": "Gradient Button",
       "type": "component_set",
-      "variants": "Same structure as Button but with gradient fill styles"
+      "variants": "State (Default, Disabled, Hover, Pressed). Bools: Icon Left, Icon Right",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Toggle Button": {
       "figmaName": "Toggle button",
       "componentKey": "90e1e6c78f80a75a7482711c809a34336027805b",
       "searchQuery": "Toggle button",
       "type": "component_set",
-      "variants": "Size (Small, Default), State (On, Off), Interaction (Default, Hover, Focused, Disabled)",
-      "exampleCode": "const toggleSet = await figma.importComponentSetByKeyAsync('90e1e6c78f80a75a7482711c809a34336027805b');\nconst toggle = toggleSet.defaultVariant.createInstance();\ntoggle.setProperties({ 'Size': 'Default', 'State': 'Off', 'Interaction': 'Default' });"
+      "variants": "Toggled (Off, On), State (Default, Hover, Disabled). Bools: Title text, Sub text. The on/off property is Toggled, NOT State",
+      "exampleCode": "const toggleSet = await figma.importComponentSetByKeyAsync('90e1e6c78f80a75a7482711c809a34336027805b');\nconst toggle = toggleSet.defaultVariant.createInstance();\ntoggle.setProperties({ 'Size': 'Default', 'State': 'Off', 'Interaction': 'Default' });",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Radio": {
       "figmaName": "Radio button",
       "componentKey": "ab6af71593734fe402bcb0a9106c198083ebd3c3",
       "searchQuery": "Radio button",
       "type": "component_set",
-      "variants": "Selected (Unselected, Selected), State (Default, Hover, Focused, Disabled), Show Label (Yes/No), Show Description (Yes/No). 16\u00d716px circle."
+      "variants": "Selected (Unselected, Selected), State (Default, Hover, Disabled). Bools: Title text, Sub Text. No Focused state",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Checkbox": {
       "figmaName": "Check Box",
       "componentKey": "b9a92f9bb04c582561f041cbda39cd14e27d22af",
       "searchQuery": "Check Box",
       "type": "component_set",
-      "variants": "Checked (Unchecked, Checked, Indeterminate), State (Default, Hover, Focused, Disabled), Show Label (Yes/No), Show Description (Yes/No). 16\u00d716px box.",
-      "exampleCode": "const cbSet = await figma.importComponentSetByKeyAsync('b9a92f9bb04c582561f041cbda39cd14e27d22af');\nconst cb = cbSet.defaultVariant.createInstance();\ncb.setProperties({ 'Checked': 'Unchecked', 'State': 'Default', 'Show Label': false, 'Show Description': false });"
+      "variants": "Checked (Unchecked, Checked, Indeterminate), State (Default, Hover, Disabled). Bools: Title Text, Sub Text. No Focused state",
+      "exampleCode": "const cbSet = await figma.importComponentSetByKeyAsync('b9a92f9bb04c582561f041cbda39cd14e27d22af');\nconst cb = cbSet.defaultVariant.createInstance();\ncb.setProperties({ 'Checked': 'Unchecked', 'State': 'Default', 'Show Label': false, 'Show Description': false });",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Link": {
       "figmaName": "Link",
       "componentKey": "937992145223c13dcefa819ba6513d1a291a5520",
       "searchQuery": "Link",
       "type": "component_set",
-      "variants": "Size (sm, md, lg), State (Default, Hover, Pressed, Focused, Disabled), Icon Left (Yes/No), Icon Right (Yes/No)"
+      "variants": "Type (Link Text), State (Default, Hover, Pressed, Disabled), Size (Default, Small, Large, Extra Small), Color (Default, Primary). Bools: Show Text, Show Icon",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Text Input": {
       "figmaName": "Text Box",
       "componentKey": "86d2922b50fd392993e764897307679a90868350",
       "searchQuery": "Text Box",
       "type": "component_set",
-      "variants": "Size (Default, Large, Small, Extra Small, Compact), State (Default, Hover, Active, Error, Disabled, Read Only), Has Label (Yes/No), Has Helper (Yes/No), Icon Left (Yes/No), Icon Right (Yes/No). Active state uses black border.",
-      "exampleCode": "const tbSet = await figma.importComponentSetByKeyAsync('86d2922b50fd392993e764897307679a90868350');\nconst tb = tbSet.defaultVariant.createInstance();\ntb.setProperties({ 'Size': 'Default', 'State': 'Default', 'Has Label': false, 'Has Helper': false, 'Icon Left': false, 'Icon Right': false });"
+      "variants": "Type (Text Field, Textarea), State (Default, Hover, Active, Disabled, Filled, Error), Size (Default, Small, Extra Small). Bools: optional, Label, Label Icon, Icon Left, Icon Right",
+      "exampleCode": "const tbSet = await figma.importComponentSetByKeyAsync('86d2922b50fd392993e764897307679a90868350');\nconst tb = tbSet.defaultVariant.createInstance();\ntb.setProperties({ 'Size': 'Default', 'State': 'Default', 'Has Label': false, 'Has Helper': false, 'Icon Left': false, 'Icon Right': false });",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Double Field": {
       "figmaName": "Double field",
       "componentKey": "9e7f5074afab3832b227c16aa1b342a18186c9c0",
       "searchQuery": "Double field",
       "type": "component_set",
-      "variants": "Two side-by-side input fields for related data (e.g., first/last name)"
+      "variants": "Type (Front, Backside). Holds a Dropdown + Text Box in one row",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Select": {
       "figmaName": "Drop down",
       "componentKey": "3be1bec4288c412f93ed636e35158b9c1f191e0e",
       "searchQuery": "Drop down",
       "type": "component_set",
-      "variants": "Size (Default, Large, Small, Extra Small, Compact), State (Default, Hover, Active, Error, Disabled, Read Only), Content (Placeholder, Selected, Multi, Comma), Has Label (Yes/No), Has Helper (Yes/No), Icon Left (Yes/No)",
-      "exampleCode": "const ddSet = await figma.importComponentSetByKeyAsync('3be1bec4288c412f93ed636e35158b9c1f191e0e');\nconst dd = ddSet.defaultVariant.createInstance();\ndd.setProperties({ 'Size': 'Default', 'State': 'Default', 'Content': 'Placeholder', 'Has Label': false, 'Has Helper': false });"
+      "variants": "Type (Default, Link Dropdown), State (Default, Hover, Error, Active, Disabled, Chips Filled, Filled), Size (Default, Small, Extra Small). Bools: Label, Label Icon, Icon Left, Optional, Show Chip 2, Show Chip 3. Figma name is 'Dropdown'",
+      "exampleCode": "const ddSet = await figma.importComponentSetByKeyAsync('3be1bec4288c412f93ed636e35158b9c1f191e0e');\nconst dd = ddSet.defaultVariant.createInstance();\ndd.setProperties({ 'Size': 'Default', 'State': 'Default', 'Content': 'Placeholder', 'Has Label': false, 'Has Helper': false });",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Dropdown Menu": {
       "figmaName": "Dropdown Menu",
       "componentKey": "ba5cf29d43170458cbdf49ea186e6ff6e50579e0",
       "searchQuery": "Dropdown Menu",
       "type": "component_set",
-      "variants": "Menu item list. Detach to edit items. Set layoutPositioning = 'ABSOLUTE' if inside auto-layout parent.",
-      "exampleCode": "const menuSet = await figma.importComponentSetByKeyAsync('ba5cf29d43170458cbdf49ea186e6ff6e50579e0');\nconst menu = menuSet.defaultVariant.createInstance();\n// Detach to edit menu items"
+      "variants": "Type (Default, Multi Select, Multi Select with Button, Default with Button, Empty 1, Empty 2), Size (Default, Small). Bool: Show Search box",
+      "exampleCode": "const menuSet = await figma.importComponentSetByKeyAsync('ba5cf29d43170458cbdf49ea186e6ff6e50579e0');\nconst menu = menuSet.defaultVariant.createInstance();\n// Detach to edit menu items",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Dropdown Ghost": {
       "figmaName": "Dropdown Ghost",
       "componentKey": "e562e8a12ed284cfb8d878a542537436488cc5c4",
       "searchQuery": "Dropdown Ghost",
       "type": "component_set",
-      "variants": "Size (Default, Small, Extra Small), State (Default, Hover, Active). Ghost-styled dropdown with subtle grey appearance. Use for inline filters and secondary selections where a full dropdown is too heavy."
+      "variants": "State (Default, Hover, Active), Size (Small, Default). Bool: Show Badge",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Tag": {
       "figmaName": "Chip",
       "componentKey": "521cb36aff97e00dc59f5c37b5f04a684b475930",
       "searchQuery": "Chip",
       "type": "component_set",
-      "variants": "Color (Primary, Grey, Success, Warning, Danger, Info), Size (Default, Small), Has Remove (Yes/No), Has Icon Left (Yes/No)",
-      "exampleCode": "const tagSet = await figma.importComponentSetByKeyAsync('521cb36aff97e00dc59f5c37b5f04a684b475930');\nconst tag = tagSet.defaultVariant.createInstance();\ntag.setProperties({ 'Color': 'Primary', 'Size': 'Default', 'Has Remove': false, 'Has Icon Left': false });"
+      "variants": "State (Default, Hover, Disabled), Size (Default, Small). Bools: Icon Left, Close, Text. Figma name is 'Chip'. No Color property",
+      "exampleCode": "const tagSet = await figma.importComponentSetByKeyAsync('521cb36aff97e00dc59f5c37b5f04a684b475930');\nconst tag = tagSet.defaultVariant.createInstance();\ntag.setProperties({ 'Color': 'Primary', 'Size': 'Default', 'Has Remove': false, 'Has Icon Left': false });",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Badge": {
       "figmaName": "Badges",
       "componentKey": "43e36112e3424d07337dd538025a7a53d1ec1c95",
       "searchQuery": "Badges",
       "type": "component_set",
-      "variants": "Style (Solid, Subtle), Color (Primary, Grey, Success, Warning, Danger, Info), Size (Default, Small), Content (Text, Dot, Count)",
-      "exampleCode": "const badgeSet = await figma.importComponentSetByKeyAsync('43e36112e3424d07337dd538025a7a53d1ec1c95');\nconst badge = badgeSet.defaultVariant.createInstance();\nbadge.setProperties({ 'Style': 'Subtle', 'Color': 'Success', 'Size': 'Default', 'Content': 'Text' });"
+      "variants": "Type (Primary, Secondary), Color (Primary, Grey, Purple, Danger, Disabled, Info, Success, Warning), Size (Default, Small, Dot). Colors are SEMANTIC — there is no Green/Red/Amber/Orange. Use Secondary in table cells",
+      "exampleCode": "const badgeSet = await figma.importComponentSetByKeyAsync('43e36112e3424d07337dd538025a7a53d1ec1c95');\nconst badge = badgeSet.defaultVariant.createInstance();\nbadge.setProperties({ 'Style': 'Subtle', 'Color': 'Success', 'Size': 'Default', 'Content': 'Text' });",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Avatar": {
       "figmaName": "Avatar",
       "componentKey": "10995f8d4482e2fdf26d5496ff155a14a3299976",
       "searchQuery": "Avatar",
       "type": "component_set",
-      "variants": "Size (Small 24px, Default 32px, Large 40px), Type (Image, Initials, Icon), Show Status (Yes/No). Circular shape. Status dot shows online/offline/busy state."
+      "variants": "Type (Icon, Icon Filled, Initials, Men, Women), Size (Small, Default, Large), State (Default, Disabled). Bool: Status",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Tooltip": {
       "figmaName": "Tooltip",
       "componentKey": "e8e32b7c10dd6a3ce7d3b4b021c7504b5d4e48a5",
       "searchQuery": "Tooltip",
       "type": "component_set",
-      "variants": "Position (Top, Bottom, Left, Right)"
+      "variants": "Side (Left, Right, Bottom, Top). Bools: Show Link Button, Show Icon",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Tabs": {
       "figmaName": "Tabs",
       "componentKey": "5ad363087bae85f4ef5f4d1355e80107f48d54c6",
       "searchQuery": "Tabs",
       "type": "component_set",
-      "variants": "Tab items with active/inactive states. Use for primary and secondary navigation within pages."
+      "variants": "Type (Primary, Secondary Default, Secondary Small, Secondary Extra Small, Code Tab). Bools: Show Tab 3, Show Tab 4, Show Tab 5 -> MAX 5 tabs. There is NO Count property and NO Pill type",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Accordion": {
       "figmaName": "Accordion",
       "componentKey": "a59f918adc4134fed68c06bd36684577019c3f0a",
       "searchQuery": "Accordion",
       "type": "component_set",
-      "variants": "Expandable/collapsible sections. Detach to insert custom content inside open panel."
+      "variants": "State (Default, Hover, Active). Bools: Heading, Sub Text, Show Icon. There is NO Collapsed/Expanded state",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Accordion Bordered": {
       "figmaName": "Accordion Bordered",
       "componentKey": "cc503f0f55ccf70b3c71d4b676f495acab810590",
       "searchQuery": "Accordion Bordered",
       "type": "component_set",
-      "variants": "Same as Accordion but with visible borders around each section. Use when sections need clear visual separation."
+      "variants": "State (Default, Hover, Active)",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Breadcrumbs": {
       "figmaName": "Breadcrumbs",
       "componentKey": "180a3024a23a3db44ecef1238aa366d1c8bbe8b4",
       "searchQuery": "Breadcrumbs",
       "type": "component_set",
-      "variants": "Navigation breadcrumb trail for hierarchical page structures"
+      "variants": "Type (Default). Bools: Breadcrumb 2-6",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Table": {
       "figmaName": "Table",
       "componentKey": "954cd82ff912bd312206e7f2776a75d80049ede0",
       "searchQuery": "Table",
       "type": "component_set",
-      "variants": "Type (Default, Compact). Includes header row, sortable columns, row hover states, and multi-select checkboxes. LEGACY \u2014 prefer Table AI for new builds.",
+      "variants": "Layout (Boxy, Stretch). Bools: Col - 1 .. Col - 9. DEPRECATED — use Table AI",
       "deprecated": true,
-      "deprecatedBy": "Table AI"
+      "deprecatedBy": "Table AI",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Table AI": {
       "figmaName": "Table AI",
       "componentKey": "f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07",
       "searchQuery": "Table AI",
       "type": "component_set",
-      "variants": "Style (Stretch, Boxy), Size (Default), Columns (3, 4, 5, 6, 7, 8). Booleans: Show Checkbox, Show Threedot, Show Pagination. Instance Swap: Col 1-8 (swap to any column type). ZERO-DETACH \u2014 99% of tables work via setProperties() alone.",
+      "variants": "Style (Stretch, Boxy), Size (Default), Columns (3-8). Bools: Show Checkbox, Show Threedot, Show Pagination. Swaps: Col 1-8. ZERO-DETACH",
       "exampleCode": "const tableSet = await figma.importComponentSetByKeyAsync('f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07');\nconst table = tableSet.defaultVariant.createInstance();\ntable.setProperties({ 'Style': 'Stretch', 'Columns': '6', 'Show Checkbox': true, 'Show Threedot': true, 'Show Pagination': true });",
       "columnTypes": {
         "_description": "Column types available for instance swap on Col 1-8. Keys are LOCAL to the design system file. When swapping columns via setProperties, use the column component's node ID (find by name on the Tables page).",
         "_Table_Col_Text": {
           "key": "72d50704a2f6b388808c5d5f643636a3d1f3f261",
           "width": "200px",
-          "use": "Generic text \u2014 default for most data columns"
+          "use": "Generic text — default for most data columns"
         },
         "_Table_Col_AvatarName": {
           "key": "098e88732352f7b1fdafd205b7928ddd9686ac87",
           "width": "280px",
-          "use": "Avatar + name + subtitle \u2014 entity/resource name column"
+          "use": "Avatar + name + subtitle — entity/resource name column"
         },
         "_Table_Col_Date": {
           "key": "5ea7672068a9a6f18396ae92ad0184a75bf254c4",
           "width": "200px",
-          "use": "Date + time \u2014 timestamps, created/modified dates"
+          "use": "Date + time — timestamps, created/modified dates"
         },
         "_Table_Col_Badge": {
           "key": "f54ff134a0c90e39702568598321cb7c69ec3635",
           "width": "200px",
-          "use": "Status badge \u2014 status, state, severity columns"
+          "use": "Status badge — status, state, severity columns"
         },
         "_Table_Col_ExecutionStatus": {
           "key": "9c1f1f05ea3b544b722b1b727a126834df658365",
           "width": "200px",
-          "use": "Dot + status text \u2014 execution/health status"
+          "use": "Dot + status text — execution/health status"
         },
         "_Table_Col_IconText": {
           "key": "e877af2d4127072bc9938b8cc61ad812891b86f0",
           "width": "200px",
-          "use": "Icon + text \u2014 type/category with visual indicator"
+          "use": "Icon + text — type/category with visual indicator"
         },
         "_Table_Col_Button": {
           "key": "abbc84ec3fe8eb71edc3db76441a969b827878d0",
           "width": "200px",
-          "use": "Ghost button \u2014 row-level actions (View, Edit, Connect)"
+          "use": "Ghost button — row-level actions (View, Edit, Connect)"
         },
         "_Table_Col_Checkbox": {
           "key": "825fd477e5fedf4626e1f7a75f88b3f7c6b6c201",
@@ -625,120 +651,137 @@
           "width": "48px",
           "use": "Single action icon (fixed width)"
         }
-      }
+      },
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Attention Box": {
       "figmaName": "Attention box",
       "componentKey": "af7fe6fd04dec3fb55f360c2094c2c8b2585f219",
       "searchQuery": "Attention box",
       "type": "component_set",
-      "variants": "Type (Info, Success, Warning, Error, Neutral), Has Title (Yes/No), Has Action (Yes/No), Has Close (Yes/No), Size (Default, Compact)"
+      "variants": "Type (Message, Alert), Color (Info, Success, Warning, Danger, Default). Bools: Show Icon, Show Sub Text, Hide Button. There is no Error or Neutral colour — use Danger / Default",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Card BG": {
       "figmaName": "Card",
       "componentKey": "f94642162a404b4dd9b0c2c9e8c7e3d1a8ba330e",
       "searchQuery": "Card",
       "type": "component_set",
-      "variants": "Color (White, Grey, Bordered, Elevated). Themed surface container. Detach to add content inside."
+      "variants": "State (Default, Hover, Selected, Disabled) ONLY. There is NO Color property — setProperties({Color:...}) throws",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Divider": {
       "figmaName": "Divider",
       "componentKey": "ae8ace032eb5e3ff8b86424a97be7a3728bde3bd",
       "searchQuery": "Divider",
       "type": "component_set",
-      "variants": "Direction (Horizontal, Vertical). Use for section separators and panel dividers."
+      "variants": "State (Default, Active, Completed, Disabled). IS importable — do not hand-build dividers",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Key Value Pair": {
       "figmaName": "Key value pair",
       "componentKey": "2d82f5c0a6c24ab0370c320d0044cc8346666077",
       "searchQuery": "Key value pair",
       "type": "component_set",
-      "variants": "Label-value display for metadata and detail views"
+      "variants": "State (Default, Hover, Error, Disabled). Bools: Label, Optional, info, Minus, Manual Add, Third filed, Drag and drop. There is NO Layout property — for horizontal read-only Label:Value use General Details",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Sidemenu": {
       "figmaName": "Sidemenu",
       "componentKey": "ca0f0ac62eadf6bc20c00883b49a1081949dae13",
       "searchQuery": "Sidemenu",
       "type": "component_set",
-      "variants": "State (Expanded, Collapsed). Left sidebar navigation with grouped menu items."
+      "variants": "Type (Expanded, Collapsed)",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Layout": {
       "figmaName": "Layout",
       "componentKey": "c321d468b0231e052b921026407ff896bdf2c55e",
       "searchQuery": "Layout",
       "type": "component_set",
-      "variants": "type=Default (with left sidebar, 1259px container), type=No Left Menu (no sidebar, 1489px container). Page-level shell with top bar, content header, and main content area."
+      "variants": "type (Default, No Left Menu) — LOWERCASE. Bools: Show Header, Show Service Menu, Show Sidemenu, Show Sub Header, Container left Menu, Empty Sates",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Container Header": {
       "figmaName": "Container Header",
       "componentKey": "c1e72c452cc937aa5dfc80c6308008c5038bc10f",
       "searchQuery": "Container Header",
       "type": "component_set",
-      "variants": "Type (Feature Name, Search, Tab). Booleans: Info Icon, Badge, Description, Tabs, Link Box, Filter 1, Filter 2, Filter 3, Secondary Button, Outline Button, Primary Button. Toggle elements on/off. Detach for customization.",
-      "exampleCode": "const chSet = await figma.importComponentSetByKeyAsync('c1e72c452cc937aa5dfc80c6308008c5038bc10f');\nconst ch = chSet.defaultVariant.createInstance();\nch.setProperties({ 'Type': 'Feature Name', 'Primary Button': true });\n// Toggle booleans: Info Icon, Badge, Description, Tabs, Link Box, Filter 1-3, Secondary Button, Outline Button, Primary Button"
+      "variants": "Type (Feature Name, Search, Tab). Bools: Show Badge, Show Info Icon, Show Description, Show Tab, Show Link Box, Show Filter 1, Show Filter 2, Show Filter 3, Show Primary Button, Show Secondary Button, Show Outline Button",
+      "exampleCode": "const chSet = await figma.importComponentSetByKeyAsync('c1e72c452cc937aa5dfc80c6308008c5038bc10f');\nconst ch = chSet.defaultVariant.createInstance();\nch.setProperties({ 'Type': 'Feature Name', 'Primary Button': true });\n// Toggle booleans: Info Icon, Badge, Description, Tabs, Link Box, Filter 1-3, Secondary Button, Outline Button, Primary Button",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Search": {
       "figmaName": "Search",
       "componentKey": "cef60eea85a7fb5c9939acde23efce24f6d55fea",
       "searchQuery": "Search",
       "type": "component_set",
-      "variants": "Size (Default, Large, Small, Extra Small, Compact), State (Default, Hover, Active, Filled, Disabled). Dedicated search input with search icon."
+      "variants": "State (Default, Hover, Active, Filled, Disabled), Size (Default, Small)",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Input Group": {
       "figmaName": "Input Group",
       "componentKey": "acbab8c6e91bedd8b3f873aa9263fdcdf809ad14",
       "searchQuery": "Input Group",
       "type": "component_set",
-      "variants": "Type (Default, With Button, With Link). Combines input with contextual action. Use for copy-to-clipboard, password reveal, inline edit."
+      "variants": "State (Default, Hover, Active)",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "File Upload": {
       "figmaName": "File Upload",
       "componentKey": "ce1906245d97f24e3570b7721054cc9b0d708985",
       "searchQuery": "File Upload",
       "type": "component_set",
-      "variants": "File upload dropzone/button component"
+      "variants": "Type (Single Upload, Multiple File), State (Default, Hover, Uploading, Error, Pressed, Uploaded), Size (Default, Large). Bool: show label",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Link Box": {
       "figmaName": "Link Box",
       "componentKey": "a3ebd71652f503f87cf34ad2aaef12a5c92349e5",
       "searchQuery": "Link Box",
       "type": "component_set",
-      "variants": "Size (Default, Large, Small, Extra Small), State (Default, Hover, Active, Error, Disabled). Clickable link input field."
+      "variants": "Label Type (Top, Label Inside, Left, No Label), State (Default, Hover), Size (Default, Small). Bools: Label, Info Icon",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Alerts": {
       "figmaName": "Alerts",
       "componentKey": "f6be28cb9d61119b4b9e5bc608a801bf69902822",
       "searchQuery": "Alerts",
       "type": "component_set",
-      "variants": "Type (Success, Error, Warning, Info), Has Action (Yes/No), Has Close (Yes/No), Position (Top, Bottom). Toast notification component."
+      "variants": "Type (Message, With Heading), Color (Info, Success, Danger, Warning). Bools: Show Icon, Show Sub Text, Hide Button",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Date Picker": {
       "figmaName": "Date Picker",
       "componentKey": "0b6758093ba57ef7d4edcc9a48513c16648cde86",
       "searchQuery": "Date Picker",
       "type": "component_set",
-      "variants": "Type (Single Date, Date Range). Calendar-based date selection."
+      "variants": "State (Default, Range Selected). Bools: Time Range, Show time Picker, Show Date Range, Time Zone",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Code Block": {
       "figmaName": "Code Block",
       "componentKey": "24b627cef8b8b7cfeb0966ffcabcfc8c0b97ba9b",
       "searchQuery": "Code Block",
       "type": "component_set",
-      "variants": "Editor (editable code), Viewer (read-only code display). Syntax-highlighted code block with Roboto Mono font."
+      "variants": "type (Editor, Viewer) — lowercase",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Loader": {
       "figmaName": "Loader",
       "componentKey": "0e2d66db078fa30460c0be151c64d31b5d65684e",
       "searchQuery": "Loader",
       "type": "component_set",
-      "variants": "Size (Extra Small 16px, Small 24px, Default 32px, Large 48px), Color (Default, Inverse, White). Spinning loader indicator. Use for loading states on buttons, sections, or full pages."
+      "variants": "Type (Progress Loader, Content Loader, Skeleton, Icon Loader), Variant (Default, Primary, Secondary, White, Dark, Brand)",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Popup": {
       "figmaName": "Popup",
       "componentKey": "33c77b98d939494dc272bc94d0b8d726eb870346",
       "searchQuery": "Popup",
       "type": "component_set",
-      "variants": "Default, With Scroll, With Description, Only Word, With Note, With View More, With View More Expanded. Modal dialog component."
+      "variants": "type (Default, With Scroll, With Description, Only Word, With Note, With View More, With View More Expanded). Default = 3 field slots; With Scroll = 6 field slots. Lowercase 'type'",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Header": {
       "figmaName": "Header",
@@ -763,35 +806,42 @@
       "figmaName": "Stepper",
       "componentKey": "2c2cd669431492f516b4c9a2a4fde585cfd74116",
       "searchQuery": "Stepper",
-      "type": "component_set"
+      "type": "component",
+      "variants": "Bools: Step 4, Step 5. Type is COMPONENT not component_set",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Pagination": {
       "figmaName": "Pagination",
       "componentKey": "e2e8d2df4e0e1de88032ff157aeb1dd51b2d370b",
       "searchQuery": "Pagination",
-      "type": "component_set"
+      "type": "component",
+      "variants": "No properties. Type is COMPONENT not component_set",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Sidebar List Panel": {
       "figmaName": "Sidebar List Panel",
       "componentKey": "c042e030f9a1755279cd389302cf6f3f693f6707",
       "searchQuery": "Sidebar List Panel",
       "type": "component",
-      "variants": "300px wide sidebar with title, search, grouped menu items (3 sections). Detach to customize sections and items.",
-      "exampleCode": "const slp = (await figma.importComponentByKeyAsync('c042e030f9a1755279cd389302cf6f3f693f6707')).createInstance();\n// Detach to edit. Update: Title text, Button text, Heading texts, Menu Item instances per section. Width: 300px fixed."
+      "variants": "Bools: Show Header, Show Search, Show Headings, Show Section 1, Show Section 2, Show Section 3",
+      "exampleCode": "const slp = (await figma.importComponentByKeyAsync('c042e030f9a1755279cd389302cf6f3f693f6707')).createInstance();\n// Detach to edit. Update: Title text, Button text, Heading texts, Menu Item instances per section. Width: 300px fixed.",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Empty State": {
       "figmaName": "Empty State",
       "componentKey": "03321dc06395aa6b94783d0289637de8ddc82de0",
       "searchQuery": "Empty State",
       "type": "component",
-      "variants": "Illustration + title + description + CTA button. Use for first-time empty pages."
+      "variants": "Bools: Show Illustration, Show Heading, Show Description, Show Primary Button, Show Outline Button",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "General Details": {
       "figmaName": "General Details",
       "componentKey": "6dd180e6490c68971c8c9b5cc963349b711a5e5d",
       "searchQuery": "General Details",
       "type": "component",
-      "variants": "Pre-built detail view with key-value pairs layout"
+      "variants": "Bool: Show Heading. Pre-built horizontal Label:Value block",
+      "verifiedAgainstLive": "2026-08-18"
     },
     "Popup Blur": {
       "figmaName": "Popup Blur",
@@ -946,19 +996,19 @@
     },
     "Profile Menu": {
       "figmaName": "Profile Menu",
-      "componentKey": "NEEDS_VERIFICATION",
+      "componentKey": null,
       "searchQuery": "Profile Menu",
       "type": "component_set",
-      "variants": "NEEDS_VERIFICATION \u2014 inspect Figma page to document variants",
-      "needsVerification": true
+      "variants": "NOT PRESENT in the published library as of the 2026-08-18 audit. Do not attempt to import. Run search_design_system before assuming it exists.",
+      "status": "not-found-in-library"
     },
     "Notification Panel": {
       "figmaName": "Notification Panel",
-      "componentKey": "NEEDS_VERIFICATION",
+      "componentKey": null,
       "searchQuery": "Notification",
       "type": "component_set",
-      "variants": "NEEDS_VERIFICATION \u2014 inspect Figma page to document variants",
-      "needsVerification": true
+      "variants": "NOT PRESENT in the published library as of the 2026-08-18 audit. Do not attempt to import. Run search_design_system before assuming it exists.",
+      "status": "not-found-in-library"
     }
   },
   "legacySource": {
@@ -1051,7 +1101,7 @@
         "Stack",
         "Column"
       ],
-      "buildNotes": "Manual build \u2014 not a Figma component. Create with figma.createAutoLayout(\"VERTICAL\"). Set maxWidth via resize(), center with counterAxisAlignItems=\"CENTER\". ALL fills must use zcat color variables, ALL spacing must use the spacing scale. In Catalyst screens, the Layout component already provides the Container \u2014 do not nest another Container inside it.",
+      "buildNotes": "Manual build — not a Figma component. Create with figma.createAutoLayout(\"VERTICAL\"). Set maxWidth via resize(), center with counterAxisAlignItems=\"CENTER\". ALL fills must use zcat color variables, ALL spacing must use the spacing scale. In Catalyst screens, the Layout component already provides the Container — do not nest another Container inside it.",
       "searchAliases": [
         "wrapper",
         "content wrapper",
@@ -1122,7 +1172,7 @@
         "Column",
         "Container"
       ],
-      "buildNotes": "Manual build \u2014 not a Figma component. Create with figma.createAutoLayout(direction). Set itemSpacing for gap. Use layoutSizingHorizontal/Vertical for child sizing (FILL, HUG, FIXED). The most common building block \u2014 use for any group of related elements.",
+      "buildNotes": "Manual build — not a Figma component. Create with figma.createAutoLayout(direction). Set itemSpacing for gap. Use layoutSizingHorizontal/Vertical for child sizing (FILL, HUG, FIXED). The most common building block — use for any group of related elements.",
       "searchAliases": [
         "flex",
         "flexbox",
@@ -1186,7 +1236,7 @@
         "Column",
         "Container"
       ],
-      "buildNotes": "Manual build \u2014 not a Figma component. Create a horizontal auto-layout frame for each row, wrap rows in a vertical auto-layout. Set equal widths on children with layoutSizingHorizontal=\"FILL\". For card grids, use consistent gap (16px) and card sizes.",
+      "buildNotes": "Manual build — not a Figma component. Create a horizontal auto-layout frame for each row, wrap rows in a vertical auto-layout. Set equal widths on children with layoutSizingHorizontal=\"FILL\". For card grids, use consistent gap (16px) and card sizes.",
       "searchAliases": [
         "card grid",
         "multi-column",
@@ -1251,7 +1301,7 @@
         "Column",
         "Grid"
       ],
-      "buildNotes": "Manual build \u2014 not a Figma component. Create with figma.createAutoLayout(\"HORIZONTAL\"). Use primaryAxisAlignItems for distribution (MIN, CENTER, MAX, SPACE_BETWEEN). Children can be FILL or FIXED width.",
+      "buildNotes": "Manual build — not a Figma component. Create with figma.createAutoLayout(\"HORIZONTAL\"). Use primaryAxisAlignItems for distribution (MIN, CENTER, MAX, SPACE_BETWEEN). Children can be FILL or FIXED width.",
       "searchAliases": [
         "horizontal layout",
         "flex row",
@@ -1314,7 +1364,7 @@
         "Stack",
         "Grid"
       ],
-      "buildNotes": "Manual build \u2014 not a Figma component. Create with figma.createAutoLayout(\"VERTICAL\"). Use for sidebar content, form columns, vertical sections. Set layoutSizingHorizontal=\"FILL\" when inside a Row.",
+      "buildNotes": "Manual build — not a Figma component. Create with figma.createAutoLayout(\"VERTICAL\"). Use for sidebar content, form columns, vertical sections. Set layoutSizingHorizontal=\"FILL\" when inside a Row.",
       "searchAliases": [
         "vertical layout",
         "flex column",
@@ -1370,7 +1420,7 @@
       "related": [
         "Divider"
       ],
-      "buildNotes": "Manual build \u2014 not a Figma component. Create an empty frame with fixed size matching a spacing token. Use inside auto-layout to add specific gaps between elements. Prefer itemSpacing on the parent over Spacer when all gaps are equal.",
+      "buildNotes": "Manual build — not a Figma component. Create an empty frame with fixed size matching a spacing token. Use inside auto-layout to add specific gaps between elements. Prefer itemSpacing on the parent over Spacer when all gaps are equal.",
       "searchAliases": [
         "gap",
         "spacing",
@@ -1386,7 +1436,7 @@
       "name": "Divider",
       "category": "layout",
       "subcategory": "primitives",
-      "description": "Line separator component. INTERNAL USE: consumed by the Stepper component. For general-purpose dividers in your designs, build a manual 1px frame with fill bound to color/border/default variable \u2014 do NOT import this Divider component.",
+      "description": "Line separator component. INTERNAL USE: consumed by the Stepper component. For general-purpose dividers in your designs, build a manual 1px frame with fill bound to color/border/default variable — do NOT import this Divider component.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "page": "Layout Primitives",
@@ -1423,7 +1473,7 @@
       "related": [
         "Spacer"
       ],
-      "buildNotes": "DO NOT USE for general dividers \u2014 this component is scoped internally to Stepper. For horizontal dividers: create a Frame, set height=1, layoutSizingHorizontal=FILL, fill bound to color/border/default. For vertical dividers: create a Frame, set width=1, layoutSizingVertical=FILL, fill bound to color/border/default. Always bind the fill to a zcat border variable.",
+      "buildNotes": "DO NOT USE for general dividers — this component is scoped internally to Stepper. For horizontal dividers: create a Frame, set height=1, layoutSizingHorizontal=FILL, fill bound to color/border/default. For vertical dividers: create a Frame, set width=1, layoutSizingVertical=FILL, fill bound to color/border/default. Always bind the fill to a zcat border variable.",
       "searchAliases": [
         "separator",
         "horizontal rule",
@@ -1496,7 +1546,7 @@
       "related": [
         "Image"
       ],
-      "buildNotes": "Manual build \u2014 not a Figma component. Create a frame with fixed width and calculated height (width / ratio). Common ratios: 16:9 (video), 4:3 (thumbnail), 1:1 (avatar/square). Set clipsContent=true to crop overflowing children.",
+      "buildNotes": "Manual build — not a Figma component. Create a frame with fixed width and calculated height (width / ratio). Common ratios: 16:9 (video), 4:3 (thumbnail), 1:1 (avatar/square). Set clipsContent=true to crop overflowing children.",
       "searchAliases": [
         "aspect ratio box",
         "responsive image",
@@ -1548,7 +1598,7 @@
       "related": [
         "Spinner"
       ],
-      "buildNotes": "Manual build \u2014 not a Figma component. For popup/dialog overlays, use the Popup Blur component instead. Only use manual Overlay for custom cases not covered by Popup Blur. Create a full-page frame with semi-transparent black fill bound to color/bg/overlay.",
+      "buildNotes": "Manual build — not a Figma component. For popup/dialog overlays, use the Popup Blur component instead. Only use manual Overlay for custom cases not covered by Popup Blur. Create a full-page frame with semi-transparent black fill bound to color/bg/overlay.",
       "searchAliases": [
         "backdrop",
         "modal background",
@@ -1564,7 +1614,7 @@
       "name": "Spinner",
       "category": "atom",
       "subcategory": "feedback",
-      "description": "DEPRECATED \u2014 use Loader component instead. Available as component_set in the AI-understandable library with Size (Extra Small 16px, Small 24px, Default 32px, Large 48px) and Color (Default, Inverse, White) variants.",
+      "description": "DEPRECATED — use Loader component instead. Available as component_set in the AI-understandable library with Size (Extra Small 16px, Small 24px, Default 32px, Large 48px) and Color (Default, Inverse, White) variants.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "page": "Atoms - Feedback",
@@ -1646,7 +1696,7 @@
         "Skeleton",
         "Shimmer"
       ],
-      "buildNotes": "Manual build \u2014 not a Figma component. PREFER the Loader component (component_set, key 0e2d66db078fa30460c0be151c64d31b5d65684e) which is a proper Figma component. Only use manual Spinner if Loader does not fit the use case.",
+      "buildNotes": "Manual build — not a Figma component. PREFER the Loader component (component_set, key 0e2d66db078fa30460c0be151c64d31b5d65684e) which is a proper Figma component. Only use manual Spinner if Loader does not fit the use case.",
       "searchAliases": [
         "loading indicator",
         "loading animation",
@@ -1749,7 +1799,7 @@
         "Spinner",
         "Progress Bar"
       ],
-      "buildNotes": "Manual build \u2014 not a Figma component. Use for content loading placeholders. Create frames matching content dimensions with fills bound to color/bg/sunken. Apply alternating light/dark fills to simulate shimmer effect. Match the layout shape of the content being loaded.",
+      "buildNotes": "Manual build — not a Figma component. Use for content loading placeholders. Create frames matching content dimensions with fills bound to color/bg/sunken. Apply alternating light/dark fills to simulate shimmer effect. Match the layout shape of the content being loaded.",
       "searchAliases": [
         "skeleton loader",
         "content placeholder",
@@ -1852,7 +1902,7 @@
         "Spinner",
         "Progress Bar"
       ],
-      "buildNotes": "Manual build \u2014 not a Figma component. Similar to Shimmer but for structural outlines. Create frames matching content structure (header bar, text lines, image boxes) with fills bound to color/bg/sunken. Use rounded corners matching the target component.",
+      "buildNotes": "Manual build — not a Figma component. Similar to Shimmer but for structural outlines. Create frames matching content structure (header bar, text lines, image boxes) with fills bound to color/bg/sunken. Use rounded corners matching the target component.",
       "searchAliases": [
         "skeleton screen",
         "wireframe loader",
@@ -1948,7 +1998,7 @@
         "Tag",
         "Avatar"
       ],
-      "buildNotes": "Import as component_set. IMPORTANT: the variant properties are Type/Color/Size \u2014 not Style/Color/Size as some descriptions claim. Type=Primary is a solid badge, Type=Secondary is a subtle/outlined badge. Size=Dot is a dot-only indicator (no text). The 'Required' badge in table schemas uses Color=Danger, Size=Default.",
+      "buildNotes": "Import as component_set. IMPORTANT: the variant properties are Type/Color/Size — not Style/Color/Size as some descriptions claim. Type=Primary is a solid badge, Type=Secondary is a subtle/outlined badge. Size=Dot is a dot-only indicator (no text). The 'Required' badge in table schemas uses Color=Danger, Size=Default.",
       "searchAliases": [
         "status badge",
         "count badge",
@@ -2052,7 +2102,7 @@
         "Helper Text",
         "Text Input"
       ],
-      "buildNotes": "Manual build \u2014 not a Figma component. Create a text node with text style applied. Use Subtitle 2 (12px SemiBold) for form labels. Bind text fill to color/text/secondary for labels. ALWAYS pair with the corresponding input component below it in a vertical auto-layout with 4px gap.",
+      "buildNotes": "Manual build — not a Figma component. Create a text node with text style applied. Use Subtitle 2 (12px SemiBold) for form labels. Bind text fill to color/text/secondary for labels. ALWAYS pair with the corresponding input component below it in a vertical auto-layout with 4px gap.",
       "searchAliases": [
         "form label",
         "field label",
@@ -2138,7 +2188,7 @@
         "Label",
         "Text Input"
       ],
-      "buildNotes": "Manual build \u2014 not a Figma component. Create a text node below the input with Body 3 style (12px Regular). Bind fill to color/text/secondary for hints, color/text/danger for errors. Place in the same vertical auto-layout as Label + Input with 4px gap.",
+      "buildNotes": "Manual build — not a Figma component. Create a text node below the input with Body 3 style (12px Regular). Bind fill to color/text/secondary for hints, color/text/danger for errors. Place in the same vertical auto-layout as Label + Input with 4px gap.",
       "searchAliases": [
         "hint text",
         "field hint",
@@ -2327,7 +2377,7 @@
         "Tooltip",
         "Badge"
       ],
-      "buildNotes": "Manual build \u2014 not a Figma component. Create a frame with 4px padding, 4px radius, 1px border (color/border/default), sunken background (color/bg/sunken). Use Roboto Mono font for the key text. Common for shortcut hints (Ctrl+S, Cmd+K).",
+      "buildNotes": "Manual build — not a Figma component. Create a frame with 4px padding, 4px radius, 1px border (color/border/default), sunken background (color/bg/sunken). Use Roboto Mono font for the key text. Common for shortcut hints (Ctrl+S, Cmd+K).",
       "searchAliases": [
         "keyboard shortcut",
         "key cap",
@@ -2655,7 +2705,7 @@
         "Icon Button",
         "Nav Button"
       ],
-      "buildNotes": "Import as component_set. CRITICAL: the property named 'Type' selects the button KIND (Default Button, Split Button, Navigation Buttons). The property named 'Variant' selects the visual style (Fill, Outline, Ghost). Do NOT confuse them \u2014 setProperties({Type: 'Ghost'}) will THROW because Ghost is a Variant value, not a Type value. Content='Icon Button' makes an icon-only square button. Split Button and Navigation Buttons are Type values inside this same component_set, NOT separate components. setProperties() throws on ANY invalid property combo and prevents ALL properties from applying \u2014 always query valid combos first or set properties one at a time.",
+      "buildNotes": "Import as component_set. CRITICAL: the property named 'Type' selects the button KIND (Default Button, Split Button, Navigation Buttons). The property named 'Variant' selects the visual style (Fill, Outline, Ghost). Do NOT confuse them — setProperties({Type: 'Ghost'}) will THROW because Ghost is a Variant value, not a Type value. Content='Icon Button' makes an icon-only square button. Split Button and Navigation Buttons are Type values inside this same component_set, NOT separate components. setProperties() throws on ANY invalid property combo and prevents ALL properties from applying — always query valid combos first or set properties one at a time.",
       "searchAliases": [
         "btn",
         "cta",
@@ -2672,7 +2722,7 @@
       "name": "Split Button",
       "category": "atom",
       "subcategory": "buttons",
-      "description": "DEPRECATED CONCEPT: Split Button is a Type value ('Split Button') inside the Buttons component_set, not a separate component. Use: importComponentSetByKeyAsync with the Buttons key \u2192 setProperties({Type: 'Split Button'}).",
+      "description": "DEPRECATED CONCEPT: Split Button is a Type value ('Split Button') inside the Buttons component_set, not a separate component. Use: importComponentSetByKeyAsync with the Buttons key → setProperties({Type: 'Split Button'}).",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "page": "Atoms - Buttons",
@@ -2760,7 +2810,7 @@
         "Button",
         "Icon Button"
       ],
-      "buildNotes": "NOT a separate component \u2014 it is the Button component_set (key 5819eb825dad40876f31545c93804195f11ea535) with Type=\"Split Button\". A split button has a primary action + dropdown trigger. Set properties: Type=\"Split Button\", then Variant, Color, Size, State as needed.",
+      "buildNotes": "NOT a separate component — it is the Button component_set (key 5819eb825dad40876f31545c93804195f11ea535) with Type=\"Split Button\". A split button has a primary action + dropdown trigger. Set properties: Type=\"Split Button\", then Variant, Color, Size, State as needed.",
       "searchAliases": [
         "button with dropdown",
         "combo button",
@@ -2775,7 +2825,7 @@
       "name": "Icon Button",
       "category": "atom",
       "subcategory": "buttons",
-      "description": "DEPRECATED CONCEPT: Icon-only buttons are a Content value ('Icon Button') inside the Buttons component_set, not a separate component. Use: importComponentSetByKeyAsync with the Buttons key \u2192 setProperties({Content: 'Icon Button'}).",
+      "description": "DEPRECATED CONCEPT: Icon-only buttons are a Content value ('Icon Button') inside the Buttons component_set, not a separate component. Use: importComponentSetByKeyAsync with the Buttons key → setProperties({Content: 'Icon Button'}).",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "page": "Atoms - Buttons",
@@ -2826,7 +2876,7 @@
             "Disabled"
           ],
           "default": "Default",
-          "notes": "For a three-dot/overflow trigger: use \"Pressed\" to represent the active/open state while its Dropdown Menu is shown \u2014 there is no separate \"Active\" value documented."
+          "notes": "For a three-dot/overflow trigger: use \"Pressed\" to represent the active/open state while its Dropdown Menu is shown — there is no separate \"Active\" value documented."
         },
         {
           "name": "Size",
@@ -2852,7 +2902,7 @@
         "Split Button",
         "Nav Button"
       ],
-      "buildNotes": "NOT a separate component \u2014 it is the Button component_set (key 5819eb825dad40876f31545c93804195f11ea535) with Type=\"Icon Button\" or Content=\"Icon Button\". An icon-only button with no text label. Set Size to match surrounding elements. Use Variant=\"Ghost\" for toolbar-style icon buttons.",
+      "buildNotes": "NOT a separate component — it is the Button component_set (key 5819eb825dad40876f31545c93804195f11ea535) with Type=\"Icon Button\" or Content=\"Icon Button\". An icon-only button with no text label. Set Size to match surrounding elements. Use Variant=\"Ghost\" for toolbar-style icon buttons.",
       "searchAliases": [
         "icon only button",
         "toolbar button",
@@ -2867,7 +2917,7 @@
       "name": "Nav Button",
       "category": "atom",
       "subcategory": "buttons",
-      "description": "DEPRECATED CONCEPT: Navigation Buttons is a Type value ('Navigation Buttons') inside the Buttons component_set, not a separate component. Use: importComponentSetByKeyAsync with the Buttons key \u2192 setProperties({Type: 'Navigation Buttons'}).",
+      "description": "DEPRECATED CONCEPT: Navigation Buttons is a Type value ('Navigation Buttons') inside the Buttons component_set, not a separate component. Use: importComponentSetByKeyAsync with the Buttons key → setProperties({Type: 'Navigation Buttons'}).",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "page": "Atoms - Buttons",
@@ -2927,7 +2977,7 @@
         "Button",
         "Icon Button"
       ],
-      "buildNotes": "NOT a separate component \u2014 it is the Button component_set (key 5819eb825dad40876f31545c93804195f11ea535) with Type=\"Navigation Buttons\". Navigation buttons with back/forward arrows. Used in wizards and multi-step flows alongside Stepper.",
+      "buildNotes": "NOT a separate component — it is the Button component_set (key 5819eb825dad40876f31545c93804195f11ea535) with Type=\"Navigation Buttons\". Navigation buttons with back/forward arrows. Used in wizards and multi-step flows alongside Stepper.",
       "searchAliases": [
         "navigation button",
         "back button",
@@ -3127,7 +3177,7 @@
         "Textarea",
         "Select"
       ],
-      "buildNotes": "Import as component_set (key 86d2922b50fd392993e764897307679a90868350). This is the Text Box component in Figma. Set Size, State, and toggle Has Label, Has Helper, Icon Left, Icon Right booleans. Active state uses black border. Same Size within a group \u2014 when appearing alongside Buttons or Selects, ALL must use the same Size variant.",
+      "buildNotes": "Import as component_set (key 86d2922b50fd392993e764897307679a90868350). This is the Text Box component in Figma. Set Size, State, and toggle Has Label, Has Helper, Icon Left, Icon Right booleans. Active state uses black border. Same Size within a group — when appearing alongside Buttons or Selects, ALL must use the same Size variant.",
       "searchAliases": [
         "text field",
         "text box",
@@ -3243,7 +3293,7 @@
         "Text Input",
         "Button"
       ],
-      "buildNotes": "NOT a separate component \u2014 it is the Text Box component_set (key 86d2922b50fd392993e764897307679a90868350) with Icon Right=true (eye icon for show/hide). Set State and Size as with Text Input. The eye icon toggles password visibility.",
+      "buildNotes": "NOT a separate component — it is the Text Box component_set (key 86d2922b50fd392993e764897307679a90868350) with Icon Right=true (eye icon for show/hide). Set State and Size as with Text Input. The eye icon toggles password visibility.",
       "searchAliases": [
         "password field",
         "secret input",
@@ -3348,7 +3398,7 @@
         "Button",
         "Icon Button"
       ],
-      "buildNotes": "NOT a separate component \u2014 it is the Text Box component_set (key 86d2922b50fd392993e764897307679a90868350) with appropriate text content. For number-specific inputs with increment/decrement buttons, build manually with a Text Box + icon buttons.",
+      "buildNotes": "NOT a separate component — it is the Text Box component_set (key 86d2922b50fd392993e764897307679a90868350) with appropriate text content. For number-specific inputs with increment/decrement buttons, build manually with a Text Box + icon buttons.",
       "searchAliases": [
         "numeric input",
         "number field",
@@ -3480,7 +3530,7 @@
         "Label",
         "Helper Text"
       ],
-      "buildNotes": "NOT a separate component \u2014 build manually using a frame styled like Text Box but taller (min-height 80px). Use same color variables as Text Input (color/border/default for border, color/bg/surface for fill). Apply Body 1 text style. Set primaryAxisSizingMode=\"AUTO\" to grow with content.",
+      "buildNotes": "NOT a separate component — build manually using a frame styled like Text Box but taller (min-height 80px). Use same color variables as Text Input (color/border/default for border, color/bg/surface for fill). Apply Body 1 text style. Set primaryAxisSizingMode=\"AUTO\" to grow with content.",
       "searchAliases": [
         "multiline input",
         "text area",
@@ -3591,7 +3641,7 @@
         "Checkbox",
         "Radio"
       ],
-      "buildNotes": "Import as component_set (key 90e1e6c78f80a75a7482711c809a34336027805b). Set Size (Small, Default), State (On, Off), Interaction (Default, Hover, Focused, Disabled). A toggle switch, NOT a toggle between button options \u2014 for button groups use Button with custom selection state.",
+      "buildNotes": "Import as component_set (key 90e1e6c78f80a75a7482711c809a34336027805b). Set Size (Small, Default), State (On, Off), Interaction (Default, Hover, Focused, Disabled). A toggle switch, NOT a toggle between button options — for button groups use Button with custom selection state.",
       "searchAliases": [
         "switch",
         "toggle switch",
@@ -3719,7 +3769,7 @@
         "Badge",
         "Select"
       ],
-      "buildNotes": "Import as component_set \u2014 this is the Chip component in Figma (key 521cb36aff97e00dc59f5c37b5f04a684b475930). Set Color, Size, toggle Has Remove and Has Icon Left. Use for filters, categories, selected items. For status indicators, prefer Badge over Tag.",
+      "buildNotes": "Import as component_set — this is the Chip component in Figma (key 521cb36aff97e00dc59f5c37b5f04a684b475930). Set Color, Size, toggle Has Remove and Has Icon Left. Use for filters, categories, selected items. For status indicators, prefer Badge over Tag.",
       "searchAliases": [
         "chip",
         "pill",
@@ -3843,7 +3893,7 @@
         "Label",
         "Helper Text"
       ],
-      "buildNotes": "Import as component_set \u2014 this is the Drop down component in Figma (key 3be1bec4288c412f93ed636e35158b9c1f191e0e). Set Size, State, Content (Placeholder, Selected, Multi, Comma), toggle Has Label, Has Helper, Icon Left. Same Size within a group. For the dropdown menu that appears on open, use the Dropdown Menu component separately.",
+      "buildNotes": "Import as component_set — this is the Drop down component in Figma (key 3be1bec4288c412f93ed636e35158b9c1f191e0e). Set Size, State, Content (Placeholder, Selected, Multi, Comma), toggle Has Label, Has Helper, Icon Left. Same Size within a group. For the dropdown menu that appears on open, use the Dropdown Menu component separately.",
       "searchAliases": [
         "dropdown",
         "drop down",
@@ -4273,7 +4323,7 @@
         "Avatar",
         "Aspect Ratio"
       ],
-      "buildNotes": "Manual build \u2014 not a Figma component. Create a frame with clipsContent=true and appropriate aspect ratio. Use fills with image paint type or placeholder rectangle with color/bg/sunken fill. Set cornerRadius to match context (6px default, 0 for full-bleed).",
+      "buildNotes": "Manual build — not a Figma component. Create a frame with clipsContent=true and appropriate aspect ratio. Use fills with image paint type or placeholder rectangle with color/bg/sunken fill. Set cornerRadius to match context (6px default, 0 for full-bleed).",
       "searchAliases": [
         "picture",
         "photo",
@@ -4376,7 +4426,7 @@
         "Progress Circle",
         "Spinner"
       ],
-      "buildNotes": "Manual build \u2014 not a Figma component. Create two nested frames: outer track (full width, 4px height, color/bg/sunken fill) and inner fill (percentage width, color/bg/brand-primary fill). Set corner radius 2px on both. For labeled progress, add percentage text above with Body 3 style.",
+      "buildNotes": "Manual build — not a Figma component. Create two nested frames: outer track (full width, 4px height, color/bg/sunken fill) and inner fill (percentage width, color/bg/brand-primary fill). Set corner radius 2px on both. For labeled progress, add percentage text above with Body 3 style.",
       "searchAliases": [
         "loading bar",
         "progress indicator",
@@ -4466,7 +4516,7 @@
         "Progress Bar",
         "Spinner"
       ],
-      "buildNotes": "Manual build \u2014 not a Figma component. Create using vector arcs or ellipse with stroke. Track: full circle stroke with color/border/default. Fill: partial arc stroke with color/bg/brand-primary. For loading states, prefer the Loader component instead.",
+      "buildNotes": "Manual build — not a Figma component. Create using vector arcs or ellipse with stroke. Track: full circle stroke with color/border/default. Fill: partial arc stroke with color/bg/brand-primary. For loading states, prefer the Loader component instead.",
       "searchAliases": [
         "circular progress",
         "donut chart",
@@ -4552,7 +4602,7 @@
         "Toggle",
         "Progress Bar"
       ],
-      "buildNotes": "Manual build \u2014 not a Figma component. Create a horizontal auto-layout with 5 star icons (4px gap). Use filled star icon with color/bg/warning fill for selected, and outline star with color/border/default stroke for unselected. Each star is 16-20px.",
+      "buildNotes": "Manual build — not a Figma component. Create a horizontal auto-layout with 5 star icons (4px gap). Use filled star icon with color/bg/warning fill for selected, and outline star with color/border/default stroke for unselected. Each star is 16-20px.",
       "searchAliases": [
         "star rating",
         "review stars",
@@ -4606,7 +4656,7 @@
           "default": "Collapsed"
         }
       ],
-      "buildNotes": "Detach whitelist component. To show custom detail content inside an open panel: import normally, set the open/expanded variant, then detach ONLY that instance to edit its content frame. Never modify the padding, gaps, colors, or radius the component shipped with \u2014 those stay bound to the same zcat variables after detaching. Only the content payload inside changes. Three confirmed content shapes: (1) a table with its own mini action bar (search + button, then Table \u2014 the Stretch pattern scoped to this panel), (2) a single editable value with an Edit link and the value shown in a bordered/monospace box, (3) Key Value Pair rows stacked in a single column with an Edit link.",
+      "buildNotes": "Detach whitelist component. To show custom detail content inside an open panel: import normally, set the open/expanded variant, then detach ONLY that instance to edit its content frame. Never modify the padding, gaps, colors, or radius the component shipped with — those stay bound to the same zcat variables after detaching. Only the content payload inside changes. Three confirmed content shapes: (1) a table with its own mini action bar (search + button, then Table — the Stretch pattern scoped to this panel), (2) a single editable value with an Edit link and the value shown in a bordered/monospace box, (3) Key Value Pair rows stacked in a single column with an Edit link.",
       "related": [
         "Accordion Bordered",
         "Card BG",
@@ -4734,7 +4784,7 @@
       "name": "Table",
       "category": "organism",
       "subcategory": "data",
-      "description": "LEGACY \u2014 prefer Table AI for all new builds. Data table with sortable columns, row selection, and configurable cells. Stretch variant for full-width list pages, Boxy variant for bordered-cell detail views.",
+      "description": "LEGACY — prefer Table AI for all new builds. Data table with sortable columns, row selection, and configurable cells. Stretch variant for full-width list pages, Boxy variant for bordered-cell detail views.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "954cd82ff912bd312206e7f2776a75d80049ede0",
@@ -4772,7 +4822,7 @@
           "default": "Default"
         }
       ],
-      "buildNotes": "DEPRECATED \u2014 DO NOT USE. Use Table AI instead (key f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07). Table AI is zero-detach and has the same column types built-in as instance swaps. There is no reason to use this legacy Table component.",
+      "buildNotes": "DEPRECATED — DO NOT USE. Use Table AI instead (key f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07). Table AI is zero-detach and has the same column types built-in as instance swaps. There is no reason to use this legacy Table component.",
       "related": [
         "Table AI",
         "Pagination",
@@ -4783,7 +4833,7 @@
       "deprecatedBy": "Table AI",
       "detachRule": {
         "rule": "never",
-        "reason": "DEPRECATED \u2014 use Table AI instead. If legacy Table needed, ask user."
+        "reason": "DEPRECATED — use Table AI instead. If legacy Table needed, ask user."
       }
     },
     {
@@ -4797,7 +4847,7 @@
         "figmaName": "Table AI",
         "status": "in-library",
         "type": "component_set",
-        "page": "\u2705 Tables"
+        "page": "✅ Tables"
       },
       "searchAliases": [
         "table",
@@ -4808,7 +4858,7 @@
         "zero detach table"
       ],
       "whenToUse": [
-        "ANY table in a Catalyst screen \u2014 this is the default table component",
+        "ANY table in a Catalyst screen — this is the default table component",
         "Structured data with multiple columns (3-8)",
         "Tables with sorting, filtering, pagination",
         "CRUD listings (deployments, functions, rules, connections)",
@@ -4875,19 +4925,19 @@
           "name": "Col 1",
           "type": "instance_swap",
           "default": "_Table_Col_AvatarName",
-          "notes": "First data column \u2014 defaults to Avatar+Name. Swap to any _Table_Col_* component."
+          "notes": "First data column — defaults to Avatar+Name. Swap to any _Table_Col_* component."
         },
         {
           "name": "Col 2",
           "type": "instance_swap",
           "default": "_Table_Col_Badge",
-          "notes": "Second data column \u2014 defaults to Badge/Status. Swap to any _Table_Col_* component."
+          "notes": "Second data column — defaults to Badge/Status. Swap to any _Table_Col_* component."
         },
         {
           "name": "Col 3-8",
           "type": "instance_swap",
           "default": "_Table_Col_Text",
-          "notes": "Remaining data columns \u2014 default to generic Text. Swap to any _Table_Col_* component."
+          "notes": "Remaining data columns — default to generic Text. Swap to any _Table_Col_* component."
         }
       ],
       "columnTypes": [
@@ -4942,7 +4992,7 @@
           "width": "48px FIXED"
         }
       ],
-      "buildNotes": "PREFERRED TABLE \u2014 use this instead of legacy Table for ALL new builds. ZERO-DETACH: configure entirely via setProperties(). NEVER DETACH Table AI. WORKFLOW: (1) Import component_set by key f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07. (2) Set Style (Stretch/Boxy), Columns count (3-8). (3) Toggle booleans: Show Checkbox, Show Threedot, Show Pagination. (4) Swap column types via instance swap: import the column type component by key, then setProperties({ \"Col N\": importedComponent.id }). Value MUST be component node ID, NOT key. (5) UPDATE TEXT CONTENT IN-PLACE: find TEXT nodes via table.findAll(n => n.type === \"TEXT\"), load font with await figma.loadFontAsync(node.fontName), then set node.characters. Navigate the tree: table instance \u2192 row frames \u2192 cell frames \u2192 TEXT nodes. Header row is first child, data rows follow. (6) Use realistic data from sample-data.md. COLUMN TYPES: AvatarName (098e8873, 280px), Badge (f54ff134, 200px), Date (5ea76720, 200px), Text (72d50704, 200px), ExecutionStatus (9c1f1f05, 200px), IconText (e877af2d, 200px), Button (abbc84ec, 200px), Icon (eb970147, 48px), Checkbox (825fd477, 44px), Threedot (ee1068af, 44px). If wireframe needs more than 8 columns, ask the user. If a column type does not exist for the data, ask the user.",
+      "buildNotes": "PREFERRED TABLE — use this instead of legacy Table for ALL new builds. ZERO-DETACH: configure entirely via setProperties(). NEVER DETACH Table AI. WORKFLOW: (1) Import component_set by key f3a77aaa2d8b332d2c86a9cb77ed6a4f92305c07. (2) Set Style (Stretch/Boxy), Columns count (3-8). (3) Toggle booleans: Show Checkbox, Show Threedot, Show Pagination. (4) Swap column types via instance swap: import the column type component by key, then setProperties({ \"Col N\": importedComponent.id }). Value MUST be component node ID, NOT key. (5) UPDATE TEXT CONTENT IN-PLACE: find TEXT nodes via table.findAll(n => n.type === \"TEXT\"), load font with await figma.loadFontAsync(node.fontName), then set node.characters. Navigate the tree: table instance → row frames → cell frames → TEXT nodes. Header row is first child, data rows follow. (6) Use realistic data from sample-data.md. COLUMN TYPES: AvatarName (098e8873, 280px), Badge (f54ff134, 200px), Date (5ea76720, 200px), Text (72d50704, 200px), ExecutionStatus (9c1f1f05, 200px), IconText (e877af2d, 200px), Button (abbc84ec, 200px), Icon (eb970147, 48px), Checkbox (825fd477, 44px), Threedot (ee1068af, 44px). If wireframe needs more than 8 columns, ask the user. If a column type does not exist for the data, ask the user.",
       "related": [
         "Table",
         "Pagination",
@@ -5050,7 +5100,7 @@
       "name": "Card BG",
       "category": "atom",
       "subcategory": "data-display",
-      "description": "Card background container with state variants. Use as a wrapper for content sections. Default state is a white card; Hover/Selected/Disabled are interactive states. This is NOT a color-themed card \u2014 all visual styling comes from the state, not a color property.",
+      "description": "Card background container with state variants. Use as a wrapper for content sections. Default state is a white card; Hover/Selected/Disabled are interactive states. This is NOT a color-themed card — all visual styling comes from the state, not a color property.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "f94642162a404b4dd9b0c2c9e8c7e3d1a8ba330e",
@@ -5090,7 +5140,7 @@
           "default": "Default"
         }
       ],
-      "buildNotes": "Detach whitelist component \u2014 detach to insert custom content inside. IMPORTANT: the variant property is 'State' (Default/Hover/Selected/Disabled), NOT 'Color' (White/Grey/Bordered/Elevated) as older descriptions claim. setProperties({Color: 'White'}) will THROW. Use State=Default for standard white cards. For dashboard card grid pages, Container fill should use color/bg/sunken variable and each section wrapped in Card BG (State=Default). For side-by-side cards, wrap in a horizontal auto-layout frame with gap 16px and children using FILL width.",
+      "buildNotes": "Detach whitelist component — detach to insert custom content inside. IMPORTANT: the variant property is 'State' (Default/Hover/Selected/Disabled), NOT 'Color' (White/Grey/Bordered/Elevated) as older descriptions claim. setProperties({Color: 'White'}) will THROW. Use State=Default for standard white cards. For dashboard card grid pages, Container fill should use color/bg/sunken variable and each section wrapped in Card BG (State=Default). For side-by-side cards, wrap in a horizontal auto-layout frame with gap 16px and children using FILL width.",
       "related": [
         "General Details",
         "Key Value Pair"
@@ -5160,7 +5210,7 @@
           "default": "No"
         }
       ],
-      "buildNotes": "Detach whitelist component (Menu List). For a three-dot/overflow trigger: detach this instance to set its real menu items (add/remove/edit rows to match the actions actually needed) \u2014 never restyle the shell (padding, colors, radius stay bound to the same zcat variables). Swap each item icon to match its action semantically. When the trigger lives inside another auto-layout component (table row, card, Sub Header actions row), position this menu with layoutPositioning=\"ABSOLUTE\", anchored below the trigger, so the parent auto-layout cannot resize/squash it.",
+      "buildNotes": "Detach whitelist component (Menu List). For a three-dot/overflow trigger: detach this instance to set its real menu items (add/remove/edit rows to match the actions actually needed) — never restyle the shell (padding, colors, radius stay bound to the same zcat variables). Swap each item icon to match its action semantically. When the trigger lives inside another auto-layout component (table row, card, Sub Header actions row), position this menu with layoutPositioning=\"ABSOLUTE\", anchored below the trigger, so the parent auto-layout cannot resize/squash it.",
       "related": [
         "Three Dot Menu",
         "Select"
@@ -5213,7 +5263,7 @@
           "default": "Default"
         }
       ],
-      "buildNotes": "Import as component_set. Use sparingly \u2014 only for premium/promotional/AI-powered actions. Do not use as a replacement for standard Button Primary.",
+      "buildNotes": "Import as component_set. Use sparingly — only for premium/promotional/AI-powered actions. Do not use as a replacement for standard Button Primary.",
       "related": [
         "Button"
       ],
@@ -5546,7 +5596,7 @@
           "default": false
         }
       ],
-      "buildNotes": "Center within the Container. Illustration above, heading below, description text, then CTA Button. See screenshot 15 for live example. For inline empty states within a section (not full page), use a simpler text-only pattern \u2014 see screenshot 24 'In Progress' section.",
+      "buildNotes": "Center within the Container. Illustration above, heading below, description text, then CTA Button. See screenshot 15 for live example. For inline empty states within a section (not full page), use a simpler text-only pattern — see screenshot 24 'In Progress' section.",
       "related": [
         "Loader",
         "Shimmer"
@@ -5636,7 +5686,7 @@
             false
           ],
           "default": false,
-          "notes": "Unpublished \u2014 available after next library publish"
+          "notes": "Unpublished — available after next library publish"
         },
         {
           "name": "Empty Sates",
@@ -5646,10 +5696,10 @@
             false
           ],
           "default": false,
-          "notes": "Unpublished \u2014 available after next library publish"
+          "notes": "Unpublished — available after next library publish"
         }
       ],
-      "buildNotes": "Import as component_set (importComponentSetByKeyAsync \u2192 defaultVariant.createInstance). STEP 1 for every Catalyst screen \u2014 import Layout FIRST, then detach, then build inside Container. Default variant: has left sidebar (Sidemenu), Container width 1259px. No Left Menu variant: no sidebar, Container width 1489px. NEVER manually assemble the layout from individual components (Header + Sidemenu + manual frames) \u2014 this is the #1 source of broken builds. NEVER modify the layout shell (Header, ServiceMenu, spacing, borders, backgrounds). All content goes inside Container. Toggle Show Sidemenu/Show Header/Show Sub Header booleans BEFORE detaching. See layout-info.md for full node tree and zone IDs.",
+      "buildNotes": "Import as component_set (importComponentSetByKeyAsync → defaultVariant.createInstance). STEP 1 for every Catalyst screen — import Layout FIRST, then detach, then build inside Container. Default variant: has left sidebar (Sidemenu), Container width 1259px. No Left Menu variant: no sidebar, Container width 1489px. NEVER manually assemble the layout from individual components (Header + Sidemenu + manual frames) — this is the #1 source of broken builds. NEVER modify the layout shell (Header, ServiceMenu, spacing, borders, backgrounds). All content goes inside Container. Toggle Show Sidemenu/Show Header/Show Sub Header booleans BEFORE detaching. See layout-info.md for full node tree and zone IDs.",
       "related": [
         "Header",
         "Sub Header",
@@ -5753,7 +5803,7 @@
           "default": "Editor"
         }
       ],
-      "buildNotes": "Import as component_set (importComponentSetByKeyAsync \u2192 defaultVariant.createInstance). Editor variant for editable code areas (ZCQL editor, script input). Viewer variant for read-only display (logs, code snippets). Uses Roboto Mono font \u2014 load it before setting text. See screenshot 12 for live example.",
+      "buildNotes": "Import as component_set (importComponentSetByKeyAsync → defaultVariant.createInstance). Editor variant for editable code areas (ZCQL editor, script input). Viewer variant for read-only display (logs, code snippets). Uses Roboto Mono font — load it before setting text. See screenshot 12 for live example.",
       "related": [
         "Text Input",
         "Textarea"
@@ -5903,7 +5953,7 @@
           "default": false
         }
       ],
-      "buildNotes": "Detach whitelist component. Import as component_set (importComponentSetByKeyAsync \u2192 defaultVariant.createInstance). Type variant: Feature Name, Search, Tab. Boolean toggles (hidden by default except Primary Button): Info Icon, Badge, Description, Tabs, Link Box, Filter 1, Filter 2, Filter 3, Secondary Button, Outline Button, Primary Button. Prefer this over manually building action bars \u2014 toggle elements on/off via boolean properties. Detach only when a specific element is needed that doesn't exist as a boolean toggle.",
+      "buildNotes": "Detach whitelist component. Import as component_set (importComponentSetByKeyAsync → defaultVariant.createInstance). Type variant: Feature Name, Search, Tab. Boolean toggles (hidden by default except Primary Button): Info Icon, Badge, Description, Tabs, Link Box, Filter 1, Filter 2, Filter 3, Secondary Button, Outline Button, Primary Button. Prefer this over manually building action bars — toggle elements on/off via boolean properties. Detach only when a specific element is needed that doesn't exist as a boolean toggle.",
       "related": [
         "Sub Header",
         "Search",
@@ -5942,7 +5992,7 @@
         "Non-standard sidebars with cards, widgets, or custom content"
       ],
       "properties": [],
-      "buildNotes": "Detach whitelist component. Import as component (importComponentByKeyAsync \u2192 createInstance). Detach to edit content: update title text, button text, heading texts, and menu item instances per section. Fixed width: 300px. Default: 3 sections (add/remove after detach). See screenshot 14, 19 for live examples.",
+      "buildNotes": "Detach whitelist component. Import as component (importComponentByKeyAsync → createInstance). Detach to edit content: update title text, button text, heading texts, and menu item instances per section. Fixed width: 300px. Default: 3 sections (add/remove after detach). See screenshot 14, 19 for live examples.",
       "related": [
         "Sidemenu",
         "Container Header"
@@ -5990,7 +6040,7 @@
           "default": true
         }
       ],
-      "buildNotes": "Import as component (importComponentByKeyAsync \u2192 createInstance). Contains pre-structured KV pair layout. See screenshot 24 General Details section for live example.",
+      "buildNotes": "Import as component (importComponentByKeyAsync → createInstance). Contains pre-structured KV pair layout. See screenshot 24 General Details section for live example.",
       "related": [
         "Key Value Pair",
         "Card BG"
@@ -6004,7 +6054,7 @@
       "name": "Header",
       "category": "layout",
       "subcategory": "catalyst",
-      "description": "Top header bar with logo, breadcrumbs, search, and user profile. Part of the Catalyst layout shell \u2014 do not modify.",
+      "description": "Top header bar with logo, breadcrumbs, search, and user profile. Part of the Catalyst layout shell — do not modify.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "35b31035bfa83382c2e18e4424410137fd5a3df8",
@@ -6019,10 +6069,10 @@
         "global header"
       ],
       "whenToUse": [
-        "Part of Layout component \u2014 never import standalone"
+        "Part of Layout component — never import standalone"
       ],
       "whenNotToUse": [
-        "Standalone use \u2014 always use within Layout"
+        "Standalone use — always use within Layout"
       ],
       "properties": [],
       "buildNotes": "DO NOT MODIFY. This is a fixed part of the Layout component. The Header is already included when you import Layout. Do not import it separately or modify its contents. Only update the project name text and environment indicator if needed.",
@@ -6056,13 +6106,13 @@
         "page actions"
       ],
       "whenToUse": [
-        "Part of Layout component \u2014 configurable for page-level actions"
+        "Part of Layout component — configurable for page-level actions"
       ],
       "whenNotToUse": [
         "Standalone use outside Layout"
       ],
       "properties": [],
-      "buildNotes": "Part of Layout component. Editable zone: set page title text, toggle action buttons. Page-level actions (Primary/Secondary button, three-dot overflow) and primary tabs go here FIRST \u2014 fall back to Container Header only when Sub Header placement isn't meaningful. The page title shows the entity name from the list view (dynamic user data, not a fixed heading style). See screenshot 24: 'CUSTOMEVENT' is the entity name.",
+      "buildNotes": "Part of Layout component. Editable zone: set page title text, toggle action buttons. Page-level actions (Primary/Secondary button, three-dot overflow) and primary tabs go here FIRST — fall back to Container Header only when Sub Header placement isn't meaningful. The page title shows the entity name from the list view (dynamic user data, not a fixed heading style). See screenshot 24: 'CUSTOMEVENT' is the entity name.",
       "related": [
         "Layout",
         "Header",
@@ -6093,10 +6143,10 @@
         "product menu"
       ],
       "whenToUse": [
-        "Part of Layout component \u2014 never import standalone"
+        "Part of Layout component — never import standalone"
       ],
       "whenNotToUse": [
-        "Standalone use \u2014 always use within Layout"
+        "Standalone use — always use within Layout"
       ],
       "properties": [],
       "buildNotes": "DO NOT MODIFY. This is a fixed part of the Layout component. Icons and labels only are editable. 64px fixed width.",
@@ -6402,7 +6452,7 @@
           "default": "Default"
         }
       ],
-      "buildNotes": "Import as component_set. Ghost style has transparent background \u2014 use when the dropdown sits inside a Container Header or action bar where a bordered Select would look too heavy.",
+      "buildNotes": "Import as component_set. Ghost style has transparent background — use when the dropdown sits inside a Container Header or action bar where a bordered Select would look too heavy.",
       "related": [
         "Select",
         "Container Header"
@@ -6451,7 +6501,7 @@
           "default": "Collapsed"
         }
       ],
-      "buildNotes": "Detach whitelist component. Import as component_set. Same detach rules as Accordion \u2014 detach to edit content inside, never restyle the shell. The border, padding, and radius stay bound to zcat variables after detaching.",
+      "buildNotes": "Detach whitelist component. Import as component_set. Same detach rules as Accordion — detach to edit content inside, never restyle the shell. The border, padding, and radius stay bound to zcat variables after detaching.",
       "related": [
         "Accordion",
         "Card BG"
@@ -6598,7 +6648,7 @@
           "default": "Top"
         }
       ],
-      "buildNotes": "Import as component_set. Typically positioned at top-right or bottom-center of the viewport. NOT the same as Attention Box \u2014 Alerts are temporary/toast-style, Attention Box is persistent/inline.",
+      "buildNotes": "Import as component_set. Typically positioned at top-right or bottom-center of the viewport. NOT the same as Attention Box — Alerts are temporary/toast-style, Attention Box is persistent/inline.",
       "related": [
         "Attention Box",
         "Popup - Success",
@@ -6677,7 +6727,7 @@
       "name": "Popup Blur",
       "category": "atom",
       "subcategory": "overlays",
-      "description": "Bare backdrop rectangle for popup overlays with blurred background. This is NOT a dialog \u2014 it is just the overlay layer. Always use this instead of manual frames with hardcoded black/opacity fills.",
+      "description": "Bare backdrop rectangle for popup overlays with blurred background. This is NOT a dialog — it is just the overlay layer. Always use this instead of manual frames with hardcoded black/opacity fills.",
       "figma": {
         "fileKey": "ugOZk4O0g6XpviEBSN24mF",
         "componentKey": "825e3c4aa551ccd56ec61d6f5059dda1e92abbc5",
@@ -6702,7 +6752,7 @@
         "Inline blur effects"
       ],
       "properties": [],
-      "buildNotes": "Import as component (importComponentByKeyAsync \u2192 createInstance). ALWAYS use this for popup overlays \u2014 never create a manual frame with hardcoded black/opacity. Place as a sibling BEFORE the Popup instance in the layer order. Set width and height to match the full page frame (1582\u00d7860). The component handles the blur effect and darkened background automatically.",
+      "buildNotes": "Import as component (importComponentByKeyAsync → createInstance). ALWAYS use this for popup overlays — never create a manual frame with hardcoded black/opacity. Place as a sibling BEFORE the Popup instance in the layer order. Set width and height to match the full page frame (1582×860). The component handles the blur effect and darkened background automatically.",
       "related": [
         "Popup",
         "Popup - Success",
@@ -6740,7 +6790,7 @@
         "Inline success messages (use Attention Box)"
       ],
       "properties": [],
-      "buildNotes": "Import as component (importComponentByKeyAsync \u2192 createInstance). Use with Popup Blur behind it.",
+      "buildNotes": "Import as component (importComponentByKeyAsync → createInstance). Use with Popup Blur behind it.",
       "related": [
         "Popup",
         "Popup - Error",
@@ -6779,7 +6829,7 @@
         "Inline field errors (use Helper Text)"
       ],
       "properties": [],
-      "buildNotes": "Import as component (importComponentByKeyAsync \u2192 createInstance). Use with Popup Blur behind it.",
+      "buildNotes": "Import as component (importComponentByKeyAsync → createInstance). Use with Popup Blur behind it.",
       "related": [
         "Popup",
         "Popup - Success",
@@ -6819,7 +6869,7 @@
         "Non-destructive actions"
       ],
       "properties": [],
-      "buildNotes": "Import as component (importComponentByKeyAsync \u2192 createInstance). Use with Popup Blur. Contains a text input where user must type the confirmation phrase (e.g., project name) before the Danger button enables.",
+      "buildNotes": "Import as component (importComponentByKeyAsync → createInstance). Use with Popup Blur. Contains a text input where user must type the confirmation phrase (e.g., project name) before the Danger button enables.",
       "related": [
         "Popup",
         "Popup Blur",
@@ -6858,7 +6908,7 @@
         "Background operations with no blocking"
       ],
       "properties": [],
-      "buildNotes": "Import as component (importComponentByKeyAsync \u2192 createInstance). Use with Popup Blur. Shows a loading animation/progress with a message about what's being provisioned.",
+      "buildNotes": "Import as component (importComponentByKeyAsync → createInstance). Use with Popup Blur. Shows a loading animation/progress with a message about what's being provisioned.",
       "related": [
         "Popup",
         "Popup Blur",
@@ -6898,7 +6948,7 @@
         "In-page content"
       ],
       "properties": [],
-      "buildNotes": "Import as component (importComponentByKeyAsync \u2192 createInstance). See screenshots 04, 16, 18, 19, 20 for live examples of full-page popup patterns. The header sits at the top of the popup overlay, with content below it.",
+      "buildNotes": "Import as component (importComponentByKeyAsync → createInstance). See screenshots 04, 16, 18, 19, 20 for live examples of full-page popup patterns. The header sits at the top of the popup overlay, with content below it.",
       "related": [
         "Popup",
         "Popup Blur"
@@ -6936,7 +6986,7 @@
         "Tables without selection capability"
       ],
       "properties": [],
-      "buildNotes": "Import as component (importComponentByKeyAsync \u2192 createInstance). Appears above or overlays the table header when rows are selected. Shows count ('3 selected') and bulk action buttons.",
+      "buildNotes": "Import as component (importComponentByKeyAsync → createInstance). Appears above or overlays the table header when rows are selected. Shows count ('3 selected') and bulk action buttons.",
       "related": [
         "Table",
         "Checkbox"
@@ -6977,7 +7027,7 @@
         "Single action (use Icon Button)"
       ],
       "properties": [],
-      "buildNotes": "Import as component (importComponentByKeyAsync \u2192 createInstance). Pair with a Dropdown Menu component positioned absolutely below it. See decision-rules.md 'Building an Overflow (Three-Dot) Action Menu' for the full build pattern.",
+      "buildNotes": "Import as component (importComponentByKeyAsync → createInstance). Pair with a Dropdown Menu component positioned absolutely below it. See decision-rules.md 'Building an Overflow (Three-Dot) Action Menu' for the full build pattern.",
       "related": [
         "Dropdown Menu",
         "Icon Button",
@@ -7019,7 +7069,7 @@
         "Empty state guidance (use Empty State)"
       ],
       "properties": [],
-      "buildNotes": "Import as component (importComponentByKeyAsync \u2192 createInstance). Typically overlaid on top of the target UI element with a spotlight/highlight effect.",
+      "buildNotes": "Import as component (importComponentByKeyAsync → createInstance). Typically overlaid on top of the target UI element with a spotlight/highlight effect.",
       "related": [
         "Tooltip",
         "Empty State"
@@ -7059,7 +7109,7 @@
         "Scrollable lists (use horizontal scroll)"
       ],
       "properties": [],
-      "buildNotes": "Import as component (importComponentByKeyAsync \u2192 createInstance). Note: component name is 'Carousal' (spelling as in Figma, not 'Carousel').",
+      "buildNotes": "Import as component (importComponentByKeyAsync → createInstance). Note: component name is 'Carousal' (spelling as in Figma, not 'Carousel').",
       "related": [
         "Image"
       ],
@@ -7099,7 +7149,7 @@
         "Step-by-step process (use Stepper)"
       ],
       "properties": [],
-      "buildNotes": "Import as component. DECORATIVE ONLY \u2014 contains colored dots and connecting vertical line but NO text nodes. For activity timelines with text (timestamps, titles, descriptions), build manually: vertical auto-layout frame with rows of [status dot + text column (title 14px SemiBold + timestamp 12px secondary)]. Bind dot fills to semantic color variables (color/bg/success, color/bg/error, etc.). Connect dots with a 2px vertical line frame bound to color/border/default.",
+      "buildNotes": "Import as component. DECORATIVE ONLY — contains colored dots and connecting vertical line but NO text nodes. For activity timelines with text (timestamps, titles, descriptions), build manually: vertical auto-layout frame with rows of [status dot + text column (title 14px SemiBold + timestamp 12px secondary)]. Bind dot fills to semantic color variables (color/bg/success, color/bg/error, etc.). Connect dots with a 2px vertical line frame bound to color/border/default.",
       "related": [
         "Stepper",
         "Table"
@@ -7120,7 +7170,7 @@
         "figmaName": "Profile Menu",
         "status": "in-library",
         "type": "component_set",
-        "page": "\u2705 Profile Menu & Notifications"
+        "page": "✅ Profile Menu & Notifications"
       },
       "searchAliases": [
         "profile",
@@ -7139,7 +7189,7 @@
         "Service/product switching (use ServiceMenu)"
       ],
       "properties": [],
-      "buildNotes": "Part of Header component. Usually pre-populated in Layout. Key NEEDS_VERIFICATION \u2014 inspect Figma file page 'Profile Menu & Notifications' to get actual component key. Search 'Profile Menu' via search_design_system to verify.",
+      "buildNotes": "Part of Header component. Usually pre-populated in Layout. Key NEEDS_VERIFICATION — inspect Figma file page 'Profile Menu & Notifications' to get actual component key. Search 'Profile Menu' via search_design_system to verify.",
       "related": [
         "Header",
         "Avatar",
@@ -7161,7 +7211,7 @@
         "figmaName": "Notification Panel",
         "status": "in-library",
         "type": "component_set",
-        "page": "\u2705 Profile Menu & Notifications"
+        "page": "✅ Profile Menu & Notifications"
       },
       "searchAliases": [
         "notification",
@@ -7179,7 +7229,7 @@
         "Attention banners (use Attention Box)"
       ],
       "properties": [],
-      "buildNotes": "Part of Header component. Usually pre-populated in Layout. Key NEEDS_VERIFICATION \u2014 inspect Figma file page 'Profile Menu & Notifications' to get actual component key. Search 'Notification' via search_design_system to verify.",
+      "buildNotes": "Part of Header component. Usually pre-populated in Layout. Key NEEDS_VERIFICATION — inspect Figma file page 'Profile Menu & Notifications' to get actual component key. Search 'Notification' via search_design_system to verify.",
       "related": [
         "Header",
         "Alerts",
@@ -7243,7 +7293,7 @@
           "name": "Description List",
           "category": "molecule",
           "subcategory": "data-display",
-          "description": "NOT a separate component \u2014 a layout pattern arranging Key Value Pair instances in a two-column grid. See decision-rules.md \"Description List vs Key-Value Pairs\". Do not search for it; import Key Value Pair and arrange.",
+          "description": "NOT a separate component — a layout pattern arranging Key Value Pair instances in a two-column grid. See decision-rules.md \"Description List vs Key-Value Pairs\". Do not search for it; import Key Value Pair and arrange.",
           "status": "layout-pattern-only"
         },
         {
@@ -7470,11 +7520,105 @@
       "values": {
         "whitelist": "Can detach for content insertion. Never restyle the shell. Components: Layout, Accordion, Accordion Bordered, Dropdown Menu, Card BG, Container Header, Sidebar List Panel, General Details.",
         "zero-detach": "NEVER detach under ANY circumstances. Configure via setProperties(), instance swap, and text overrides. Components: Table AI, Sub Header.",
-        "never": "Atomic component \u2014 no need to detach. Configure entirely via properties. If you think you need to detach, you're wrong \u2014 search for the right property or ask the user.",
-        "n/a": "Layout primitive or manual-build pattern. Not a Figma component instance \u2014 built with frames + variables.",
+        "never": "Atomic component — no need to detach. Configure entirely via properties. If you think you need to detach, you're wrong — search for the right property or ask the user.",
+        "n/a": "Layout primitive or manual-build pattern. Not a Figma component instance — built with frames + variables.",
         "ask-user": "Not on any list. Ask the user before detaching."
       }
     },
-    "needsVerification": "Profile Menu and Notification Panel component keys need verification \u2014 inspect Figma file page 'Profile Menu & Notifications' and update componentKey fields."
+    "needsVerification": "Profile Menu and Notification Panel component keys need verification — inspect Figma file page 'Profile Menu & Notifications' and update componentKey fields."
+  },
+  "verifiedAgainstLive": {
+    "date": "2026-08-18",
+    "method": "figma componentPropertyDefinitions via use_figma; generation confirmed via search_design_system index",
+    "rule": "componentPropertyDefinitions is the ONLY canonical source for keys, types, property names and enum values. NEVER derive these from component descriptions — library descriptions are stale and contradict live definitions. See references/library-audit.md",
+    "componentKeysChecked": 56,
+    "allResolve": true
+  },
+  "legacyGeneration": {
+    "warning": "A superseded generation of these components still resolves by key but is ABSENT from the published library index and has INCOMPATIBLE variant enums. Use ONLY for pre-existing instances, NEVER for new designs.",
+    "supersededKeys": {
+      "Button": "1e04478db049373eb096060a60ee7bbbc4da4e9a",
+      "Text Box": "411f52c2e02879cd0cd7a259933325c7cbc04b5c",
+      "Drop down": "021a6653c106f277f2481ee722ed93d4137dc3a6",
+      "Badge": "158e4b6d656a62d4244efc4e5583794044328d3a",
+      "Chip": "69274b61923231a45f559e59bed169c121d9bc45",
+      "Checkbox": "f6f4ae2426b2e9d6c3ee7fc3727e06054b0f5d58",
+      "Toggle": "35016f9e4ebd41a83c952fa04c3c47a1f36d0ec4",
+      "Tabs": "4851c5917e3ca7aca6aa65f44d49d83b9594f3f0",
+      "Popup": "4200a0aef4a25f7cdbdf628575c41347c9e8a8fe"
+    },
+    "enumDifferences": "Badge Color=Green/Red/Orange/Pink (vs Success/Danger/Warning/Info); Checkbox uses Check type/Status (vs Checked/State); Text Box State=Completed (vs Filled); Dropdown State=Disable/Default Completed (vs Disabled/Filled); Button State=Click/Button Disable (vs Pressed/Button Disabled)",
+    "deadKeys": [
+      "8f3943b8ca40c63a40109681a4a84ee0f02ed9da (Avatar)",
+      "8fe1faec85e92db3d43b66c5f30eaf28e6de9e91 (Search)",
+      "e38e2e4c72af7526c8f2c07d0621dbea85aba8b8 (Pagination)",
+      "ea1a7685e93507b3e4da3bcdbbfa1dd3c28c0ba4 (Accordion)",
+      "d9c4ab7dc9b1a1f10c8de0b5d8281a00f4b27b90 (Stepper)",
+      "8aed0a243553aeb0ed6ad2f9a6387c8a5764c5f9 (Empty State)"
+    ]
+  },
+  "verifiedTokens": {
+    "importRule": "Library variables and text styles are NOT local. getLocalVariablesAsync() and getLocalTextStylesAsync() return EMPTY — name lookup against them silently yields nothing, causing raw hex and Inter Regular fallbacks. Always importVariableByKeyAsync / importStyleByKeyAsync.",
+    "fontFamily": "Inter (Roboto Mono for code). Earlier 'Zoho Puvi' claims were incorrect.",
+    "colorVariables": {
+      "BODY/Text/Static/Primary": "78d226f67f70b301e15211138d50f31c6e0b73f1",
+      "BODY/Text/Static/Secondary": "6ce27486a25197ca55bd13199d0b270ae669e507",
+      "BODY/Text/Static/Disable": "94023c2b1c06cb38be91c89825cf52bf5eff7cf7",
+      "BODY/Text/Static/White": "3d35e063ee0e6e70c3adeb2868c22cb1a498b2fc",
+      "BODY/Background/Static/Body Bg": "154a19caf1070577dbc2981738c6f2ef4096e55b",
+      "BODY/Border/Static/Border": "0dd61c592dea6f8a4a7ed8d71ed3c3bb51308ea0",
+      "BODY/Icons/Static/Primary": "9a6e973050f37a6629a57920cca8ef3bbc40c021",
+      "BODY/Icons/Static/Secondary": "c9e929a15eb73c96ef31c2960fe99e26e930bcbd",
+      "CARDS/Bg Default/Primary": "497de4a3445dd02172eeb981d292a9764f6aeaa8",
+      "CARDS/Bg Default/Body Bg": "07b804765f3b327cc43681a59f5ca690685f4f63",
+      "CARDS/Borders/Default": "3a79616196240745e0e84ced706f2563d6c609ac",
+      "CARDS/Borders/Hover": "2dbb51fbe56bbfd41d33ff8c6352188257789cb9",
+      "CARDS/Borders/Selected": "2b6696588ce6abb97a8ea63543b7f7b7e65f99c9",
+      "SHADOWS/Elevation/Default": "eea9e7cd44a527cbcc91b4fb9fdefaa8d712a2c3",
+      "BRANDING ICON/Icon Color/Blue": "f9b5ad26a7c1a38c9182a5a83cee7c3d1ca20399"
+    },
+    "textStyles": {
+      "✅ Headlines/H5": {
+        "key": "2c3007c5a4169e14a11ac9b2957b2f91b4f8c47b",
+        "spec": "18/22 Semi Bold"
+      },
+      "✅ Body/Body 2": {
+        "key": "074ccbdf65f4bf9b35442414c8b7805b75078866",
+        "spec": "16/20 Regular"
+      },
+      "✅ Body/Body 1": {
+        "key": "ae9d89acf9bb02c56f54844d48ed0b7ff98adda2",
+        "spec": "14/20 Regular"
+      },
+      "✅ Body/Body 3": {
+        "key": "4c43eefb0c536e876ceb4426bf0a85d8b519026f",
+        "spec": "12/16 Regular"
+      },
+      "✅ Body/Body 4": {
+        "key": "15003632c724896c66fc7230e7bd775dda9ebcc7",
+        "spec": "10/12 Regular"
+      },
+      "✅ Body/Subtitle 1": {
+        "key": "acb8f120bb531138d05850eb7965cf305a7681e6",
+        "spec": "14/20 Semi Bold"
+      },
+      "✅ Body/Subtitle 2": {
+        "key": "96bac9d6462a4aab339153f84cd5c9d58a5e0c2b",
+        "spec": "12/16 Semi Bold"
+      },
+      "✅ Body/Subtitle 3": {
+        "key": "69e33c4c77d99d315c87ebfda823cae589437808",
+        "spec": "10/12 Semi Bold"
+      },
+      "✅ Code Text/Code Body": {
+        "key": "0950d4fb48c454573c3064da0c41f41216dfcb6a",
+        "spec": "12/20 Roboto Mono"
+      },
+      "✅ Code Text/Code Subtitle": {
+        "key": "482373bf511056cb3a4c68e9488222d1b7bc89f4",
+        "spec": "12/20 Roboto Mono Semi Bold"
+      }
+    },
+    "typographyRoles": "Headings/emphasised values MUST use a Semi Bold style (Headlines/H5, Body/Subtitle 1-3). A larger Regular size is NOT hierarchy. All-Regular authored text fails validation."
   }
 }

@@ -105,6 +105,7 @@ Call zcat_get_workflow first and follow it.</code></pre>
     <li><code>zcat_get_layout</code> &mdash; page layouts</li>
     <li><code>zcat_get_design_workflow</code> &mdash; pre-build analysis &amp; spec workflow</li>
     <li><code>zcat_get_screenshot_patterns</code> &mdash; production UI patterns</li>
+    <li><code>zcat_get_library_audit</code> &mdash; verify/regenerate data from the live library</li>
     <li><code>zcat_get_wireframe_styles</code> &mdash; wireframe CSS</li>
   </ul>
 
@@ -701,6 +702,22 @@ function buildServer() {
 
       return asText(blocks.length ? blocks.join("\n\n") : doc);
     }
+  );
+
+  server.registerTool(
+    "zcat_get_library_audit",
+    {
+      title: "Get the library audit / regeneration procedure",
+      description:
+        "How to verify and regenerate canonical component data against the LIVE " +
+        "zcat Figma library. Use when a component key does not resolve, a variant " +
+        "value is rejected, a property name is missing, or reference data looks " +
+        "stale. Contains the rule that componentPropertyDefinitions — never " +
+        "component descriptions — is the source of truth for keys, types, " +
+        "property names and enum values, plus the audit scripts and drift check.",
+      inputSchema: {},
+    },
+    async () => asText(readText("library-audit.md"))
   );
 
   server.registerTool(
