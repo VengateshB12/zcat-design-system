@@ -55,6 +55,7 @@ The design system file (`ugOZk4O0g6XpviEBSN24mF`) has a **"Referance Templates"*
 | Me-Create Function Modal | `13302:11531` | Popup/form | Popup structure, form fields, footer buttons |
 | Me - Create Database Wizard | `13302:12626` | Wizard popup | Multi-step wizard, Stepper, selection cards, footer layout |
 | Three dot menu | `13308:15589` | Overflow menu | Dropdown Menu structure, icon placement |
+| Me- Drawer Sample | `13420:10799` | Side drawer / AI assistant | Drawer shell proportions and placement. **Rough sample, not pixel-accurate — take the structure, not the spacing.** NOTE: it includes `Popup Blur`, i.e. a MODAL drawer. The hand-built recipe in `zcat.md` assumes a non-modal drawer with no blur. Match this reference (blur present) unless told otherwise |
 
 **How to use:** Before writing ANY page spec, `get_screenshot` the relevant "Me-" reference screen by its node ID above. Use it as the primary pattern and design-language reference. For a **dashboard or multi-section screen**, use `Correct- orders-prod Overview` (`13324:5503`) — it is the corrected version.
 
