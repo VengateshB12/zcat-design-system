@@ -344,21 +344,7 @@ function buildServer() {
       /* Match the HEADING first. Substring-matching whole blocks returned every
        * block that merely mentioned the term — "build in figma" came back as
        * 46KB (~11.6k tokens) because several blocks contained the phrase. */
-      /* Try the narrowest match first. 4e "Build in Figma" is a ~45KB monolith
-       * containing seven #### subsections, so a query for "icon pattern" or
-       * "gotchas" used to drag the whole parent along (~11k tokens) when the
-       * caller wanted ~600. Match h4 -> h1-h3 -> body, narrowest wins. */
-      const h4Blocks = doc.split(/\n(?=#### )/);
-      const h4HeadingOf = (b) => (b.match(/^#### (.+)/) || ["", ""])[1].toLowerCase();
-      let blocks = h4Blocks.filter((b) => b.startsWith("#### ") && h4HeadingOf(b).includes(wanted));
-
-      if (!blocks.length) {
-        const allBlocks = doc.split(/\n(?=#{1,3} )/);
-        const headingOf = (b) => (b.match(/^#{1,3} (.+)/) || ["", ""])[1].toLowerCase();
-        blocks = allBlocks.filter((b) => headingOf(b).includes(wanted));
-        if (!blocks.length) blocks = allBlocks.filter((b) => b.toLowerCase().includes(wanted));
-      }
-      if (blocks.length > 2) blocks = blocks.slice(0, 2);
+      const blocks = narrowest(doc, wanted);
 
       /* Agents commonly pull a section once — often the Component Key Table —
        * and then work from context for the rest of the session without calling
@@ -773,12 +759,33 @@ function buildServer() {
         product: z
           .enum(["catalyst", "generic"])
           .describe("'catalyst' for the Catalyst console, 'generic' for other products"),
+        section: z
+          .string()
+          .optional()
+          .describe("Narrow to one section, e.g. 'node structure', 'sub header', 'container header', 'no left menu', 'content area'. Omit for the structural essentials + index."),
       },
     },
-    async ({ product }) =>
-      product === "catalyst"
-        ? asText(readText("catalyst-layout.md"))
-        : asText(readJson("generic-layouts.json"))
+    async ({ product, section }) => {
+      if (product !== "catalyst") return asText(readJson("generic-layouts.json"));
+      const doc = readText("catalyst-layout.md");
+      if (section) {
+        const hit = narrowest(doc, section);
+        return asText(hit.length ? hit.join("\n\n") : "No layout section matches. Call without a section for the index.");
+      }
+      /* The parts every Catalyst build needs regardless of screen type stay in
+       * the default; placement decision trees and the No Left Menu variant are
+       * on request. */
+      const keep = doc
+        .split(/\n(?=## )/)
+        .filter((b) => /^## (Layout Properties|Node Structure|Zones|Build Workflow)/.test(b));
+      return asText(
+        "# Catalyst Page Layout\n\n" +
+        keep.join("\n\n") +
+        "\n\n---\n\n## Remaining sections — request by name (full document is ~5k tokens)\n\n" +
+        headingIndex(doc, 3).join("\n") +
+        "\n\ne.g. `zcat_get_layout(product: \"catalyst\", section: \"container header\")`"
+      );
+    }
   );
 
   server.registerTool(
@@ -798,12 +805,24 @@ function buildServer() {
     },
     async ({ section }) => {
       const doc = readText("design-analysis-workflow.md");
-      if (!section) return asText(doc);
-
-      const wanted = section.trim().toLowerCase();
-      const blocks = doc
-        .split(/\n(?=#{2,3} )/)
-        .filter((b) => b.toLowerCase().includes(wanted));
+      if (!section) {
+        /* Returning all ~11k tokens meant paying for spec templates and a Phase 4
+         * checklist that often go unused. Two parts are load-bearing and must NOT
+         * sit behind a second call: the specs-before-building rule, and the
+         * gold-standard reference screens with their node IDs — an agent that
+         * never sees those builds with no visual reference, which has happened. */
+        const keep = doc
+          .split(/\n(?=## )/)
+          .filter((b) => /^## (ABSOLUTE RULE|Design Reference Sources)/.test(b));
+        return asText(
+          "# Design Analysis Workflow\n\n" +
+          keep.join("\n\n") +
+          "\n\n---\n\n## Remaining sections — request by name (full document is ~11k tokens)\n\n" +
+          headingIndex(doc, 2).join("\n") +
+          "\n\ne.g. `zcat_get_design_workflow(section: \"phase 1\")`"
+        );
+      }
+      const blocks = narrowest(doc, section);
 
       return asText(blocks.length ? blocks.join("\n\n") : doc);
     }
@@ -873,6 +892,58 @@ function buildServer() {
       out.push({ name, key, size: "20x20", aliases: ["product logo", "service icon"] });
     }
     return out;
+  }
+
+  /* Return the narrowest block matching `wanted`: heading match first, body
+   * substring only as a fallback. Used by every document-shaped tool so a
+   * targeted query stops dragging its whole parent document along. */
+  /* Extract a heading's FULL section: from the heading line down to the next
+   * heading of the same or higher level, so nested subsections travel with their
+   * parent. Splitting on a heading-level regex instead returns slivers — an "##"
+   * section immediately followed by "###" yields just the heading line, which is
+   * how a request for "phase 1" came back as 46 characters.
+   *
+   * Prefers the DEEPEST matching heading, so "gotchas" returns the #### block
+   * rather than the 45KB #### parent that contains it. */
+  function narrowest(doc, wanted) {
+    const w = String(wanted || "").trim().toLowerCase();
+    if (!w) return [];
+    const lines = doc.split("\n");
+    const heads = [];
+    lines.forEach((l, i) => {
+      const m = l.match(/^(#{1,6})\s+(.+)$/);
+      if (m) heads.push({ i, level: m[1].length, text: m[2].toLowerCase() });
+    });
+    if (!heads.length) return [];
+
+    let cands = heads.filter((h) => h.text.includes(w));
+    if (!cands.length) {
+      for (let k = 0; k < heads.length; k++) {
+        const end = k + 1 < heads.length ? heads[k + 1].i : lines.length;
+        if (lines.slice(heads[k].i, end).join("\n").toLowerCase().includes(w)) {
+          cands = [heads[k]];
+          break;
+        }
+      }
+    }
+    if (!cands.length) return [];
+
+    /* Rank by how well the HEADING names the thing, before depth. Preferring
+     * depth alone let "Step 2.2 — Lock Design Uniforms" (h3, a passing mention)
+     * beat the actual "Design Uniforms" section (h1), returning 5 lines. */
+    const rankOf = (h) => (h.text === w ? 0 : h.text.startsWith(w) ? 1 : 2);
+    cands.sort((a, b) => rankOf(a) - rankOf(b) || b.level - a.level || a.i - b.i);
+    const h = cands[0];
+    let end = lines.length;
+    for (const o of heads) {
+      if (o.i > h.i && o.level <= h.level) { end = o.i; break; }
+    }
+    return [lines.slice(h.i, end).join("\n").trim()];
+  }
+
+  function headingIndex(doc, levels) {
+    const rx = new RegExp("^#{1," + levels + "} (.+)$", "gm");
+    return (doc.match(rx) || []).map((h) => "  - " + h.replace(/^#+\s*/, ""));
   }
 
   /* Shared by single and batch icon lookup. Word-boundary matching: a raw
