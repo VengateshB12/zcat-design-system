@@ -51,7 +51,10 @@ echo "==> Deploying to AppSail (project $PROJECT_ID)"
 # The CLI exits 0 even when it deploys nothing ("No components deployed!"),
 # so the exit status alone cannot be trusted — inspect the output.
 DEPLOY_LOG="$(mktemp)"
-(cd "$ROOT" && catalyst deploy --only appsail -p "$PROJECT_ID") 2>&1 | tee "$DEPLOY_LOG"
+# stdin MUST be closed. With a TTY or an open stdin the CLI can block forever on
+# an interactive prompt: one background run sat 1h36m and never wrote a single byte
+# to its log. Closed stdin makes any prompt fail fast instead of hanging.
+(cd "$ROOT" && catalyst deploy --only appsail -p "$PROJECT_ID" < /dev/null) 2>&1 | tee "$DEPLOY_LOG"
 
 if grep -qi 'No components deployed\|deploy skipped\|Unable to get the Project ID' "$DEPLOY_LOG"; then
   echo >&2
