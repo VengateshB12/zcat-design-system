@@ -189,3 +189,52 @@ Detach to add real content inside open panels. Keep the shell styling (padding, 
 **Button Group:** 2-4 distinct peer actions of similar importance (Approve, Reject, Defer).
 
 **Default:** Single CTA for forms. Split for action variants. Button Group for peer-level actions.
+
+---
+
+## Control scope — page-level vs section-level
+
+**The question to ask before placing ANY Search, filter, tab or button:**
+*what exactly does this act on?* If you cannot name the dataset or destination,
+the control is in the wrong place — or should not exist.
+
+### Count the datasets in the Container
+
+| Container holds | Where controls go |
+|---|---|
+| **ONE dataset** (a single list/table page) | Container Header is the action bar: Search + filters left, Export/Create right. The classic list page |
+| **MULTIPLE sections** (two tables, table + chart, card grid + list) | Container Header carries only **page-level** things: heading, page-wide filters (e.g. a time range), page-level actions. Each section owns its own controls in its **section header** |
+
+### Why this matters
+
+A Search placed in the Container Header of a multi-section page **looks like it
+filters everything below it**. It usually doesn't — it filters one of them, or
+nothing. This is invisible in a static mock: a search box renders identically
+whether it filters one table, both, or nothing at all. No amount of screenshot
+review catches it. Only asking "what does this act on?" does.
+
+This has shipped: a dashboard with *Top Endpoints* and *Recent Errors* side by
+side had a single "Search endpoints…" in the page action bar. Its label scoped it
+to endpoints; its placement implied it governed both. The fix was placement, not
+deletion — move it into the *Top Endpoints* section header.
+
+### Section header anatomy
+
+A section header is a horizontal auto-layout, `SPACE_BETWEEN`:
+
+```
+[ Section heading ]                    [ section controls: Search / filter / View All ]
+```
+
+- Heading on the left — **`Headlines/H5` (18px Semi Bold) minimum** when the section
+  contains a Table AI, whose own header row is 12px Semi Bold. A 14px heading over a
+  12px table header is not a hierarchy
+- Controls on the right, scoped to that section only
+- Use the **same** heading style for every section on the page. Two sections with
+  different heading treatments is a defect
+
+### Time-range filters are the common exception
+
+A period selector ("Last 24 hours") legitimately belongs at page level on a
+dashboard, because it genuinely re-scopes every section. Page-level filters are
+fine when they really are page-wide — the test is the same: name what it acts on.

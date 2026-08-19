@@ -38,14 +38,14 @@ Follow this workflow exactly, step by step.
 23. **Icons: import DIRECTLY by key** — all 87 zcat icons are standalone published `component`s. Use `importComponentByKeyAsync(key)` → `createInstance()`, with keys from `references/icon-catalog.json`. Verified live 2026-08-18: every icon is a `COMPONENT`, none is a variant, none has a `COMPONENT_SET` parent, each holds one stroke-only `VECTOR:Icon`, and the stroke ships **already bound** to `BODY/Icons/Static/Primary` — rebind only to change the colour role. Resize with BOTH axes (`icon.resize(16,16)`); one axis collapses it. The old clone-from-Button + `swapComponent()` workaround is obsolete — do not use it. Icon *slots* inside components (`INSTANCE_SWAP` props like Link's `Change Icon Left`) are the separate case that still needs a main-component reference. NEVER use emoji or Unicode characters (↑, ▶, ✕, ▾, ●, ←) as icons
 24. **Button labels: override nested TEXT node** — Button has NO text component property. Set label by: `btn.findAll(n => n.type === 'TEXT')` → find node with characters 'Button Text' → `await figma.loadFontAsync(node.fontName)` → `node.characters = "Your Label"`. There is no shortcut
 25. **Build before destroy** — NEVER remove existing content before confirming replacement content can be created. Build new content first, validate it works, then swap. A failed script that already removed old content leaves a broken screen with no undo
-26. **No manual UI controls** — NEVER create a rectangle/circle/frame to represent a button, input, badge, toggle, checkbox, or any UI control. If you catch yourself doing this, STOP and search for the component. The ONLY manual frames are structural layout containers (rows, columns, sections)
+26. **Component first — frames only as a proven fallback.** NEVER create a rectangle/circle/frame to represent a button, input, badge, toggle, checkbox or any UI control **that exists in the library**. Search first, always. **But when the library genuinely has no component for what you need — a chat drawer, a message bubble, a split panel — you MUST still build it, using frames and Card BG.** That is allowed and expected; do not stall, and do not bend an unrelated component into the wrong shape. The fallback has conditions, and they are not optional: (a) you must have run `search_design_system` / `zcat_search_components` first and found nothing, (b) EVERY fill, stroke and text colour must be bound to a zcat variable — no raw hex, (c) spacing and radius come from the scale, (d) all text uses a zcat text style imported by key, (e) icons come from `zcat_search_icons` — if there is no exact icon, use the CLOSEST one and tell the user which substitute you used. Never emoji, never Unicode. Tell the user in your summary which elements were hand-built and why. See the FALLBACK LADDER below
 27. **Shadow effects need blendMode** — all `DROP_SHADOW` effects require `blendMode: "NORMAL"` in the effect object. Omitting it throws an error
 28. **Container navigation** — NEVER use `findOne(n => n.name === "Container")` from the root screen — it can match Container nodes inside nested instances (e.g., inside Dropdown). Always find via Body frame's direct children: `for (const c of bodyFrame.children) { if (c.name === 'Container' && c.type === 'FRAME') ... }`
 29. **appendChild inside instances** — you can ONLY appendChild to FRAME nodes that are NOT inside any INSTANCE ancestor. If any ancestor is INSTANCE, detach it first. Check the parent chain before appending
 30. **Tab State property** — Tab instance property name is `"State"` (plain), values `"Active"` / `"Default"`. Hash-suffixed names (like `"State#548:8025"`) vary by instance — always try the plain name first
 31. **Components on EVERY screen** — do NOT use components for the first screen and then forget for subsequent screens. EVERY screen must use the exact same component workflow: import → configure → place. If you find yourself writing `figma.createFrame()` for a button, input, badge, or any UI control on ANY screen, STOP — you are drifting. Re-read this checklist before EVERY screen build
 32. **Use stroke icons everywhere** — wherever an icon is needed (stat cards, action buttons, navigation, status indicators), use a zcat stroke icon from the library via the clone+swap pattern. Even if the exact icon doesn't exist, use the closest available icon and tell the user: "I used [icon name] as a placeholder — swap it manually in Figma if needed." NEVER skip icons or substitute emoji/Unicode
-33. **Action bar balance** — when a button appears on the right side of an action bar or section header, ALWAYS provide a supporting element on the left side (Search component, section heading text, breadcrumb, filter dropdowns). NEVER leave a lonely right-aligned button with empty space on the left. This applies to Container action bars, card headers, section headers, and any horizontal row with a right-aligned action. Think MORE than the wireframe — enrich with Search, filters, or descriptive text
+33. **Action bar balance — balance with a HEADING first, and only add controls that have a target.** When a button sits on the right of an action bar or section header, provide a supporting element on the left. **Default to the heading text.** Add a Search or filter on the left ONLY if that control acts on the whole container — i.e. the container holds exactly ONE dataset. If the container holds MULTIPLE sections (two tables, table + chart, several cards), a page-level Search is ambiguous: it appears to govern everything below it. Put that Search in the owning **section header** instead, next to that section's heading. **Every control must name its target** — if you cannot say which dataset or destination a Search, filter, tab or button acts on, it does not belong there. See `rules-navigation-actions.md` → "Control scope". NEVER leave a lonely right-aligned button with empty space on the left. This applies to Container action bars, card headers, section headers, and any horizontal row with a right-aligned action. Think MORE than the wireframe — enrich with Search, filters, or descriptive text
 34. **Design beyond wireframes** — wireframes are MINIMUM requirements. You MUST improve them: (a) flat wireframe cards → use Card BG with icon backgrounds, color variables, visual hierarchy (24px bold values, 12px labels), (b) wireframe tabs inside content → move primary tabs to Sub Header, (c) plain text lists → use proper components with badges, icons, spacing, (d) empty action bars → add Search, filters, or headings alongside buttons. The final design should look like a polished product, not a wireframe with components swapped in
 35. **Eliminate duplicate information** — if the wireframe shows the same data in two places (e.g., Storage as a stat card AND a separate storage graph card), MERGE them into one card and tell the user what you merged. **Outright REMOVAL requires approval first** — propose it and wait. "Don't blindly copy every wireframe element" means rethink presentation, NOT delete content
 36. **Use Code Block / Code Editor component** — for SQL consoles, query editors, code views, JSON displays, and any monospace text area, ALWAYS use the Code Block component or build a code editor frame with `CODE BLOCK/Bg colors/Writer` fill, `CODE BLOCK/Borders/Default` border, and Roboto Mono font. NEVER build a plain text frame for code content. See component-manifest.json for Code Block details
@@ -56,11 +56,11 @@ Follow this workflow exactly, step by step.
 41. **Think and decide, then inform** — when you encounter ambiguous design choices (merge duplicate sections, choose between layouts, improve wireframe patterns), make the decision yourself and inform the user in your summary: "I made these design decisions: [list]. Let me know if you want changes." Do NOT ask about every small choice — make good decisions and tell the user what you decided
 42. **Popup close is in FOOTER only** — the zcat Popup component has NO X close button in the header. NEVER add a manual X icon in the popup header. The popup header contains ONLY the title (and optionally a Stepper or primary Tabs below it). Footer layout for simple form: Cancel (Ghost, LEFT) + Create (Fill, RIGHT). Footer layout for wizard with stepper: Back (Outline, LEFT) + Cancel (Ghost, RIGHT) + Continue (Fill, RIGHT). On first wizard step: no Back, just Cancel (left) + Continue (right). On last step: Back (left) + Cancel + Create (right)
 43. **Stepper/Tabs in Popup header** — in wizard popups, the Stepper or primary Tabs ALWAYS go in the popup HEADER area directly below the title, NOT in the content body. Stepper must be responsive (layoutSizingHorizontal = FILL) to span the full popup width. Use the Stepper component — NEVER draw circles + lines manually
-44. **NEVER hand-build ANY UI control** — before creating ANY visual element, check the "Components Agents Commonly Skip" table in decision-rules.md. If the element matches ANY row in that table, use the component. This includes: toggles, dropdowns, text inputs, checkboxes, radio buttons, steppers, chips, alerts, loaders, avatars, search, date pickers, pagination, tooltips, accordions, breadcrumbs, progress bars, code blocks, section headings, and selection cards. The library has 79 components — if you're drawing rectangles, circles, or lines to make a UI control, you're doing it wrong
+44. **Check the skip-list before hand-building anything** — before creating ANY visual element, check the "Components Agents Commonly Skip" table in decision-rules.md. If the element matches ANY row in that table, use the component — hand-building one of those is always wrong, because it exists. If it matches nothing there and a search returns nothing, rule 26's fallback ladder applies. This includes: toggles, dropdowns, text inputs, checkboxes, radio buttons, steppers, chips, alerts, loaders, avatars, search, date pickers, pagination, tooltips, accordions, breadcrumbs, progress bars, code blocks, section headings, and selection cards. The library has 79 components — if you're drawing rectangles, circles, or lines to make a UI control, you're doing it wrong
 45. **Popup components MUST be responsive** — all form elements inside a Popup (Text Box, Dropdown, Radio Button, Toggle Button) must use layoutSizingHorizontal = FILL to stretch to the popup body width. NEVER leave narrow fixed-width controls floating in a wide popup body. The popup body itself should be 500-700px wide for wizard flows
 46. **Table AI MUST be responsive and use correct column types** — Table AI must use layoutSizingHorizontal = FILL so it stretches to fill the Container. AvatarName column type is ONLY for person/user data (names, owners, assignees). NEVER use AvatarName for database names, regions, storage sizes, dates, or any non-person data. Match column types to the DATA, not to wireframe icons. If the wireframe shows random icons next to every column, IGNORE those icons and pick the correct column type. See decision-rules.md "Table AI column type selection" table
 47. **Wireframe icons are NOT design icons** — wireframes use placeholder icons that don't exist in the zcat library. NEVER try to replicate wireframe icons literally. Instead, find the CLOSEST zcat stroke icon via clone+swap. If no close match exists, use any relevant icon and tell the user to swap it manually. The icon must come from the zcat library — NEVER draw manual shapes, use emoji, or use Unicode characters as icons
-48. **Container Header IS the action bar** — NEVER build a manual frame for the action bar. Use the Container Header component (detach for content insertion). Put Search + filter dropdowns on the left, Export/secondary + Create/primary buttons on the right. The Container Header already has proper internal padding
+48. **Container Header IS the action bar** — NEVER build a manual frame for the action bar. Use the Container Header component (detach for content insertion). **What goes in it depends on how many datasets the Container holds.** ONE dataset (a single list/table page): Search + filter dropdowns on the left, Export/secondary + Create/primary buttons on the right — the classic list page. MULTIPLE sections (dashboard, overview, split view): the Container Header carries only page-level things — heading, page-wide filters such as a time range, and page-level actions. Per-section Search/filters/View All belong in each **section header**, not here. The Container Header already has proper internal padding
 49. **Button placement depends on tabs** — NO tabs: buttons go in Container Header alongside Search + filters, Sub Header stays simple (title + Help). Tabs + COMMON action for all tabs (e.g., "Create Function" applies to all tab views): button in Sub Header title row (right side, above tabs), Container Header has only Search + filters. Tabs + TAB-SPECIFIC actions (button changes per tab): buttons in Container Header. NEVER put buttons in Sub Header when there are no tabs
 50. **Pagination is a SEPARATE component** — for stretch table pages, use the standalone Pagination component at the bottom of the Container. Set Table AI `Show Pagination = false`. The Pagination component sits below the Table AI as a sibling, not inside it. For boxy tables, pagination can optionally use Table AI's built-in pagination
 51. **Sub Header is NEVER detached** — the Sub Header is ALWAYS an instance, no exceptions. For tabs: add Tab component instances inside the Sub Header's auto-layout. For back navigation: update the feature name text to "‹ item-name". For buttons: add Button instances inside the title row. For breadcrumbs: use the back navigation pattern, NOT manual breadcrumb frames. Detaching Sub Header is the #1 cause of broken layouts on detail pages
@@ -762,7 +762,37 @@ Before writing ANY use_figma code, go through this checklist. For EVERY UI eleme
 | Helper text | Build as text layer (not a library component) | — |
 | Code editor / SQL / query input | Build manually — no zcat component exists. Bind fill to `CODE BLOCK/Bg colors/Writer`, border to `CODE BLOCK/Borders/Default`, text to `✅ Code Text/Code Body` (Roboto Mono) | Never hardcode the fill/stroke hex — "manual" means no component to import, not permission to hardcode colors |
 
-**CRITICAL RULE:** If you catch yourself creating a rectangle, circle, or frame to represent a UI control — STOP. Search for the component first. The ONLY things you should create manually are structural layout frames (rows, columns, sections).
+**CRITICAL RULE:** If you catch yourself creating a rectangle, circle, or frame to represent a UI control — STOP and search for the component first.
+
+#### FALLBACK LADDER — what to do when no component exists
+
+The library does not cover every screen type. It has **no chat drawer, no message
+bubble, no split panel**, and no `chat`/`message`/`menu`/`bulb` icons. When you hit
+a genuine gap, you still build it — refusing to build, or forcing an unrelated
+component into the wrong shape, is worse than a well-tokenised frame.
+
+| Step | Action |
+|---|---|
+| 1 | **Search.** `zcat_search_components`, then `search_design_system`. Never skip — this is the #1 cause of hand-built duplicates of components that already exist |
+| 2 | **Component exists → use it.** No exceptions, no restyling it into something else |
+| 3 | **Close relative exists** (e.g. Card BG for a panel, Popup for an overlay) → use it as the shell and compose inside |
+| 4 | **Nothing exists → build with frames + Card BG**, under the conditions below |
+
+**Conditions on any hand-built element — all mandatory:**
+
+- **Colour:** every fill/stroke/text colour bound to a zcat variable via
+  `figma.variables.setBoundVariableForPaint`. No raw hex, ever. Bindable
+  namespaces are `BODY`, `CARDS`, `SHADOWS`, `BRANDING ICON`, `OTHER SHADES`
+  (see `zcat_get_all_variables`) — the component-scoped ones cannot be imported
+- **Spacing / radius:** from the scale only (0,2,4,6,8,10,12,14,16,20,24,28,32,40,48,56,64,80,96,128)
+- **Text:** a zcat text style imported by key. Never a raw `fontSize`/`fontName`
+- **Icons:** `zcat_search_icons`. If no exact match, use the **closest** icon and
+  tell the user which substitute you used. Never emoji, never Unicode glyphs
+- **Auto-layout:** structural frames use auto-layout, HUG/FILL — not absolute positioning
+
+**Then tell the user**, in your summary: which elements were hand-built, why no
+component covered them, and which icons are substitutes. A hand-built element that
+is fully tokenised is acceptable engineering. One with raw hex is a defect.
 
 #### READY-TO-USE COMPONENT PATTERNS (copy these exactly)
 
@@ -1672,6 +1702,33 @@ for (const inst of instances) {
   }
 }
 if (drift.length) issues.push("WARN: " + drift.length + " instance layout overrides (verify each is intentional): " + drift.slice(0,10).join(", "));
+
+// CHECK 13: PAGE-LEVEL SEARCH ON A MULTI-SECTION CONTAINER
+// A Search in the Container Header appears to govern everything below it. If the
+// Container holds more than one dataset that is ambiguous, and it is invisible in
+// a screenshot — the box renders identically whether it filters one section, all,
+// or none. Structure is the only place this is detectable.
+if (container) {
+  const dataSections = container.findAll(n =>
+    (n.type === "INSTANCE" || n.type === "FRAME") &&
+    /table ai|card grid|chart|list/i.test(n.name)
+  ).filter(n => {
+    let p = n.parent, depth = 0;
+    while (p && p !== container && depth < 6) { p = p.parent; depth++; }
+    return p === container;
+  });
+  const headerSearch = [];
+  for (const c of container.children) {
+    if (c.type !== "INSTANCE" || !/container header/i.test(c.name)) continue;
+    c.findAll(n => n.type === "INSTANCE" && /search/i.test(n.name)).forEach(n => headerSearch.push(n.name));
+  }
+  if (dataSections.length > 1 && headerSearch.length) {
+    issues.push("WARN: page-level Search in Container Header but the Container holds " +
+      dataSections.length + " data sections — that Search appears to govern all of them. " +
+      "Move it into the owning section's header, or confirm it really is page-wide " +
+      "(see rules-navigation-actions.md -> Control scope)");
+  }
+}
 
 // REPORT
 if (issues.length === 0) {

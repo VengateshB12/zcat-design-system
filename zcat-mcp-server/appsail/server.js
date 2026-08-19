@@ -345,7 +345,31 @@ function buildServer() {
         .split(/\n(?=#{1,3} )/)
         .filter((b) => b.toLowerCase().includes(wanted));
 
-      return asText(blocks.length ? blocks.join("\n\n") : doc);
+      /* Agents commonly pull a section once — often the Component Key Table —
+       * and then work from context for the rest of the session without calling
+       * another zcat tool. A gate attached only to per-component lookups never
+       * fires for that path, so every section response carries it. */
+      const FOOTER = [
+        "",
+        "---",
+        "",
+        "**Before `use_figma`:** spec written, wireframe APPROVED by the user, keys from",
+        "`zcat_get_component_key` (never guessed).",
+        "",
+        "**After building, before showing anything:** `zcat_get_workflow(section: \"4f\")`",
+        "then `zcat_get_workflow(section: \"4g\")`. 4g is a blocking Senior Designer Review,",
+        "not a checklist — flat hierarchy, controls with no defined target, and dropped",
+        "wireframe elements all pass 4f.",
+        "",
+        "**Atomic scripts:** any throw rolls back the WHOLE script. The usual causes are",
+        "`counterAxisAlignItems = 'STRETCH'` (not a valid enum — use `layoutAlign`/",
+        "`layoutSizingVertical`), setting `layoutSizingHorizontal = 'FILL'` before",
+        "`appendChild`, `getVariableByIdAsync` on a library key (use",
+        "`importVariableByKeyAsync`), an invalid variant combination, and mutating",
+        "`characters` without `await figma.loadFontAsync(node.fontName)`."
+      ].join("\n");
+
+      return asText((blocks.length ? blocks.join("\n\n") : doc) + FOOTER);
     }
   );
 
