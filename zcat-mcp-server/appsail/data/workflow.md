@@ -810,9 +810,36 @@ wrong shape. Build it with frames, token it properly, and say what you did.
 **Conditions on any hand-built element — all mandatory:**
 
 - **Colour:** every fill/stroke/text colour bound to a zcat variable via
-  `figma.variables.setBoundVariableForPaint`. No raw hex, ever. Bindable
-  namespaces are `BODY`, `CARDS`, `SHADOWS`, `BRANDING ICON`, `OTHER SHADES`
-  (see `zcat_get_all_variables`) — the component-scoped ones cannot be imported
+  `figma.variables.setBoundVariableForPaint`. No raw hex, ever.
+
+  **Bind from the published set: `BODY`, `CARDS`, `SHADOWS`, `BRANDING ICON`,
+  `OTHER SHADES`.** Component-scoped variables (`INPUT FIELDS/*`, `BUTTONS/*`,
+  `TABLE/*`, `BADGE/*`, `ATTENTION/*`) are **internal by design** — they belong to
+  their components, not to your frames, and cannot be imported. That is intended,
+  not a gap: do not ask for them to be published, and do not try to import them.
+
+  | Your hand-built element needs | Bind to |
+  |---|---|
+  | panel / card surface | `CARDS/Bg Default/Primary` |
+  | nested or secondary surface | `CARDS/Bg Default/Secondary` |
+  | sunken area, track, code well | `CARDS/Bg Default/Body Bg` |
+  | selected / highlighted surface | `CARDS/Bg Selected/Primary - Selected` |
+  | any border on a card or panel | `CARDS/Borders/Default` (hover `/Hover`, selected `/Selected`) |
+  | page background | `BODY/Background/Static/Body Bg` |
+  | content container background | `BODY/Background/Static/Container Bg` |
+  | divider / hairline rule | `BODY/Border/Static/Border` |
+  | primary text | `BODY/Text/Static/Primary` |
+  | label / secondary text | `BODY/Text/Static/Secondary` |
+  | caption / tertiary text | `BODY/Text/Static/Light` |
+  | disabled text | `BODY/Text/Static/Disable` |
+  | text on a dark surface | `BODY/Text/Static/White` |
+  | link / accent text | `BODY/Text/Static/Theme` |
+  | icon stroke | `BODY/Icons/Static/Primary` (or `/Secondary`, `/Light`, `/Disable`) |
+  | shadow / elevation | `SHADOWS/Elevation/Default` |
+  | success / error / warning / info accents | `OTHER SHADES/Green\|Red\|Orange\|Blue /1-4` |
+
+  If a colour you want is not reachable from that table, pick the nearest one from
+  it — do not hardcode, and do not file a request.
 - **Spacing / radius:** from the scale only (0,2,4,6,8,10,12,14,16,20,24,28,32,40,48,56,64,80,96,128)
 - **Text:** a zcat text style imported by key. Never a raw `fontSize`/`fontName`
 - **Icons:** `zcat_search_icons`. If no exact match, use the **closest** icon and
@@ -1205,9 +1232,12 @@ have a better one."*
 
 #### DRAWER / SIDE PANEL RECIPE (hand-built — no component exists)
 
-`Popup` cannot serve this role: a popup blocks the page behind it and closes from
-its **footer** with no X in the header, whereas a drawer leaves the page visible
-and **closes from an X in its header**. Build it with frames.
+`Popup` cannot serve this role, but **not** because of the backdrop — a zcat drawer
+DOES use `Popup Blur` behind it, same as a popup. The difference is the close
+affordance: a popup closes from its **footer** and must never have an X in its
+header, whereas a drawer **closes from an X in its header**. That alone rules out
+reusing `Popup`. Build the shell with frames, and keep `Popup Blur` behind it.
+Reference: `Me- Drawer Sample` (`13420:10799`).
 
 ```javascript
 // Drawer shell: right-aligned, full height, pinned header + scrolling body + pinned footer.
@@ -1266,9 +1296,13 @@ footer.strokeLeftWeight = 0; footer.strokeRightWeight = 0;
 exist must be a component — Text Box for the prompt, Button for actions, Badge for
 status, Chip for file attachments. The frames are the *shell only*. Message bubbles
 are frames with `CARDS/Bg Default/Secondary` (assistant) and
-`BADGE/Background/Sec- Primary` (user), radius from the scale, text on a zcat style.
+`CARDS/Bg Selected/Primary - Selected` (user — the subtle blue), radius from the
+scale, text on a zcat style. Both are in published namespaces; `BADGE/*` is not
+bindable, so do not reach for it here.
 
-**Do NOT add Popup Blur** — the page behind a drawer stays visible and usable.
+**DO add `Popup Blur`** behind the drawer (key `825e3c4aa551ccd56ec61d6f5059dda1e92abbc5`),
+`layoutPositioning = "ABSOLUTE"`, sized to the screen, placed as a sibling *below*
+the drawer in z-order. This matches `Me- Drawer Sample`.
 
 #### COMPONENT GOTCHAS
 

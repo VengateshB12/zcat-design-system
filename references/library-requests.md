@@ -14,27 +14,29 @@ cannot work around no matter how well it builds.
 
 ---
 
-## 1. Variable publishing — the one that matters most
+## 1. Variable publishing — CLOSED, working as designed
 
-**423 of 493 `Mode` variables cannot be imported by a consuming file.** Only
-`BODY`, `CARDS`, `SHADOWS`, `BRANDING ICON` and `OTHER SHADES` are bindable
-(70 variables, 69 of which resolve).
+**Not a gap. Do not reopen.** The design team's position, and it is the right one:
+component-scoped variables (`INPUT FIELDS/*`, `BUTTONS/*`, `TABLE/*`, `BADGE/*`,
+`ATTENTION/*`) belong to their components. An input's border colour is the input's
+business; a consumer building its own frame has no claim on it.
 
-This is now the **highest-value ask**, and the reason is the fallback policy: we
-tell agents to hand-build whatever the library lacks and bind every colour to a
-zcat variable — then withhold the variables that would let a hand-built element
-match the real components. An agent building a drawer cannot bind
-`INPUT FIELDS/Borders/Default` to its prompt field and must approximate with
-`CARDS/Borders/Default`, so hand-built work drifts from component work by
-construction.
+Consumers bind from the published semantic set — `BODY`, `CARDS`, `SHADOWS`,
+`BRANDING ICON`, `OTHER SHADES` — which is exactly what that set exists for. The
+mapping table for hand-built elements lives in `zcat.md` under FALLBACK LADDER.
 
-Publishing `INPUT FIELDS/*`, `TABLE/*`, `BUTTONS/*`, `BADGE/*` and `ATTENTION/*`
-would close that gap and make hand-built elements visually indistinguishable from
-component ones.
+I had this listed as the top ask on the argument that hand-built work would drift
+from component work. That argument was wrong: a hand-built panel should read as a
+*panel* (`CARDS/*`), not impersonate an input. Retracted.
 
-Also:
-- **`CARDS/Bg Default/Dark Bg`** (`ebc952158732732071d9351f482e0de41462616e`) exists in the library but does **not** resolve for consumers — broken publish state on one variable
-- **`_Global_Values`** (`Spacing/S*`, `Radius/R*`, `Border/*`) is entirely unbindable, so every spacing and radius value is a hardcoded number
+**One genuine bug remains in this area:** `CARDS/Bg Default/Dark Bg`
+(`ebc952158732732071d9351f482e0de41462616e`) sits in a PUBLISHED namespace but does
+not resolve for consumers. That is a broken publish on a single variable, not a
+policy question — worth an unpublish/republish.
+
+`_Global_Values` (`Spacing/S*`, `Radius/R*`, `Border/*`) is also unpublished, but
+this needs no action: the rules already require spacing and radius to come from a
+fixed even-number scale, and literal numbers satisfy that.
 
 ## 2. Component defects — RESOLVED / CLOSED 2026-08-19
 
