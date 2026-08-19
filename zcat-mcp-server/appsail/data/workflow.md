@@ -711,10 +711,37 @@ function textByName(root, name) {
 | Lookup-by-name + `if (found)` guard | miss → silently skipped | `require*` (throws) |
 | `try { ... } catch(e) {}` (empty catch) | swallows invalid-variant errors | let it throw, or rethrow with context |
 | `node.fontSize = 14` / `fontName = Inter` | hardcoded typography, no style | `mkText(..., styleKey, ...)` |
+| `setTextStyleIdAsync(libraryKey)` | **SILENT NO-OP** — takes a LOCAL style id, not a library key. Passing a key does nothing, throws nothing, and leaves the node at Figma's raw default (Inter Regular 12px) | `const s = await requireStyle(key,label); await node.setTextStyleIdAsync(s.id)` then assert `node.textStyleId` |
 | `node.fills = [{type:"SOLID", color:{...}}]` | raw hex | `bindFill(node, variable)` |
 | `findAll(n => n.type === "TEXT")[i]` | index shifts silently → wrong node | `textByName(root, "LayerName")` |
 | `characters.includes("Button Text")` | placeholder text differs → label never set | `textByName` |
 | `props.find(k => k.startsWith("X"))` + `if (k)` | renamed prop → silently unset | `propKey` / `setProps` (throws) |
+
+#### THE THREE SILENT FAILURES — these do NOT throw
+
+A throw is cheap: the script rolls back and you fix it. These three fail **quietly**
+and produce a screen that looks finished and is wrong. Every one has shipped.
+
+| What you write | What happens | Why you don't notice |
+|---|---|---|
+| `node.setTextStyleIdAsync(LIBRARY_KEY)` | **nothing** — it wants a LOCAL style id. The node stays Inter Regular 12px, `textStyleId` stays `""` | No error. A screenshot at normal zoom looks plausible, so the build continues |
+| `inst.setProperties({ Typo: "Fill" })` (wrong/renamed prop name) | silently ignored, component stays on its default variant | No error. "All my buttons look the same" |
+| `getLocalVariablesAsync()` / `getLocalTextStylesAsync()` then match by name | returns **empty** for library assets, so every lookup misses | No error. You get raw hex and default type |
+
+**Why the text-style one is the most dangerous:** the variable equivalent
+(`getVariableByIdAsync` on a library key) *does* throw, so it self-corrects on the
+first run. The text-style version does not, so nothing forces the fix. An agent
+authored a full screen this way — every text node it created was Inter Regular
+12px and unbound, while the only correctly-styled text was inside an imported
+component it never touched.
+
+**Defences, in order:**
+1. Use `requireStyle()` + `mkText()` from the prelude. They import by key, use
+   `style.id`, and assert `textStyleId` is non-empty afterwards
+2. Run 4f — CHECK 4b fails on any authored TEXT with an empty `textStyleId`, and
+   CHECK 4c fails a screen whose authored text is entirely Regular weight
+3. When a screenshot looks "fine", verify the computed values rather than trusting
+   the render: `node.fontName`, `node.fontSize`, `node.textStyleId`
 
 **Rule: if a required ZCAT component, style, variable, or variant cannot be resolved, THROW and stop the build step.** Report the exact missing key to the user and ask — never substitute, never fall back, never continue. Scripts are atomic, so a throw leaves the file clean.
 
