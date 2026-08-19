@@ -29,14 +29,40 @@ I had this listed as the top ask on the argument that hand-built work would drif
 from component work. That argument was wrong: a hand-built panel should read as a
 *panel* (`CARDS/*`), not impersonate an input. Retracted.
 
-**One genuine bug remains in this area:** `CARDS/Bg Default/Dark Bg`
-(`ebc952158732732071d9351f482e0de41462616e`) sits in a PUBLISHED namespace but does
-not resolve for consumers. That is a broken publish on a single variable, not a
-policy question — worth an unpublish/republish.
+**Mechanism, for the record.** Reachability is controlled by a per-variable Figma
+setting, `hiddenFromPublishing`. Ticked = stays inside the library. Measured
+2026-08-19:
 
-`_Global_Values` (`Spacing/S*`, `Radius/R*`, `Border/*`) is also unpublished, but
-this needs no action: the rules already require spacing and radius to come from a
-fixed even-number scale, and literal numbers satisfy that.
+| Namespace | Shareable | Hidden |
+|---|---|---|
+| `BUTTONS` | 0 | 87 |
+| `INPUT FIELDS` | 0 | 26 |
+| `TABS` | 0 | 28 |
+| `BADGE` | 0 | 22 |
+| `TABLE` | 0 | 18 |
+| `BODY` | 16 | 0 |
+| `OTHER SHADES` | 28 | 0 |
+| `CARDS` | 21 | 1 |
+| `SHADOWS` / `BRANDING ICON` | 2 / 2 | 0 |
+
+The architecture is implemented deliberately and correctly: component colours
+hidden, semantic colours shared.
+
+**`CARDS/Bg Default/Dark Bg` — NOT a bug, retracted.** It is the one CARDS variable
+with `hiddenFromPublishing: true`. Figma is right to refuse it. It is a dark navy
+(`#0F2A64`), so hiding it may well be intentional. No action needed unless the
+design team wants it shared. I had called this a broken publish; it is a setting.
+
+**Worth knowing (optional win):** `Spacing/*` (27), `Radius/*` (8) and `Border/*`
+(6) are NOT hidden — they are eligible to share — but still fail to import, meaning
+they were never actually included in a publish. Unticking the box is permission; a
+publish is delivery. Publishing those 41 would let agents bind `Spacing/S16` and
+`Radius/R6` instead of writing literal numbers. Optional: the rules already force
+spacing onto a fixed even-number scale, so literals are correct today, just not
+linked.
+
+Minor, likely accidental: `PROFILE NAV` is 1 shareable / 18 hidden and `TOUR` is
+1 / 5 — inconsistent with every other component namespace being fully hidden.
 
 ## 2. Component defects — RESOLVED / CLOSED 2026-08-19
 
