@@ -49,7 +49,7 @@ The design system file (`ugOZk4O0g6XpviEBSN24mF`) has a **"Referance Templates"*
 | Me- Functions - List View (alt) | `13408:7063` | List page | Second variant of the same pattern |
 | Me- Databases - List View | `13302:3465` | List page | Same pattern, different data — confirms list page consistency |
 | Me- Applications - Cards View | `13302:5977` | Card grid page | Card layout, badge placement, grid spacing |
-| Me -Monitoring - orders-prod | `13302:12743` | Detail/dashboard | Stat cards, chart layout, monitoring patterns |
+| ~~Me -Monitoring - orders-prod~~ | `13302:12743` | Detail/dashboard | **SUPERSEDED — do not match this one.** Audited 2026-08-19: its stat values are 24px `Semibold` with **unbound text styles** (`textStyleId` empty), which violates the zero-unbound-text rule and is off the type scale. Use `Correct- orders-prod Overview` instead |
 | Correct- orders-prod Overview | `13324:5503` | Detail/dashboard | Corrected overview pattern — prefer this for dashboards |
 | ME- Databases - Empty State | `13302:10638` | Empty state | Empty State component usage, simple Sub Header |
 | Me-Create Function Modal | `13302:11531` | Popup/form | Popup structure, form fields, footer buttons |
