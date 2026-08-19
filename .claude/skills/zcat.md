@@ -793,10 +793,12 @@ Before writing ANY use_figma code, go through this checklist. For EVERY UI eleme
 
 #### FALLBACK LADDER — what to do when no component exists
 
-The library does not cover every screen type. It has **no chat drawer, no message
-bubble, no split panel**, and no `chat`/`message`/`menu`/`bulb` icons. When you hit
-a genuine gap, you still build it — refusing to build, or forcing an unrelated
-component into the wrong shape, is worse than a well-tokenised frame.
+The library will never cover every screen type or every icon, and it is not meant
+to. It has **no drawer, no message bubble, no split panel**, and no
+`send`/`attach`/`chart`/`menu`/`chat`/`bulb` icons. **This is expected. Building
+those yourself is the sanctioned path, not a workaround** — do not wait for the
+library, do not file a request, and do not force an unrelated component into the
+wrong shape. Build it with frames, token it properly, and say what you did.
 
 | Step | Action |
 |---|---|
@@ -1179,6 +1181,94 @@ For coloured icon backgrounds use the `BADGE/Background/Sec- *` family
 `search_design_system` and add them, never guess.
 
 NEVER use emoji or Unicode glyphs as icons. Use a catalog entry.
+
+#### MISSING ICONS — substitute, disclose, move on
+
+There is no exact icon for everything and there never will be. **Pick the closest
+zcat icon, use it, and tell the user it is a substitute so they can swap it by
+hand later.** Never emoji, never Unicode, never a drawn shape, never a blocked build.
+
+Confirmed to have NO match (verified against all 87), with the closest stand-in:
+
+| You need | Use | Reads as |
+|---|---|---|
+| send / submit prompt | `Arrow Right` (`dd0a2337f62c69097168dd4dd9ca578e0d87d186`) | directional send |
+| attach / paperclip | `File` (`6570a48b19e8fb9a718a3283f9583b3b6ec663a1`) | a file is involved |
+| chart / graph / analytics | `Percentage` (`ba581cf2b11941e853a801a20e8b95b1a5d9f9e9`) | a metric |
+| menu / hamburger | `Nine Dot` (`b9bfba4479315c19909ddf104c768d04ac1591a3`) | more / apps |
+| message / chat bubble | `Question Round` (`6c15ea9fa41fb5349d98648ac0692a924f2a41d8`) | ask / support |
+| bulb / idea / suggestion | `AI` (`2b8353399de4ff71022ac901d1231640389afcf7`) | generated suggestion |
+
+These are defaults, not doctrine — if a different icon reads better in context, use
+it. Say in your summary: *"`Arrow Right` stands in for a send icon — swap it if you
+have a better one."*
+
+#### DRAWER / SIDE PANEL RECIPE (hand-built — no component exists)
+
+`Popup` cannot serve this role: a popup blocks the page behind it and closes from
+its **footer** with no X in the header, whereas a drawer leaves the page visible
+and **closes from an X in its header**. Build it with frames.
+
+```javascript
+// Drawer shell: right-aligned, full height, pinned header + scrolling body + pinned footer.
+const surface = await requireVar("497de4a3445dd02172eeb981d292a9764f6aeaa8", "CARDS/Bg Default/Primary");
+const border  = await requireVar("0dd61c592dea6f8a4a7ed8d71ed3c3bb51308ea0", "BODY/Border/Static/Border");
+
+const drawer = figma.createAutoLayout("VERTICAL", { name: "Drawer", itemSpacing: 0 });
+screenFrame.appendChild(drawer);          // append BEFORE any FILL sizing
+drawer.layoutPositioning = "ABSOLUTE";     // else x/y are ignored inside auto-layout
+drawer.resize(420, screenFrame.height);    // fixed width, full height — both axes
+drawer.x = screenFrame.width - 420;
+drawer.y = 0;
+bindFill(drawer, surface);
+bindStroke(drawer, border);
+drawer.strokeWeight = 1;
+drawer.strokeLeftWeight = 1; drawer.strokeTopWeight = 0;
+drawer.strokeRightWeight = 0; drawer.strokeBottomWeight = 0;
+
+// Header — HUG. Title left, X close right (drawers DO close from the header).
+const header = figma.createAutoLayout("HORIZONTAL", {
+  name: "Drawer Header", itemSpacing: 8,
+  paddingTop: 16, paddingBottom: 16, paddingLeft: 16, paddingRight: 16
+});
+header.fills = [];                         // createAutoLayout adds a white fill
+drawer.appendChild(header);
+header.layoutSizingHorizontal = "FILL";
+header.counterAxisAlignItems = "CENTER";
+header.primaryAxisAlignItems = "SPACE_BETWEEN";
+await mkText(header, "Catalyst AI", "2c3007c5a4169e14a11ac9b2957b2f91b4f8c47b", "Headlines/H5", textPrimary);
+// close: Button Variant=Ghost, Content=Icon Button + the X icon (ef482c268025d295c6f73cf8e4bcef3be441a630)
+
+// Body — FILL, this is the region that scrolls.
+const body = figma.createAutoLayout("VERTICAL", {
+  name: "Drawer Body", itemSpacing: 16,
+  paddingTop: 16, paddingBottom: 16, paddingLeft: 16, paddingRight: 16
+});
+body.fills = [];
+drawer.appendChild(body);
+body.layoutSizingHorizontal = "FILL";
+body.layoutSizingVertical = "FILL";        // takes the slack between header and footer
+
+// Footer — HUG. Prompt Text Box + send action.
+const footer = figma.createAutoLayout("HORIZONTAL", {
+  name: "Drawer Footer", itemSpacing: 8,
+  paddingTop: 12, paddingBottom: 12, paddingLeft: 16, paddingRight: 16
+});
+footer.fills = [];
+drawer.appendChild(footer);
+footer.layoutSizingHorizontal = "FILL";
+bindStroke(footer, border);
+footer.strokeTopWeight = 1; footer.strokeBottomWeight = 0;
+footer.strokeLeftWeight = 0; footer.strokeRightWeight = 0;
+```
+
+**Rules that still apply inside a hand-built drawer:** every control that DOES
+exist must be a component — Text Box for the prompt, Button for actions, Badge for
+status, Chip for file attachments. The frames are the *shell only*. Message bubbles
+are frames with `CARDS/Bg Default/Secondary` (assistant) and
+`BADGE/Background/Sec- Primary` (user), radius from the scale, text on a zcat style.
+
+**Do NOT add Popup Blur** — the page behind a drawer stays visible and usable.
 
 #### COMPONENT GOTCHAS
 
