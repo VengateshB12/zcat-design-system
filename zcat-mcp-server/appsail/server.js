@@ -341,32 +341,37 @@ function buildServer() {
       }
 
       const wanted = section.trim().toLowerCase();
-      const blocks = doc
-        .split(/\n(?=#{1,3} )/)
-        .filter((b) => b.toLowerCase().includes(wanted));
+      /* Match the HEADING first. Substring-matching whole blocks returned every
+       * block that merely mentioned the term — "build in figma" came back as
+       * 46KB (~11.6k tokens) because several blocks contained the phrase. */
+      /* Try the narrowest match first. 4e "Build in Figma" is a ~45KB monolith
+       * containing seven #### subsections, so a query for "icon pattern" or
+       * "gotchas" used to drag the whole parent along (~11k tokens) when the
+       * caller wanted ~600. Match h4 -> h1-h3 -> body, narrowest wins. */
+      const h4Blocks = doc.split(/\n(?=#### )/);
+      const h4HeadingOf = (b) => (b.match(/^#### (.+)/) || ["", ""])[1].toLowerCase();
+      let blocks = h4Blocks.filter((b) => b.startsWith("#### ") && h4HeadingOf(b).includes(wanted));
+
+      if (!blocks.length) {
+        const allBlocks = doc.split(/\n(?=#{1,3} )/);
+        const headingOf = (b) => (b.match(/^#{1,3} (.+)/) || ["", ""])[1].toLowerCase();
+        blocks = allBlocks.filter((b) => headingOf(b).includes(wanted));
+        if (!blocks.length) blocks = allBlocks.filter((b) => b.toLowerCase().includes(wanted));
+      }
+      if (blocks.length > 2) blocks = blocks.slice(0, 2);
 
       /* Agents commonly pull a section once — often the Component Key Table —
        * and then work from context for the rest of the session without calling
        * another zcat tool. A gate attached only to per-component lookups never
        * fires for that path, so every section response carries it. */
+      /* Repeated on every section response, so keep it terse — it is a reminder,
+       * not the documentation. */
       const FOOTER = [
-        "",
-        "---",
-        "",
-        "**Before `use_figma`:** spec written, wireframe APPROVED by the user, keys from",
-        "`zcat_get_component_key` (never guessed).",
-        "",
-        "**After building, before showing anything:** `zcat_get_workflow(section: \"4f\")`",
-        "then `zcat_get_workflow(section: \"4g\")`. 4g is a blocking Senior Designer Review,",
-        "not a checklist — flat hierarchy, controls with no defined target, and dropped",
-        "wireframe elements all pass 4f.",
-        "",
-        "**Atomic scripts:** any throw rolls back the WHOLE script. The usual causes are",
-        "`counterAxisAlignItems = 'STRETCH'` (not a valid enum — use `layoutAlign`/",
-        "`layoutSizingVertical`), setting `layoutSizingHorizontal = 'FILL'` before",
-        "`appendChild`, `getVariableByIdAsync` on a library key (use",
-        "`importVariableByKeyAsync`), an invalid variant combination, and mutating",
-        "`characters` without `await figma.loadFontAsync(node.fontName)`."
+        "", "---",
+        "**Gate:** spec + APPROVED wireframe before `use_figma`; `4f` then `4g` after (4g is blocking).",
+        "**Atomic — a throw discards the whole script:** `STRETCH` is not a valid enum; set `FILL` only",
+        "after `appendChild`; use `importVariableByKeyAsync`/`importStyleByKeyAsync` (never `getVariableById`",
+        "or a raw key into `setTextStyleIdAsync` — that one fails SILENTLY); `loadFontAsync` before `characters`."
       ].join("\n");
 
       return asText((blocks.length ? blocks.join("\n\n") : doc) + FOOTER);
@@ -631,19 +636,45 @@ function buildServer() {
         section: z
           .string()
           .optional()
-          .describe("Optional filter, e.g. 'color', 'spacing', 'radius'"),
+          .describe("Namespace or section, e.g. 'CARDS', 'BODY', 'Spacing', 'Text styles'"),
+        full: z
+          .boolean()
+          .optional()
+          .describe("Return the ENTIRE generated dump (~17.6k tokens). Rarely needed — prefer zcat_get_all_variables."),
       },
     },
-    async ({ section }) => {
+    async ({ section, full = false }) => {
       const doc = readText("design-tokens.md");
-      if (!section) return asText(doc);
+
+      /* The generated dump is ~70KB (~17.6k tokens) — more than a whole screen's
+       * token budget. Returning it unasked was the single most expensive thing
+       * this server did. Default to the part almost every build actually needs:
+       * the bindable quick-reference plus an index of what else exists. */
+      if (!section && !full) {
+        const blocks = doc.split(/\n(?=## )/);
+        const keep = blocks.filter((b) =>
+          /^## (⚠️ READ THIS FIRST|How to use these|Collection map|✅ Quick reference)/.test(b)
+        );
+        const namespaces = (doc.match(/^### .+\(\d+\).*$/gm) || [])
+          .map((h) => h.replace(/^### /, "  - "));
+        return asText(
+          keep.join("\n\n") +
+          "\n\n---\n\n## Everything else (not returned by default — this file is ~17.6k tokens in full)\n\n" +
+          "For a specific variable use **`zcat_get_all_variables`** (structured, reports bindability).\n" +
+          "For one namespace call `zcat_get_design_tokens(section: \"CARDS\")`.\n" +
+          "For the entire dump call `zcat_get_design_tokens(full: true)`.\n\n" +
+          "Namespaces available:\n" + namespaces.join("\n")
+        );
+      }
+      if (full && !section) return asText(doc);
 
       const wanted = section.trim().toLowerCase();
-      const blocks = doc
-        .split(/\n(?=#{2,3} )/)
-        .filter((b) => b.toLowerCase().includes(wanted));
-
-      return asText(blocks.length ? blocks.join("\n\n") : doc);
+      const allBlocks = doc.split(/\n(?=#{2,3} )/);
+      const headingOf = (b) => (b.match(/^#{2,3} (.+)/) || ["", ""])[1].toLowerCase();
+      let blocks = allBlocks.filter((b) => headingOf(b).includes(wanted));
+      if (!blocks.length) blocks = allBlocks.filter((b) => b.toLowerCase().includes(wanted));
+      if (blocks.length > 3) blocks = blocks.slice(0, 3);
+      return asText(blocks.length ? blocks.join("\n\n") : "No token section matches that filter.");
     }
   );
 
@@ -844,6 +875,38 @@ function buildServer() {
     return out;
   }
 
+  /* Shared by single and batch icon lookup. Word-boundary matching: a raw
+   * substring made the query word "row" match "ar-row-", ranking Arrow Down
+   * above Delete for "delete row". */
+  function rank(icons, query) {
+    const q = String(query || "").trim().toLowerCase();
+    if (!q) return [];
+    const words = q.split(/\s+/).filter(Boolean);
+    return icons
+      .map((i) => {
+        const name = i.name.toLowerCase();
+        const hay = (i.name + " " + i.aliases.join(" ")).toLowerCase();
+        let score = 0;
+        if (name === q) score = 100;
+        else if (i.aliases.some((x) => x.toLowerCase() === q)) score = 90;
+        else if (name.startsWith(q)) score = 75;
+        else if (name.includes(q)) score = 60;
+        else if (i.aliases.some((x) => x.toLowerCase().includes(q))) score = 50;
+        else {
+          const hayWords = hay.split(/[^a-z0-9]+/).filter(Boolean);
+          let exact = 0, partial = 0;
+          for (const w of words) {
+            if (hayWords.includes(w)) exact++;
+            else if (w.length >= 4 && hayWords.some((hw) => hw.startsWith(w))) partial++;
+          }
+          if (exact || partial) score = 15 + ((exact + partial * 0.4) / words.length) * 30;
+        }
+        return { i, score };
+      })
+      .filter((r) => r.score > 0)
+      .sort((a, b) => b.score - a.score);
+  }
+
   server.registerTool(
     "zcat_search_icons",
     {
@@ -860,13 +923,39 @@ function buildServer() {
           .string()
           .optional()
           .describe("What the icon is for, e.g. 'delete', 'trend up', 'settings', 'deploy'"),
-        limit: z.number().int().min(1).max(87).optional().describe("Max results (default 8)"),
+        queries: z
+          .array(z.string())
+          .optional()
+          .describe("BATCH: look up many icons in ONE call, e.g. ['send','attach','close','chart']. Strongly preferred when a screen needs several icons — each separate call costs a full round-trip."),
+        limit: z.number().int().min(1).max(87).optional().describe("Max results per query (default 8, or 3 in batch mode)"),
       },
     },
-    async ({ query, limit = 8 } = {}) => {
+    async ({ query, queries, limit = 8 } = {}) => {
       const icons = allIcons();
       const cat = iconCatalog();
       const meta = cat._meta || {};
+
+      /* Batch mode. A build needing 20 icons previously made 20 round-trips,
+       * each re-paying the tool-use + tool-result overhead for a ~35-token query. */
+      if (Array.isArray(queries) && queries.length) {
+        const per = Math.min(limit, 3);
+        const results = {};
+        for (const q of queries) {
+          const top = rank(icons, q).slice(0, per);
+          results[q] = top.length
+            ? top.map(({ i, score }) => ({
+                name: i.name, componentKey: i.key, size: i.size,
+                confidence: score >= 60 ? "high" : score >= 28 ? "medium" : "low"
+              }))
+            : "NO MATCH — pick the closest from zcat_search_icons() with no query, and tell the user it is a substitute";
+        }
+        return asText({
+          results,
+          importMethod: "await figma.importComponentByKeyAsync(key) then comp.createInstance()",
+          resize: "icon.resize(n, n) — set BOTH axes",
+          strokeNote: "Stroke ships bound to BODY/Icons/Static/Primary; rebind only to change role."
+        });
+      }
 
       if (!query || !query.trim()) {
         return asText({
@@ -881,39 +970,7 @@ function buildServer() {
         });
       }
 
-      const q = query.trim().toLowerCase();
-      const words = q.split(/\s+/).filter(Boolean);
-      const scored = icons
-        .map((i) => {
-          const name = i.name.toLowerCase();
-          const hay = (i.name + " " + i.aliases.join(" ")).toLowerCase();
-          let score = 0;
-          if (name === q) score = 100;
-          else if (i.aliases.some((a) => a.toLowerCase() === q)) score = 90;
-          else if (name.startsWith(q)) score = 75;
-          else if (name.includes(q)) score = 60;
-          else if (i.aliases.some((a) => a.toLowerCase().includes(q))) score = 50;
-          else {
-            /* Match on WORD boundaries, not raw substring: a bare `hay.includes(w)`
-             * makes the query word "row" match "ar-row-", so "delete row" ranked
-             * Arrow Down above Delete. */
-            const hayWords = hay.split(/[^a-z0-9]+/).filter(Boolean);
-            let exact = 0;
-            let partial = 0;
-            for (const w of words) {
-              if (hayWords.includes(w)) exact++;
-              else if (w.length >= 4 && hayWords.some((hw) => hw.startsWith(w))) partial++;
-            }
-            if (exact || partial) {
-              score = 15 + ((exact + partial * 0.4) / words.length) * 30;
-            }
-          }
-          return { i, score };
-        })
-        .filter((r) => r.score > 0)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, limit);
-
+      const scored = rank(icons, query).slice(0, limit);
       if (!scored.length) {
         return asText(
           `No zcat icon matches "${query}". Call zcat_search_icons with no query to ` +
