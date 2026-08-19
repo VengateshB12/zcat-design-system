@@ -20,21 +20,43 @@ Two reference sources exist. The agent MUST look at relevant references BEFORE m
 
 ### Source 1: "Me-" Reference Screens in Figma
 
-The design system file (`ugOZk4O0g6XpviEBSN24mF`) has a **"Referance Templates"** page containing manually-built production-quality reference screens prefixed with "Me-". These are the GOLD STANDARD — built by the designer, not by an agent.
+The design system file (`ugOZk4O0g6XpviEBSN24mF`) has a **"Referance Templates"** page (**node `13302:290`**) containing manually-built production-quality reference screens prefixed with "Me-". These are the GOLD STANDARD — built by the designer, not by an agent.
 
-**Available "Me-" reference screens:**
-| Screen | Page Type | What to Learn From It |
-|--------|-----------|----------------------|
-| Me- Functions - List View | List page | Action bar layout, stretch table, column types, sidebar grouping |
-| ME- Databases - List View | List page | Same pattern, different data — confirms list page consistency |
-| Me- Applications - Cards | Card grid page | Card layout, badge placement, grid spacing |
-| Me -Monitoring - orders | Detail/dashboard | Stat cards, chart layout, monitoring patterns |
-| ME - Databases - Empty State | Empty state | Empty State component usage, simple Sub Header |
-| Me-Create Function Modal | Popup/form | Popup structure, form fields, footer buttons |
-| Me - Create Database Wizard | Wizard popup | Multi-step wizard, Stepper, selection cards, footer layout |
-| Three dot menu | Overflow menu | Dropdown Menu structure, icon placement |
+> ### ⚠️ `get_metadata` CANNOT FIND THIS PAGE — use the node IDs below
+>
+> Verified 2026-08-19, reproducible: calling `get_metadata` on this file with no
+> `nodeId` returns only **2 of its 32 pages** (`COVER` and `✅ Icons`).
+> "Referance Templates" is **not** in that list, so an agent that discovers pages
+> that way concludes the gold standard does not exist — and silently builds
+> without it. That has already happened and shipped defects.
+>
+> **Never discover pages with `get_metadata`.** Either use the node IDs in the
+> table below directly, or enumerate with `use_figma`:
+> ```js
+> return figma.root.children.map(p => ({ id: p.id, name: p.name }));   // returns all 32
+> ```
+>
+> **If a reference screen still cannot be opened: STOP and tell the user.**
+> Do NOT build without it and mention it afterwards. A missing gold standard is a
+> blocking condition, not a footnote.
 
-**How to use:** Before writing ANY page spec, `get_screenshot` the relevant "Me-" reference screen. Use it as the primary pattern and design-language reference.
+**Available "Me-" reference screens** — node IDs verified live 2026-08-19,
+`get_screenshot` them directly, no discovery needed:
+
+| Screen | Node ID | Page Type | What to Learn From It |
+|--------|---------|-----------|----------------------|
+| Me- Functions - List View | `13302:5544` | List page | Action bar layout, stretch table, column types, sidebar grouping |
+| Me- Functions - List View (alt) | `13408:7063` | List page | Second variant of the same pattern |
+| Me- Databases - List View | `13302:3465` | List page | Same pattern, different data — confirms list page consistency |
+| Me- Applications - Cards View | `13302:5977` | Card grid page | Card layout, badge placement, grid spacing |
+| Me -Monitoring - orders-prod | `13302:12743` | Detail/dashboard | Stat cards, chart layout, monitoring patterns |
+| Correct- orders-prod Overview | `13324:5503` | Detail/dashboard | Corrected overview pattern — prefer this for dashboards |
+| ME- Databases - Empty State | `13302:10638` | Empty state | Empty State component usage, simple Sub Header |
+| Me-Create Function Modal | `13302:11531` | Popup/form | Popup structure, form fields, footer buttons |
+| Me - Create Database Wizard | `13302:12626` | Wizard popup | Multi-step wizard, Stepper, selection cards, footer layout |
+| Three dot menu | `13308:15589` | Overflow menu | Dropdown Menu structure, icon placement |
+
+**How to use:** Before writing ANY page spec, `get_screenshot` the relevant "Me-" reference screen by its node ID above. Use it as the primary pattern and design-language reference. For a **dashboard or multi-section screen**, use `Correct- orders-prod Overview` (`13324:5503`) — it is the corrected version.
 
 ### Source 2: Production Screenshots (Local Folder)
 

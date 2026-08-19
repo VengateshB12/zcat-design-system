@@ -92,7 +92,6 @@ Call zcat_get_workflow first and follow it.</code></pre>
 
   <h2>What you get</h2>
   <ul>
-    <li><code>zcat</code> <em>(prompt)</em> &mdash; start a screen build</li>
     <li><code>zcat_get_workflow</code> &mdash; the screen-build workflow</li>
     <li><code>zcat_get_sources</code> &mdash; available component sources (primary + legacy)</li>
     <li><code>zcat_get_hard_rules</code> &mdash; non-negotiables</li>
@@ -265,6 +264,15 @@ function buildServer() {
     },
     async ({ section }) => {
       const doc = readText("workflow.md");
+
+      /* Extract a #### block by heading prefix, so the gate below always
+       * reflects workflow.md rather than a copy that can drift from it. */
+      const h4Block = (prefix) => {
+        const blocks = doc.split(/\n(?=#### )/);
+        const hit = blocks.find((b) => b.startsWith("#### " + prefix));
+        return hit ? hit.trim() : "";
+      };
+
       if (!section) {
         /* Include h4. The filter used to stop at h3, which hid 11 of 37
          * sections — among them FAIL LOUD, MANDATORY COMPONENT CHECKLIST,
@@ -285,12 +293,48 @@ function buildServer() {
             const depth = (l.match(/^#+/) || ["#"])[0].length;
             return "  ".repeat(Math.max(0, depth - 2)) + "- " + l.replace(/^#+\s*/, "");
           });
+        /* An index alone reads as a substitute for the document. Agents have
+         * browsed this TOC, never fetched a section, and then hit gotchas that
+         * the unfetched sections exist to prevent. So the no-section response
+         * carries the two things every build needs, ahead of the index. */
+        const GATE = [
+          "# zcat Build Workflow",
+          "",
+          "## STOP — required before any use_figma call",
+          "",
+          "This index is NOT the workflow. Reading it is not reading the method.",
+          "Before you create anything in Figma you MUST have:",
+          "",
+          "1. **A written spec** for the screen — call `zcat_get_design_workflow`.",
+          "2. **A low-fidelity wireframe approved by the user.** Never skip this.",
+          "3. **The build rules** — call `zcat_get_hard_rules`.",
+          "4. **The component keys** — call `zcat_get_component_key`, never guess.",
+          "",
+          "And after building, before showing the user ANYTHING:",
+          "",
+          "5. `zcat_get_workflow(section: \"4f\")` — mechanical validation (~70 checks).",
+          "6. `zcat_get_workflow(section: \"4g\")` — the Senior Designer Review.",
+          "   This is a blocking judgement loop, not a checklist. Skipping it is the",
+          "   single most common cause of shipped defects: flat hierarchy, controls",
+          "   with no defined target, and dropped wireframe elements all survive 4f.",
+          "",
+          "If a reference the docs name cannot be found, STOP and tell the user.",
+          "Do not proceed without it and mention it afterwards.",
+          "",
+          "---",
+          ""
+        ].join("\n");
+
+        const prelude = h4Block("FAIL LOUD");
+
         return asText(
-          "# zcat Build Workflow — Table of Contents\n\n" +
+          GATE +
+          (prelude ? prelude + "\n\n---\n\n" : "") +
+          "## Table of Contents\n\n" +
           "Call zcat_get_workflow with a `section` parameter to retrieve " +
           "specific sections (e.g. 'hard rules', 'step 4', 'recipe', " +
-          "'icon pattern', 'gotchas', 'review'). Indented entries are " +
-          "subsections — asking for one returns its parent section, which " +
+          "'icon pattern', 'gotchas', 'review', '4f', '4g'). Indented entries " +
+          "are subsections — asking for one returns its parent section, which " +
           "includes it.\n\n" +
           headings.join("\n")
         );
@@ -486,6 +530,19 @@ function buildServer() {
     }
   );
 
+
+  /* MCP is pull-only: this server cannot gate use_figma. The next best thing is
+   * to attach the gate to the responses an agent fetches immediately BEFORE it
+   * starts building, so the reminder arrives at the point of use rather than
+   * sitting in a document that may never be requested. */
+  const BUILD_GATE_NOTE = {
+    _beforeYouBuild:
+      "Spec written and wireframe APPROVED by the user? If not, stop and do that first.",
+    _afterYouBuild:
+      "Run zcat_get_workflow(section:'4f') then (section:'4g'). 4g is a blocking " +
+      "Senior Designer Review, not a checklist — flat hierarchy, controls with no " +
+      "defined target, and dropped wireframe elements all pass 4f."
+  };
   server.registerTool(
     "zcat_get_component_key",
     {
@@ -527,6 +584,7 @@ function buildServer() {
         exampleCode,
         variants: km.variants || null,
         source: km._source || "primary",
+        ...BUILD_GATE_NOTE,
         _warnings: [
           "Property keys may have hash suffixes — use Object.keys(instance.componentProperties) to discover actual keys",
           "Scripts are ATOMIC — any uncaught error rolls back ALL mutations. Use try/catch around risky calls",
