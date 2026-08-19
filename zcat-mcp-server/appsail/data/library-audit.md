@@ -4,6 +4,24 @@
 
 ---
 
+## Where to record a defect you cannot fix
+
+Library bugs that no amount of correct agent behaviour can work around — a
+component defect, a variable that will not resolve, a description that contradicts
+its own definitions — go in **`references/library-requests.md`** in the repo. That
+file is deliberately not served over the MCP (it is a design-team worklist, not
+agent guidance). Missing icons and missing shell components do NOT belong there:
+those are handled by the FALLBACK LADDER and are not pending on anyone.
+
+Variable reachability is controlled by a per-variable Figma setting,
+`hiddenFromPublishing`. Component-scoped namespaces (`BUTTONS`, `INPUT FIELDS`,
+`TABLE`, `BADGE`, `TABS`, …) are hidden **by design**; the semantic set (`BODY`,
+`CARDS`, `SHADOWS`, `BRANDING ICON`, `OTHER SHADES`) is shared. A variable that
+will not import is usually hidden on purpose, not broken — check the flag before
+calling it a bug.
+
+---
+
 ## The rule that matters most
 
 **`componentPropertyDefinitions` from the live library is the ONLY canonical source for:**

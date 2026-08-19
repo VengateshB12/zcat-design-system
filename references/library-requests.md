@@ -1,5 +1,11 @@
 # Library Requests — genuine defects only
 
+> **Repo-only by design — deliberately NOT served over the MCP.** This is a
+> design-team worklist, not agent guidance, so it is excluded from
+> `sync-data.sh` to keep it out of every agent's token budget. The parts agents
+> DO need already live in `.claude/skills/zcat.md` (FALLBACK LADDER, MISSING
+> ICONS, the published-variable mapping table). Read this file in the repo.
+
 **Scope, deliberately narrow.** Missing icons and missing shell components are
 **NOT** tracked here and are **not** design-team work. The library will never
 cover every icon or every screen type, and agents are expected to handle those
